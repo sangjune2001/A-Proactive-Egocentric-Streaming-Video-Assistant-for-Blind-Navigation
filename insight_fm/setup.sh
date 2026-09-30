@@ -6,7 +6,7 @@ set -euo pipefail
 
 # ---------------------------------------------------------------- edit these if your Drive layout differs
 JSONL_REMOTE="${JSONL_REMOTE:-gdrive:aihub189_yolo/labels_all.jsonl}"  # relabelled 10-class labels
-ZIP_REMOTE="${ZIP_REMOTE:-gdrive:sideguide/polygon}"                    # AI Hub 189 P1.zip ... P14.zip
+DRIVE_ROOT="${DRIVE_ROOT:-gdrive:}"   # zip paths (sideguide/polygon/P*.zip, sideguide/surface/S1.zip) come from the jsonl
 DATA="${DATA:-$HOME/sg}"                                               # local disk on the instance
 export HF_HOME="${HF_HOME:-$DATA/hf_cache}"
 export TORCH_HOME="${TORCH_HOME:-$DATA/torch_cache}"
@@ -21,21 +21,24 @@ if run deps; then
   echo "== deps"
   nvidia-smi --query-gpu=name,memory.total --format=csv
   pip install -U "ultralytics>=8.3.0" "transformers>=4.56" timm huggingface_hub einops
+  # OpenCV needs libGL/glib, which minimal server images lack
+  python -c "import cv2" 2>/dev/null || (sudo apt-get update -y && sudo apt-get install -y libgl1 libglib2.0-0)
+  python -c "import cv2; print('cv2', cv2.__version__)"
   command -v rclone >/dev/null || curl -fsSL https://rclone.org/install.sh | sudo bash
   command -v tmux >/dev/null || (sudo apt-get update -y && sudo apt-get install -y tmux) || true
   python -c "import torch;print('torch',torch.__version__,'cuda',torch.cuda.is_available())"
 fi
 
 if run data; then
-  echo "== data: labels from $JSONL_REMOTE, images from $ZIP_REMOTE"
-  rclone listremotes | grep -q "^${ZIP_REMOTE%%:*}:" || {
-    echo "rclone remote '${ZIP_REMOTE%%:*}' not configured."
+  echo "== data: labels from $JSONL_REMOTE, images from $DRIVE_ROOT"
+  rclone listremotes | grep -q "^${DRIVE_ROOT%%:*}:" || {
+    echo "rclone remote '${DRIVE_ROOT%%:*}' not configured."
     echo "From the laptop:  scp -i <key.pem> ~/.config/rclone/rclone.conf ubuntu@<server>:~/.config/rclone/"
     exit 1; }
   rclone copy "$JSONL_REMOTE" "$DATA" -P
   echo "  frames in jsonl: $(wc -l < "$DATA/labels_all.jsonl")   free disk: $(df -h "$DATA" | awk 'NR==2{print $4}')"
   # one zip at a time: download -> extract labelled frames at 640px -> delete zip (resumable)
-  (cd "$HERE" && python extract_images.py --jsonl "$DATA/labels_all.jsonl" --remote "$ZIP_REMOTE" \
+  (cd "$HERE" && python extract_images.py --jsonl "$DATA/labels_all.jsonl" --remote "$DRIVE_ROOT" \
       --zips "$DATA/zips" --out "$DATA/imgs" --delete-zip)
 fi
 

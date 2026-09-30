@@ -1,7 +1,7 @@
 """Run the whole experiment plan unattended, one experiment after another on a single GPU.
 
     python run_all.py --phase sanity                 # ~20 min: 3 tiny runs to prove the pipeline works
-    python run_all.py --phase pilot                  # 15 runs, 20% data, 30 epochs, scored on pilot val
+    python run_all.py --phase pilot                  # 15 runs, ~200 frames per class, 30 epochs, scored on pilot val
     python run_all.py --phase tier2                  # C-RADIOv4-SO400M (fusion + distill), pilot setting
     python run_all.py --phase full                   # E0 + top-2 fusion + top-2 distill from pilot, 3 seeds, test set
     python run_all.py --phase full --ids E0,A5,B3    # or choose yourself

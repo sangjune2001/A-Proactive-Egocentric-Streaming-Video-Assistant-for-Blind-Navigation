@@ -28,7 +28,7 @@
 | 단계 | 내용 |
 |---|---|
 | sanity | E0, A2b, B3b를 데이터 2%, 1 epoch로. 실패하면 거기서 멈춤 |
-| pilot | E0 + A1~A5 + B1~B5 (15개), pilot 데이터(희귀 클래스 프레임 전부 + 나머지 랜덤, train의 20%), 30 epoch, pilot val로 평가 |
+| pilot | E0 + A1~A5 + B1~B5 (15개), pilot 데이터(train에서 클래스당 약 200장, val은 클래스당 약 100장), 30 epoch, pilot val로 평가 |
 | tier2 | A6, B6 (C-RADIOv4-SO400M), pilot 설정 |
 | full | E0 + pilot 상위 fusion 2개 + 상위 distill 2개, 전체 데이터, 100 epoch(patience 20), seed 0/1/2, **test**로 평가 |
 
@@ -45,7 +45,7 @@ scp -r insight_fm <서버>:~/  &&  ssh <서버>  &&  cd ~/insight_fm
 tmux new -s exp
 cd ~/insight_fm
 
-# 3) 세팅 — 기본값: 라벨 gdrive:aihub189_yolo/labels_all.jsonl, 이미지 gdrive:sideguide/polygon/P1~P14.zip, 로컬 ~/sg
+# 3) 세팅 — 기본값: 라벨 gdrive:aihub189_yolo/labels_all.jsonl, 이미지 gdrive:sideguide/polygon/P1~P14.zip + gdrive:sideguide/surface/S1.zip, 로컬 ~/sg
 read -s -p "HF token: " HF_TOKEN && export HF_TOKEN; echo   # DINOv3는 HF 라이선스 동의 후 토큰 필요. history에 안 남음
 bash setup.sh                                   # deps → data → hf → prefetch → selftest → build
 

@@ -44,7 +44,7 @@ AI Hub 189 인도 보행 영상(Polygon)을 10개 클래스로 재라벨링한 �
 
 ### 실험 단계
 
-`sanity`(동작 확인) → `pilot`(데이터 20%, 30 epoch, 15개 실험) → `tier2` → `full`(E0 + pilot 상위 fusion 2개 + distill 2개, 전체 데이터, 100 epoch, seed 3개, test 평가)
+`sanity`(동작 확인) → `pilot`(클래스당 약 200장, 30 epoch, 15개 실험) → `tier2` → `full`(E0 + pilot 상위 fusion 2개 + distill 2개, 전체 데이터, 100 epoch, seed 3개, test 평가)
 
 ### 실행 (몬드리안 RTX A5000)
 

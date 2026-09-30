@@ -8,8 +8,8 @@
 Output
     <out>/full/{images,labels}/{train,val,test}   70 / 15 / 15 by video folder
     <out>/full/data.yaml
-    <out>/pilot/...  train = every rare-class frame + random fill up to --pilot-frac of full train,
-                     val = --pilot-val-frac of the val videos (test is not used in the pilot)
+    <out>/pilot/...  train = up to --pilot-per-class frames per class from full train (rarest class first),
+                     val = up to --pilot-val-per-class frames per class from full val (test is not used)
     <out>/stats.json   instance counts per class per split
 Images are symlinked, not copied.
 
@@ -40,7 +40,6 @@ MAP = {"person": 0, "bicycle": 1, "scooter": 2, "motorcycle": 3, "car": 4, "bus"
                          "bench", "chair", "table", "power_controller", "traffic_light_controller",
                          "parking_meter", "stop", "movable_signage"]},
        **{n: i for i, n in enumerate(NAMES)}}
-RARE = {2, 7, 5, 3, 1}  # scooter, stairs, bus, motorcycle, bicycle
 IMG_EXT = {".jpg", ".jpeg", ".png", ".bmp", ".webp"}
 
 KEY_F = ("k", "key", "id", "name", "image", "file", "stem")
@@ -180,6 +179,25 @@ def link(src: Path, dst: Path):
     os.symlink(src.resolve(), dst)
 
 
+def per_class_sample(items, per_class: int, rng: random.Random):
+    """Pick frames so every class appears in about `per_class` frames (fewer if the class has fewer).
+    Rarest class first; a frame picked for one class also counts for every other class it contains."""
+    items = list(items)
+    rng.shuffle(items)
+    classes_of = [{int(ln.split()[0]) for ln in t[1]} for t in items]
+    freq = Counter(c for cs in classes_of for c in cs)
+    have, picked, chosen = Counter(), set(), []
+    for c in sorted(freq, key=freq.get):
+        for i, cs in enumerate(classes_of):
+            if have[c] >= per_class:
+                break
+            if c in cs and i not in picked:
+                picked.add(i)
+                chosen.append(items[i])
+                have.update(cs)
+    return chosen
+
+
 def write_yaml(root: Path, splits):
     txt = f"path: {root}\n" + "".join(f"{s}: images/{s}\n" for s in splits)
     txt += f"nc: {len(NAMES)}\nnames: {NAMES}\n"
@@ -194,8 +212,8 @@ def main():
     ap.add_argument("--inspect", action="store_true")
     ap.add_argument("--seed", type=int, default=0)
     ap.add_argument("--split-tries", type=int, default=50)
-    ap.add_argument("--pilot-frac", type=float, default=0.2)
-    ap.add_argument("--pilot-val-frac", type=float, default=0.5)
+    ap.add_argument("--pilot-per-class", type=int, default=200, help="pilot train frames per class")
+    ap.add_argument("--pilot-val-per-class", type=int, default=100, help="pilot val frames per class")
     a = ap.parse_args()
 
     print("indexing images ...", flush=True)
@@ -265,15 +283,9 @@ def main():
     rng = random.Random(a.seed)
     pilot = out / "pilot"
     train = [(k, l, i) for v, r in by_video.items() if assign[v] == "train" for (k, l, i) in r]
-    is_rare = [any(int(ln.split()[0]) in RARE for ln in t[1]) for t in train]
-    rare = [t for t, f in zip(train, is_rare) if f]
-    rest = [t for t, f in zip(train, is_rare) if not f]
-    rng.shuffle(rest)
-    target = int(len(train) * a.pilot_frac)
-    ptrain = rare + rest[: max(0, target - len(rare))]
-    vvids = sorted(v for v in by_video if assign[v] == "val")
-    rng.shuffle(vvids)
-    pval = [t for v in vvids[: max(1, int(len(vvids) * a.pilot_val_frac))] for t in by_video[v]]
+    val = [(k, l, i) for v, r in by_video.items() if assign[v] == "val" for (k, l, i) in r]
+    ptrain = per_class_sample(train, a.pilot_per_class, rng)
+    pval = per_class_sample(val, a.pilot_val_per_class, rng)
     pc = {"train": Counter(), "val": Counter()}
     for s, items in (("train", ptrain), ("val", pval)):
         for key, lines, img in items:
