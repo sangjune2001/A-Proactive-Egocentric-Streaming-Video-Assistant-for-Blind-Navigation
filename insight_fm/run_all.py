@@ -8,6 +8,8 @@
     python run_all.py --phase all                    # sanity -> pilot -> tier2 -> full
     python run_all.py --summary pilot                # just rebuild the summary table
 
+Touch results/HOLD_<phase> (e.g. HOLD_full) to stop before that phase, even while --phase all is running.
+
 Every run is idempotent: finished runs are skipped, interrupted runs resume from last.pt.
 A failing run (e.g. a gated HF model without access) is logged and the loop continues.
 """
@@ -170,6 +172,9 @@ def main():
     EXTRA = ["--device", a.device, "--workers", str(a.workers), "--imgsz", str(a.imgsz)]
     phases = ["sanity", "pilot", "tier2", "full"] if a.phase == "all" else [a.phase]
     for ph in phases:
+        if (RESULTS / f"HOLD_{ph}").exists():
+            log(f"hold: results/HOLD_{ph} exists, stopping before phase {ph} (delete it and rerun to continue)")
+            break
         log(f"===== phase {ph} =====")
         if ph == "sanity":
             for eid in ids or ["E0", "A2b", "B3b"]:

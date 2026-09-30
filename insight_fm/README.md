@@ -64,6 +64,7 @@ python run_all.py --phase pilot --ids E0,B3b      # 일부만
 python run_all.py --phase full --ids E0,A5,B3b    # full 대상 직접 지정
 python run_all.py --summary pilot                 # 결과표만 다시 만들기
 tail -f results/run_all.log                       # 진행 상황
+touch results/HOLD_full                          # full 단계 직전에 멈추기 (지우고 다시 실행하면 이어서 진행)
 ```
 
 ## 결과물
