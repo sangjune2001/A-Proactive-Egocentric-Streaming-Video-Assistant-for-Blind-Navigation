@@ -33,10 +33,10 @@ from collections import Counter, defaultdict
 from pathlib import Path
 
 NAMES = ["person", "bicycle", "scooter", "motorcycle", "car", "bus",
-         "other_vehicle", "stairs", "obstacle", "traffic_light"]
+         "other_vehicle", "obstacle", "stairs", "traffic_light"]
 MAP = {"person": 0, "bicycle": 1, "scooter": 2, "motorcycle": 3, "car": 4, "bus": 5,
        "truck": 6, "carrier": 6, "stroller": 6, "wheelchair": 6, "traffic_light": 9,
-       **{k: 8 for k in ["bollard", "pole", "tree_trunk", "potted_plant", "barricade", "fire_hydrant", "kiosk",
+       **{k: 7 for k in ["bollard", "pole", "tree_trunk", "potted_plant", "barricade", "fire_hydrant", "kiosk",
                          "bench", "chair", "table", "power_controller", "traffic_light_controller",
                          "parking_meter", "stop", "movable_signage"]},
        **{n: i for i, n in enumerate(NAMES)}}
