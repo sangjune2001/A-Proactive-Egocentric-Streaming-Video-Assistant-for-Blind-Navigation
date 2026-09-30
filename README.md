@@ -19,7 +19,7 @@
 
 AI Hub 189 인도 보행 영상(Polygon)을 10개 클래스로 재라벨링한 데이터에서, Foundation Model(FM) 인코더를 YOLO11s-seg에 붙이면 분할 성능이 오르는지, 특히 데이터가 부족한 클래스(킥보드 등)가 개선되는지 확인한다.
 
-**클래스 (10):** person, bicycle, scooter, motorcycle, car, bus, other_vehicle, stairs, obstacle, traffic_light
+**클래스 (10):** person, bicycle, scooter, motorcycle, car, bus, other_vehicle, obstacle, stairs, traffic_light
 
 ### 두 가지 방식
 
