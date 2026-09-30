@@ -18,28 +18,38 @@ TMP = Path(os.environ.get("SELFTEST_DIR", HERE / "_selftest"))
 
 
 def make_data():
+    """Two fake AI Hub zips (P1.zip, P2.zip) with 1920x1080 frames + a labels_all.jsonl in the real
+    Colab format {k, z, m, l}. Class ids are already the 10-class ids, coordinates normalised."""
+    import zipfile
+
     import cv2
 
     if TMP.exists():
         shutil.rmtree(TMP)
-    img_dir = TMP / "imgs" / "shard_000"
-    img_dir.mkdir(parents=True)
+    zdir = TMP / "drive_zips"
+    zdir.mkdir(parents=True)
     rng = random.Random(0)
     recs = []
-    for v in range(14):
-        folder = f"Polygon_1_new/MP_SEL_{v:04d}"
-        for f in range(6):
-            key = f"{folder.replace('/', '_')}__frame_{f:05d}"
-            im = np.full((256, 256, 3), 90, np.uint8)
-            polys = []
-            for _ in range(rng.randint(1, 4)):
-                c = rng.choice(["person", "car", "scooter", "bollard", "traffic_light", "truck", "bicycle"])
-                x, y, w, h = rng.randint(10, 150), rng.randint(10, 150), rng.randint(30, 90), rng.randint(30, 90)
-                pts = [(x, y), (x + w, y), (x + w, y + h), (x, y + h)]
-                cv2.fillPoly(im, [np.array(pts)], (rng.randint(0, 255), rng.randint(0, 255), rng.randint(0, 255)))
-                polys.append({"label": c, "points": ";".join(f"{px},{py}" for px, py in pts)})
-            cv2.imwrite(str(img_dir / f"{key}.jpg"), im)
-            recs.append({"key": key, "width": 256, "height": 256, "polygons": polys})
+    W, H = 1920, 1080
+    for zi in (1, 2):
+        zpath = zdir / f"P{zi}.zip"
+        with zipfile.ZipFile(zpath, "w") as zf:
+            for v in range(7):
+                folder = f"Polygon_{(zi - 1) * 7 + v + 1:04d}"
+                for f in range(6):
+                    stem = f"MP_SEL_P{f + 2:06d}"
+                    im = np.full((H, W, 3), 90, np.uint8)
+                    lines = []
+                    for _ in range(rng.randint(1, 4)):
+                        c = rng.choice([0, 1, 2, 4, 7, 8, 9, 6])
+                        x, y = rng.randint(50, 1400), rng.randint(50, 700)
+                        w, h = rng.randint(120, 400), rng.randint(120, 300)
+                        pts = [(x, y), (x + w, y), (x + w, y + h), (x, y + h)]
+                        cv2.fillPoly(im, [np.array(pts)], (rng.randint(0, 255), rng.randint(0, 255), rng.randint(0, 255)))
+                        lines.append(f"{c} " + " ".join(f"{px / W:.5f} {py / H:.5f}" for px, py in pts))
+                    zf.writestr(f"{folder}/{stem}.jpg", cv2.imencode(".jpg", im)[1].tobytes())
+                    recs.append({"k": f"{folder}__{stem}", "z": f"/content/drive/MyDrive/sideguide/polygon/P{zi}.zip",
+                                 "m": f"{folder}/{stem}.jpg", "l": lines})
     with open(TMP / "labels_all.jsonl", "w") as fh:
         for r in recs:
             fh.write(json.dumps(r) + "\n")
@@ -55,6 +65,14 @@ def sh(*args, env=None):
 def main():
     make_data()
     py = sys.executable
+    # zips -> 640px images (local mode; on the server --remote streams them from Drive)
+    sh(py, "extract_images.py", "--jsonl", TMP / "labels_all.jsonl", "--zips", TMP / "drive_zips",
+       "--out", TMP / "imgs", "--workers", "2")
+    sh(py, "extract_images.py", "--jsonl", TMP / "labels_all.jsonl", "--zips", TMP / "drive_zips",
+       "--out", TMP / "imgs")  # second run must skip everything
+    import cv2
+    im = cv2.imread(str(next((TMP / "imgs").glob("*.jpg"))))
+    assert max(im.shape[:2]) == 640, im.shape
     sh(py, "build_dataset.py", "--jsonl", TMP / "labels_all.jsonl", "--images", TMP / "imgs", "--inspect")
     sh(py, "build_dataset.py", "--jsonl", TMP / "labels_all.jsonl", "--images", TMP / "imgs",
        "--out", TMP / "yolo", "--pilot-frac", "0.5", "--split-tries", "5")

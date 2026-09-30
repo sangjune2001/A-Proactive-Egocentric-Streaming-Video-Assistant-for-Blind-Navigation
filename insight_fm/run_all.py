@@ -25,7 +25,7 @@ import time
 from pathlib import Path
 
 HERE = Path(__file__).resolve().parent
-DATA_ROOT = Path(os.environ.get("SG_YOLO", "/data/sg/yolo")).resolve()
+DATA_ROOT = Path(os.environ.get("SG_YOLO", str(Path.home() / "sg" / "yolo"))).resolve()
 RUNS = Path(os.environ.get("SG_RUNS", str(HERE / "runs"))).resolve()
 RESULTS = HERE / "results"
 EXTRA: list[str] = []

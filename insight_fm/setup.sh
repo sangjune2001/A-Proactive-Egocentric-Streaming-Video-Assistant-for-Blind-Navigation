@@ -5,10 +5,9 @@
 set -euo pipefail
 
 # ---------------------------------------------------------------- edit these if your Drive layout differs
-RCLONE_REMOTE="${RCLONE_REMOTE:-gdrive:sideguide}"   # Drive folder that holds labels_all.jsonl
-JSONL_NAME="${JSONL_NAME:-labels_all.jsonl}"
-SHARDS_SUBDIR="${SHARDS_SUBDIR:-shards}"              # Drive subfolder with the 640px image tar shards
-DATA="${DATA:-/data/sg}"                              # local disk on the instance (NOT a Drive mount)
+JSONL_REMOTE="${JSONL_REMOTE:-gdrive:aihub189_yolo/labels_all.jsonl}"  # relabelled 10-class labels
+ZIP_REMOTE="${ZIP_REMOTE:-gdrive:sideguide/polygon}"                    # AI Hub 189 P1.zip ... P14.zip
+DATA="${DATA:-$HOME/sg}"                                               # local disk on the instance
 export HF_HOME="${HF_HOME:-$DATA/hf_cache}"
 export TORCH_HOME="${TORCH_HOME:-$DATA/torch_cache}"
 # ----------------------------------------------------------------------------------------------------------
@@ -28,20 +27,16 @@ if run deps; then
 fi
 
 if run data; then
-  echo "== data from $RCLONE_REMOTE"
-  rclone listremotes | grep -q "^${RCLONE_REMOTE%%:*}:" || {
-    echo "rclone remote '${RCLONE_REMOTE%%:*}' not configured."
-    echo "Copy it from WSL:  scp ~/.config/rclone/rclone.conf <server>:~/.config/rclone/rclone.conf"
+  echo "== data: labels from $JSONL_REMOTE, images from $ZIP_REMOTE"
+  rclone listremotes | grep -q "^${ZIP_REMOTE%%:*}:" || {
+    echo "rclone remote '${ZIP_REMOTE%%:*}' not configured."
+    echo "From the laptop:  scp -i <key.pem> ~/.config/rclone/rclone.conf ubuntu@<server>:~/.config/rclone/"
     exit 1; }
-  rclone copy "$RCLONE_REMOTE/$JSONL_NAME" "$DATA" -P
-  rclone copy "$RCLONE_REMOTE/$SHARDS_SUBDIR" "$DATA/shards" -P --transfers 8 --checkers 16
-  mkdir -p "$DATA/imgs"
-  for f in "$DATA"/shards/*.tar; do
-    [[ -e "$f.extracted" ]] && continue
-    echo "  extracting $(basename "$f")"
-    tar -xf "$f" -C "$DATA/imgs" && touch "$f.extracted"
-  done
-  echo "  images: $(find "$DATA/imgs" -type f \( -iname '*.jpg' -o -iname '*.png' \) | wc -l)"
+  rclone copy "$JSONL_REMOTE" "$DATA" -P
+  echo "  frames in jsonl: $(wc -l < "$DATA/labels_all.jsonl")   free disk: $(df -h "$DATA" | awk 'NR==2{print $4}')"
+  # one zip at a time: download -> extract labelled frames at 640px -> delete zip (resumable)
+  (cd "$HERE" && python extract_images.py --jsonl "$DATA/labels_all.jsonl" --remote "$ZIP_REMOTE" \
+      --zips "$DATA/zips" --out "$DATA/imgs" --delete-zip)
 fi
 
 if run hf; then
@@ -67,8 +62,8 @@ fi
 
 if run build; then
   echo "== build YOLO dataset (inspect first)"
-  (cd "$HERE" && python build_dataset.py --jsonl "$DATA/$JSONL_NAME" --images "$DATA/imgs" --inspect)
-  (cd "$HERE" && python build_dataset.py --jsonl "$DATA/$JSONL_NAME" --images "$DATA/imgs" --out "$DATA/yolo")
+  (cd "$HERE" && python build_dataset.py --jsonl "$DATA/labels_all.jsonl" --images "$DATA/imgs" --inspect)
+  (cd "$HERE" && python build_dataset.py --jsonl "$DATA/labels_all.jsonl" --images "$DATA/imgs" --out "$DATA/yolo")
 fi
 
 echo "== setup done. Next:  tmux new -s exp   then   python run_all.py --phase all"

@@ -14,6 +14,7 @@ Output
 Images are symlinked, not copied.
 
 jsonl record formats understood (the key is `{folder with / replaced}__{stem}`):
+    {"k": ..., "z": zip, "m": member, "l": ["cls x1 y1 ...", ...]}          labels_all.jsonl from Colab
     {"key": ..., "lines": ["cls x1 y1 x2 y2 ...", ...]}                        already YOLO-seg
     {"key": ..., "polys"|"polygons"|"objects"|"annotations": [
           {"cls"|"class"|"label"|"category": int or raw name, "points"|"pts"|"polygon"|"segmentation": [...]}
@@ -42,8 +43,8 @@ MAP = {"person": 0, "bicycle": 1, "scooter": 2, "motorcycle": 3, "car": 4, "bus"
 RARE = {2, 7, 5, 3, 1}  # scooter, stairs, bus, motorcycle, bicycle
 IMG_EXT = {".jpg", ".jpeg", ".png", ".bmp", ".webp"}
 
-KEY_F = ("key", "id", "name", "image", "file", "stem")
-LINES_F = ("lines", "labels", "yolo")
+KEY_F = ("k", "key", "id", "name", "image", "file", "stem")
+LINES_F = ("l", "lines", "labels", "yolo")
 POLY_F = ("polys", "polygons", "objects", "annotations", "anns", "shapes")
 CLS_F = ("cls", "class", "class_id", "label", "category", "name")
 PTS_F = ("points", "pts", "polygon", "poly", "segmentation", "xy")
@@ -189,7 +190,7 @@ def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("--jsonl", required=True)
     ap.add_argument("--images", required=True, help="folder with the extracted shard images (searched recursively)")
-    ap.add_argument("--out", default="/data/sg/yolo")
+    ap.add_argument("--out", default=str(Path.home() / "sg" / "yolo"))
     ap.add_argument("--inspect", action="store_true")
     ap.add_argument("--seed", type=int, default=0)
     ap.add_argument("--split-tries", type=int, default=50)

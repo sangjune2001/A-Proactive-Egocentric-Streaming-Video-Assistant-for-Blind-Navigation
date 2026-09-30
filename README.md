@@ -53,8 +53,7 @@ git clone -b detection https://github.com/sangjune2001/A-Proactive-Egocentric-St
 cd repo/insight_fm
 
 export HF_TOKEN=hf_xxx                       # DINOv3는 HF에서 라이선스 동의 필요
-export RCLONE_REMOTE=gdrive:sideguide        # labels_all.jsonl + 이미지 샤드가 있는 Drive 폴더
-bash setup.sh                                # 설치 → 데이터 복사 → 가중치 → 셀프테스트 → 데이터셋 빌드
+bash setup.sh                                # 설치 → Drive zip에서 640px 이미지 추출 → 가중치 → 셀프테스트 → 데이터셋 빌드
 
 tmux new -s exp
 export RCLONE_REMOTE_RUNS=gdrive:sideguide/runs
@@ -77,6 +76,7 @@ python run_all.py --phase all 2>&1 | tee -a results/all.log
 ```
 insight_fm/
 ├── setup.sh            # 서버 세팅 전체
+├── extract_images.py   # Drive 원본 zip → 라벨된 프레임만 640px 이미지로 추출
 ├── build_dataset.py    # jsonl + 이미지 → YOLO-seg 데이터셋 (영상 단위 분할)
 ├── encoders.py         # FM 인코더 로더
 ├── fm_yolo.py          # YOLO11s-seg + fusion / distill 모델

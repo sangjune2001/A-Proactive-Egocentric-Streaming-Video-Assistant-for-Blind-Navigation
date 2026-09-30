@@ -41,9 +41,8 @@ scp -r insight_fm <서버>:~/  &&  ssh <서버>  &&  cd ~/insight_fm
 # 1) rclone 설정 복사 (WSL에서 쓰던 것)
 #    WSL에서:  scp ~/.config/rclone/rclone.conf <서버>:~/.config/rclone/rclone.conf
 
-# 2) 경로 확인 후 세팅 — setup.sh 맨 위 4줄(Drive 폴더, jsonl 이름, 샤드 폴더, 로컬 경로)이 맞는지 먼저 확인
+# 2) 세팅 — 기본값: 라벨 gdrive:aihub189_yolo/labels_all.jsonl, 이미지 gdrive:sideguide/polygon/P1~P14.zip, 로컬 ~/sg
 export HF_TOKEN=hf_xxx                          # DINOv3는 HF에서 라이선스 동의 후 토큰 필요
-export RCLONE_REMOTE=gdrive:sideguide
 bash setup.sh                                   # deps → data → hf → prefetch → selftest → build
 
 # 3) 무인 실행 (세션이 끊겨도 계속 돌도록 tmux 안에서)
@@ -79,7 +78,8 @@ yolo export model=deploy/B3b_plain.pt format=openvino imgsz=640   # 그램에서
 
 | 파일 | 역할 |
 |---|---|
-| `setup.sh` | 패키지 설치, Drive → 로컬 복사, 샤드 해제, HF 로그인, 가중치 미리 받기, 셀프테스트, 데이터셋 빌드 |
+| `setup.sh` | 패키지 설치, Drive에서 라벨·zip 받기, HF 로그인, 가중치 미리 받기, 셀프테스트, 데이터셋 빌드 |
+| `extract_images.py` | Drive의 원본 zip을 **하나씩** 받아 라벨된 프레임만 640px로 저장하고 zip은 삭제 (중단돼도 이어서) |
 | `build_dataset.py` | `labels_all.jsonl` + 640px 이미지 → YOLO-seg 폴더(full/pilot), 영상 단위 분할, 클래스 분포 출력 |
 | `encoders.py` | FM 인코더 7종 로더 (SigLIP2, DINOv2, DINOv3, RADIOv2.5, C-RADIOv3/v4, 결합) |
 | `fm_yolo.py` | YOLO11s-seg에 fusion / distill을 붙인 모델과 Trainer |
@@ -91,7 +91,7 @@ yolo export model=deploy/B3b_plain.pt format=openvino imgsz=640   # 그램에서
 ## 꼭 알아둘 것
 
 1. **`build_dataset.py --inspect` 결과를 먼저 볼 것.** jsonl 필드명과 이미지 파일명 규칙을 자동으로 맞추게 해뒀지만, `image_found=False`가 나오면 키와 파일명이 안 맞는 것이니 멈추고 확인.
-2. **stairs:** 예전 매핑(29종 → 10종)에는 stairs로 가는 원본 라벨이 없었음. 빌드 끝에 `WARNING: no instances at all for ['stairs']`가 뜨면 결과표의 stairs 칸은 비어 있는 게 정상.
+2. **디스크:** 원본 zip은 총 134GB지만 한 번에 하나(약 10GB)만 받고 지우니, 여유 공간은 zip 하나 + 추출 이미지 + 가중치 정도면 충분함. 이미지 추출이 중간에 끊기면 `STEP=data bash setup.sh`로 다시 실행하면 이어서 함.
 3. **HF 접근 권한:** DINOv3(`facebook/dinov3-vitb16-pretrain-lvd1689m`)는 HF 페이지에서 라이선스 동의 후 토큰이 있어야 받아짐. `setup.sh`의 prefetch 단계에서 `FAIL`이 뜨는 인코더가 있으면 그 실험만 실패로 기록되고 나머지는 계속 돔.
 4. **라이선스:** RADIOv2.5는 NVIDIA 비상업 라이선스, C-RADIO 계열은 상업 이용 가능.
 5. **검증 범위:** 코드 전체(데이터 빌드 → fusion/distill 학습 → 평가 → 이어서 학습 → plain export)는 CPU 합성 데이터로 검증함. 실제 사전학습 가중치 로드와 GPU 속도는 서버의 `prefetch`와 `sanity` 단계에서 처음 확인됨.
