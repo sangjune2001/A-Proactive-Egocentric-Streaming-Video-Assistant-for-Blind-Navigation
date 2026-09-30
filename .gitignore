@@ -1,0 +1,8 @@
+runs/
+results/
+_selftest/
+*.pt
+*.onnx
+*_openvino_model/
+__pycache__/
+*.cache
