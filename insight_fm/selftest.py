@@ -75,7 +75,7 @@ def main():
     assert max(im.shape[:2]) == 640, im.shape
     sh(py, "build_dataset.py", "--jsonl", TMP / "labels_all.jsonl", "--images", TMP / "imgs", "--inspect")
     sh(py, "build_dataset.py", "--jsonl", TMP / "labels_all.jsonl", "--images", TMP / "imgs",
-       "--out", TMP / "yolo", "--pilot-frac", "0.5", "--split-tries", "5")
+       "--out", TMP / "yolo", "--pilot-per-class", "10", "--pilot-val-per-class", "5", "--split-tries", "5")
 
     env = {"FM_RANDOM_INIT": "1"}
     common = ["--data", TMP / "yolo" / "pilot" / "data.yaml", "--epochs", "1", "--imgsz", "128", "--batch", "4",
