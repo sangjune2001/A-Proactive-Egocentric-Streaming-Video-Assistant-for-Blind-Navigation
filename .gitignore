@@ -1,5 +1,6 @@
 runs/
-results/
+**/results/*
+!**/results/.gitkeep
 _selftest/
 *.pt
 *.onnx

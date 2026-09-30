@@ -50,15 +50,19 @@ AI Hub 189 인도 보행 영상(Polygon)을 10개 클래스로 재라벨링한 �
 
 ```bash
 git clone -b detection https://github.com/sangjune2001/A-Proactive-Egocentric-Streaming-Video-Assistant-for-Blind-Navigation.git repo
-cd repo/insight_fm
+tmux new -s exp                              # 여기까지 붙여넣고, 아래는 tmux 세션 안에서 실행
+```
 
-export HF_TOKEN=hf_xxx                       # DINOv3는 HF에서 라이선스 동의 필요
+```bash
+cd ~/repo/insight_fm
+read -s -p "HF token: " HF_TOKEN && export HF_TOKEN; echo   # DINOv3는 HF에서 라이선스 동의 필요. history에 안 남음
 bash setup.sh                                # 설치 → Drive zip에서 640px 이미지 추출 → 가중치 → 셀프테스트 → 데이터셋 빌드
-
-tmux new -s exp
 export RCLONE_REMOTE_RUNS=gdrive:sideguide/runs
 python run_all.py --phase all 2>&1 | tee -a results/all.log
+#   Ctrl+B, D 로 빠져나오기 / tmux attach -t exp 로 다시 보기
 ```
+
+토큰을 `export HF_TOKEN=hf_...`로 직접 치면 `~/.bash_history`에 평문으로 남으니 쓰지 말 것.
 
 중단되어도 같은 명령을 다시 실행하면 끝난 실험은 건너뛰고, 중단된 실험은 이어서 학습한다.
 

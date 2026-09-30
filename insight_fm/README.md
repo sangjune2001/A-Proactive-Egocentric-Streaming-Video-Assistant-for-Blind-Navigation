@@ -41,12 +41,15 @@ scp -r insight_fm <서버>:~/  &&  ssh <서버>  &&  cd ~/insight_fm
 # 1) rclone 설정 복사 (WSL에서 쓰던 것)
 #    WSL에서:  scp ~/.config/rclone/rclone.conf <서버>:~/.config/rclone/rclone.conf
 
-# 2) 세팅 — 기본값: 라벨 gdrive:aihub189_yolo/labels_all.jsonl, 이미지 gdrive:sideguide/polygon/P1~P14.zip, 로컬 ~/sg
-export HF_TOKEN=hf_xxx                          # DINOv3는 HF에서 라이선스 동의 후 토큰 필요
+# 2) tmux 세션 열기 (세션이 끊겨도 계속 돌도록). 아래 명령은 전부 세션 안에서 실행
+tmux new -s exp
+cd ~/insight_fm
+
+# 3) 세팅 — 기본값: 라벨 gdrive:aihub189_yolo/labels_all.jsonl, 이미지 gdrive:sideguide/polygon/P1~P14.zip, 로컬 ~/sg
+read -s -p "HF token: " HF_TOKEN && export HF_TOKEN; echo   # DINOv3는 HF 라이선스 동의 후 토큰 필요. history에 안 남음
 bash setup.sh                                   # deps → data → hf → prefetch → selftest → build
 
-# 3) 무인 실행 (세션이 끊겨도 계속 돌도록 tmux 안에서)
-tmux new -s exp
+# 4) 무인 실행
 export RCLONE_REMOTE_RUNS=gdrive:sideguide/runs # epoch마다 Drive로 백업
 python run_all.py --phase all 2>&1 | tee -a results/all.log
 #   Ctrl+B, D 로 빠져나오기 / tmux attach -t exp 로 다시 보기
