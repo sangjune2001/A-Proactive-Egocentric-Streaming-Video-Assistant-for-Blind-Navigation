@@ -83,6 +83,13 @@ python run_all.py --phase all 2>&1 | tee -a results/all.log
 - distill 8개는 모두 E0와 ±0.008 이내로 효과 없음.
 - full 단계는 아직 실행 전.
 
+**추천과 다음 단계**
+
+- **1순위: A2a (DINOv2-B fusion)**, 공동 후보 A5 (C-RADIOv3-B fusion). 둘의 차이(0.009)는 seed 1개 기준 노이즈 범위. 성능 최고는 A6이지만 지연 4.6배라 실시간용으로는 무거움.
+- fusion은 추론 때도 FM이 돌아서 그램 CPU에서는 훨씬 느려질 수 있음 → **먼저 그램에서 E0 / A2a / A5 FPS 측정**.
+- 속도가 충분하면 full을 **E0 + A2a + A5**로 축소(원래 설계는 남은 크레딧 초과). 너무 느리면 **distill 개선 pilot**이 먼저.
+- 자세한 근거: [`insight_fm/README.md`](insight_fm/README.md)
+
 ### 결과물
 
 - `insight_fm/results/pilot_summary.csv`, `full_summary.csv`: mask mAP50-95(평균±표준편차), baseline 대비 증감, 클래스별 AP, 추론 지연

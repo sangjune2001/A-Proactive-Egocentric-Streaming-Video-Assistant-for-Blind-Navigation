@@ -129,6 +129,28 @@ touch results/HOLD_full                          # full 단계 직전에 멈추�
 - E0는 클래스 이름 수정(7=obstacle, 8=stairs) 직전에 시작돼서, `done.json`의 obstacle/stairs 값을 사후에 맞바꿈(`done.json.bak`에 원본).
 - full 단계는 아직 실행하지 않음(`results/HOLD_full`).
 
+**어떤 모델이 좋은가 (pilot 기준 판단)**
+
+목적이 시각장애인 보행 보조(실시간)라서 성능과 속도를 같이 봄.
+
+| 기준 | 후보 | 근거 |
+|---|---|---|
+| 성능만 | A6 (C-RADIOv4-SO400M fusion) | mAP50-95 0.358로 최고. 지연 4.6배, FM 4.3억 파라미터라 실시간용으로는 무거움 |
+| **성능·속도 균형 (1순위)** | **A2a (DINOv2-B fusion)** | E0 대비 +0.052, mAP50 0.604. 지연 약 2배 (10.4 → 22.3ms) |
+| 공동 후보 | A5 (C-RADIOv3-B fusion) | +0.043, fusion 중 가장 빠름 (20.8ms) |
+| 배포 용이성 | 해당 없음 | distill은 E0와 성능이 같아 지금은 고를 이유가 없음 |
+
+- A2a와 A5는 차이가 0.009로 seed 1개 기준 노이즈 범위라 사실상 동점. 둘 다 상업 이용 가능(DINOv2 Apache 2.0, C-RADIOv3 상업 이용 허용).
+- **가장 큰 변수는 배포 기기.** fusion은 추론 때도 ViT-B가 돌기 때문에 그램 CPU(OpenVINO)에서는 GPU보다 훨씬 더 느려질 수 있음.
+  실시간 속도가 안 나오면 쓸 수 있는 건 E0뿐이고, 남은 방법은 distill 개선(추론 속도는 E0와 같음).
+
+**다음 단계**
+
+1. 그램에서 E0 / A2a / A5의 실제 FPS 측정 (GPU 서버 불필요). 모델: `gdrive:sideguide/runs/<ID>_s0/weights/best.pt`
+2. 속도가 충분하면 → full을 **E0 + A2a + A5**로 축소해서 진행. 원래 설계(5개 모델 × seed 3 × 100 epoch, 전체 데이터)는 A5000 기준 약 400~600시간으로 남은 크레딧(약 200시간)을 넘음.
+   예: E0 + A2a + A5, seed 1, 50 epoch → 약 60시간 (pilot 속도로 역산한 대략치)
+3. 너무 느리면 → full보다 **distill 개선 pilot**이 먼저 (손실 가중치 λ 증가, 학습 길이 증가 등)
+
 ## 결과물
 
 - `results/pilot_summary.csv`, `results/full_summary.csv`: mask mAP50-95(평균±표준편차), mAP50, **E0 대비 증감**, 클래스별 AP(scooter 등), A5000 batch 1 FP16 지연(ms)/FPS, 추론 시 쓰이는 FM 파라미터 수
