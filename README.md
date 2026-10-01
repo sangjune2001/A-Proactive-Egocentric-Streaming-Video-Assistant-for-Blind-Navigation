@@ -30,6 +30,8 @@ AI Hub 189 인도 보행 영상(Polygon)을 10개 클래스로 재라벨링한 �
 
 ### 비교 인코더
 
+실험 ID는 **트랙 알파벳 + 인코더 번호**. 예: `A2a` = DINOv2-B를 fusion으로 붙인 모델, `B6` = C-RADIOv4-SO400M을 distill teacher로 쓴 모델, `E0` = FM 없는 baseline.
+
 | ID (A/B) | 인코더 | 비고 |
 |---|---|---|
 | E0 | – | YOLO11s-seg baseline |
