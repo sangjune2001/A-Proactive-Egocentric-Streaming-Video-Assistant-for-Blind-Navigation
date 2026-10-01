@@ -66,7 +66,24 @@ python run_all.py --phase all 2>&1 | tee -a results/all.log
 
 중단되어도 같은 명령을 다시 실행하면 끝난 실험은 건너뛰고, 중단된 실험은 이어서 학습한다.
 
-### 결과
+### Pilot 결과 (2026-10-01)
+
+클래스당 약 200장, 30 epoch, seed 1개, pilot val 443장 기준. 전체 표와 클래스별 AP는 [`insight_fm/README.md`](insight_fm/README.md#pilot--tier-2-결과-2026-10-01-rtx-a5000).
+
+| | 인코더 | mask mAP50-95 | E0 대비 | 지연 (ms, A5000) |
+|---|---|---|---|---|
+| A6 (fusion) | C-RADIOv4-SO400M | 0.358 | +0.074 | 47.8 |
+| A2a (fusion) | DINOv2-B | 0.336 | +0.052 | 22.3 |
+| A5 (fusion) | C-RADIOv3-B | 0.327 | +0.043 | 20.8 |
+| E0 (baseline) | – | 0.283 | 0 | 10.4 |
+| B5 (distill) | C-RADIOv3-B | 0.286 | +0.003 | 13.1 |
+| B6 (distill) | C-RADIOv4-SO400M | 0.280 | -0.004 | 12.9 |
+
+- fusion 7개 모두 E0보다 +0.03~+0.07. 실용 후보는 A2a(DINOv2), A5(C-RADIOv3, 상업 이용 가능), 지연 약 2배.
+- distill 8개는 모두 E0와 ±0.008 이내로 효과 없음.
+- full 단계는 아직 실행 전.
+
+### 결과물
 
 - `insight_fm/results/pilot_summary.csv`, `full_summary.csv`: mask mAP50-95(평균±표준편차), baseline 대비 증감, 클래스별 AP, 추론 지연
 - 배포용 모델 (distill → 순수 YOLO11s-seg):
