@@ -3,7 +3,7 @@
 > 이 문서만 읽고 작업을 이어받을 수 있도록 쓴 보고서다. 무엇을 했고, 무엇이 되고 안 되는지, 왜 그런지, 숫자는 어디서 나왔는지, 어떻게 다시 돌리는지를 모두 담았다.
 > 숫자 옆의 경로는 그 숫자를 만든 파일이다. 같은 명령을 다시 실행하면 같은 숫자가 나온다.
 >
-> 작성: 2026-10-03. **⏳ 표시는 학습 진행 중이라 결과가 나오면 채울 부분**(5클래스 최종 학습 E0 / A5, 추론 속도).
+> 작성: 2026-10-04. **⏳ 표시는 학습 진행 중이라 결과가 나오면 채울 부분**(최종 학습 E0 / A5, 오류 분석, 추론 속도).
 
 ---
 
@@ -14,11 +14,10 @@
 | 무엇을 하나 | 시각장애인 보행 보조용 분할 모델(YOLO11s-seg)에 Foundation Model(FM) 인코더를 붙이면 성능이 오르는지 실험 |
 | 데이터 | AI Hub 「인도보행 영상」(dataSetSn 189). 라벨된 사진 92,772장, 영상 1,955개, 객체 581,529개 |
 | 1차 결과 (10클래스, 소량 데이터) | **FM을 추론에도 쓰는 fusion은 7개 모두 baseline보다 좋음**(mask mAP50-95 0.283 → 0.313~0.358). **FM을 학습 때만 쓰는 distill은 효과 없음**(±0.008) |
-| 지금 진행 중 | 5클래스(scooter, stairs, obstacle, other_vehicle, traffic_light) 전용 모델, 100 epoch, test 13,721장으로 최종 평가. baseline(E0) → C-RADIOv3 fusion(A5) 순서 (distill B5는 요청에 따라 제외) |
-| 최종 E0 결과 (5클래스, test 13,721장) | mask mAP50-95 **0.215** (scooter 0.021, stairs 0.190, obstacle 0.368, other_vehicle 0.326, traffic_light 0.169) |
-| mAP가 낮은 주원인 (오류 분석으로 확인) | ① **5클래스로 줄이며 지운 클래스가 오검출로 돌아옴**: 자전거·유모차 → scooter, 승용차·승합차 → other_vehicle ② **라벨 누락**: 모델이 찾은 라바콘·기둥·신호등 뒷면·Polygon 영상의 계단이 정답에 없어 오검출 처리 ③ **작은 객체**: 16px 미만은 거의 못 찾음, traffic_light는 위치는 찾지만 마스크 정밀도에서 손해 ④ **stairs 라벨 오류**(맨홀·보호판·연석) ⑤ scooter 절대량 부족(사진 224장) |
+| 지금 진행 중 | 최종 학습: 10클래스 라벨을 모두 유지하고, scooter·stairs·traffic_light가 든 train 사진 전부(8,120장)로 100 epoch. baseline(E0) → C-RADIOv3 fusion(A5) 순서, test 13,721장으로 평가 |
+| mAP가 낮은 이유 (데이터에서 확인됨) | ① **작은 객체**: traffic_light 89%가 박스 짧은 변 16px 미만 ② **라벨 노이즈**: stairs 라벨의 상당수가 실제로는 맨홀·가로수 보호판·연석 (AI Hub 원본 라벨 문제) ③ **극소량 클래스**: scooter 사진 224장(영상 124개), stairs 372장 ④ **obstacle은 생김새가 다른 15종을 합친 클래스** ⏳ 최종 모델의 오류 분석으로 확인 예정 |
 | 문제가 아닌 것 | 흐림(흐린 객체 0.2%, 대부분 야간), 어두운 프레임(0.4%) |
-| 가장 먼저 할 일 | **10클래스를 유지한 채 같은 데이터로 재학습**(약 2.5시간) → stairs 재라벨링 → 배포 기기(노트북 CPU)에서 속도 실측 |
+| 가장 먼저 할 일 | ⏳ 최종 결과 확인 → stairs 재라벨링 여부 결정 → 배포 기기(노트북 CPU)에서 속도 실측 |
 
 ---
 
@@ -69,7 +68,7 @@
 | test | 294 | 13,721 | 87,935 |
 
 - **영상 단위** 70/15/15 분할: 같은 영상의 프레임이 train과 test에 섞이지 않는다(섞이면 성능이 부풀려짐).
-- 50개 seed 중 val·test에 드문 클래스가 가장 많이 들어가는 seed(34)를 자동 선택. 10클래스·5클래스 빌드 모두 **같은 분할**을 쓴다(`build_dataset.py --classes`는 분할을 정한 뒤 클래스를 거름).
+- 50개 seed 중 val·test에 드문 클래스가 가장 많이 들어가는 seed(34)를 자동 선택. pilot·최종 학습 모두 같은 분할을 쓴다.
 
 ### 2.4 클래스별 개수: 객체 수 ≠ 사진 수
 
@@ -106,7 +105,7 @@
 
 ## 3. 실제 이미지로 본 객체 상태
 
-학습에 쓰는 640px 이미지에서 객체 58만 개를 하나씩 측정했다(`insight_fm/analyze_objects.py`, 결과 [`analysis/objects/object_quality.md`](insight_fm/analysis/objects/object_quality.md), 원본 측정값 `gdrive:sideguide/runs_final5/analysis/objects.csv.gz`).
+학습에 쓰는 640px 이미지에서 객체 58만 개를 하나씩 측정했다(`insight_fm/analyze_objects.py`, 결과 [`analysis/objects/object_quality.md`](insight_fm/analysis/objects/object_quality.md), 원본 측정값 `gdrive:sideguide/analysis/objects.csv.gz`).
 
 | 클래스 | 박스 짧은 변 중앙값 | 아주 작음 (<16px) | 잘림 (가장자리에 닿음) | 흐림 | 어두움 (평균 밝기<50) |
 |---|---|---|---|---|---|
@@ -185,77 +184,29 @@
 
 **한계**: seed 1개, val 443장 → ±0.01 이하 차이는 믿지 말 것. 지연은 GPU 기준이고, 노트북 CPU에서는 fusion이 훨씬 더 느려진다(⏳ 6장).
 
-### 5.3 최종 학습: 5클래스 전용 모델 (진행 중, 2026-10-03~04)
-
-요청: "COCO에 이미 있는 클래스 말고 우리가 말한 클래스 위주로", "100 epoch, 최대한 정확하게".
+### 5.3 최종 학습 (진행 중, 2026-10-04)
 
 | 항목 | 설정 |
 |---|---|
-| 클래스 | scooter, stairs, obstacle, other_vehicle, traffic_light (나머지 5개 라벨은 제거) |
-| train | scooter·stairs·traffic_light가 든 train 사진 **전부** = 8,120장 (obstacle 7,556장·other_vehicle 1,778장에도 자동 포함) |
-| val | 클래스당 사진 약 100장 = 267장 (best epoch 선택용) |
+| 클래스 | **10개 모두 유지** (person, bicycle, scooter, motorcycle, car, bus, other_vehicle, obstacle, stairs, traffic_light). 관심 클래스는 scooter·stairs·obstacle·other_vehicle·traffic_light |
+| train | scooter·stairs·traffic_light가 든 train 사진 **전부** = 8,120장. 다른 클래스도 이 사진들에 이미 200장 이상씩 들어 있음 |
+| val | 클래스당 사진 약 100장 (best epoch 선택용) |
 | test | **전체 test 13,721장** (학습에 한 번도 안 쓴 데이터로 최종 점수) |
 | 학습 | 100 epoch, patience 30, imgsz 640, seed 0 |
-| 순서 | E0 → A5(C-RADIOv3 fusion). distill(B5)은 1차 pilot에서 효과가 없어 제외 |
-| 명령 | [`insight_fm/tools/run_final5.sh`](insight_fm/tools/run_final5.sh) (설치 → 데이터 → 5클래스 빌드 → E0 → A5) |
-| 결과 위치 | 서버 `~/repo/insight_fm/runs/final/`, Drive `gdrive:sideguide/runs_final5/` |
+| 순서 | E0 → A5(C-RADIOv3 fusion). distill은 1차 pilot에서 효과가 없어 제외 |
+| 명령 | [`insight_fm/tools/run_final10.sh`](insight_fm/tools/run_final10.sh) (빌드 → E0 → 오류 분석 → A5 → 속도 측정) |
+| 결과 위치 | 서버 `~/repo/insight_fm/runs10/final/`, Drive `gdrive:sideguide/runs_final10/` |
 
 | ID | mask mAP50-95 (test) | mAP50 | scooter | stairs | obstacle | other_vehicle | traffic_light |
 |---|---|---|---|---|---|---|---|
-| **E0** | **0.215** | 0.386 | 0.021 | 0.190 | 0.368 | 0.326 | 0.169 |
+| E0 | ⏳ | | | | | | |
 | A5 | ⏳ | | | | | | |
 
-- E0: 학습 2.2시간(epoch당 약 78초), best epoch 64, 추론 13.9ms(A5000 FP16 bs1). 파일: `insight_fm/analysis/train_E0/`
-- 값은 mask AP50-95(test 13,721장). 1차 pilot(10클래스, pilot val 443장)과는 클래스 구성·평가셋이 달라 직접 비교하면 안 된다.
-
-### 5.4 E0 오류 분석: mAP가 왜 낮은가
-
-test 전체에서 정답 객체마다 찾았는지(confidence ≥ 0.25, 같은 클래스 박스 IoU ≥ 0.5), 예측마다 정답이 있었는지를 판정했다(`insight_fm/eval_errors.py`, 결과 [`analysis/errors_E0/errors.md`](insight_fm/analysis/errors_E0/errors.md), 객체별 원본 `gdrive:sideguide/runs_final5/analysis/errors_E0/gt.csv`, `fp.csv`).
-
-| 클래스 | 정답 객체 | 찾음 (recall) | 오검출 (FP) | 정답 1개당 FP | precision |
-|---|---|---|---|---|---|
-| scooter | 94 | 28 (29.8%) | 326 | **3.47** | **7.9%** |
-| stairs | 79 | 31 (39.2%) | 75 | 0.95 | 29.2% |
-| obstacle | 43,540 | 28,029 (64.4%) | 13,674 | 0.31 | 67.2% |
-| other_vehicle | 5,317 | 2,702 (50.8%) | 1,632 | 0.31 | 62.3% |
-| traffic_light | 4,193 | 3,284 (78.3%) | 3,644 | 0.87 | 47.4% |
-
-**원인 1. 학습에서 지운 클래스가 오검출로 돌아온다 (가장 큼, 5클래스로 줄인 부작용)**
-- 5클래스 모델은 person·bicycle·motorcycle·car·bus 라벨을 지웠다. 그래서 모델은 "자전거는 scooter가 아니다", "승용차는 other_vehicle이 아니다"를 배우지 못했다.
-- **scooter 오검출 상위 40개는 거의 전부 자전거·자전거 탄 사람·유모차·손수레·쇼핑카트**다(`errors_E0/fp_scooter.jpg`). 정답 94개에 오검출 326개라 precision 7.9% → AP 0.02.
-- **other_vehicle 오검출 상위 40개는 대부분 승용차·승합차(다마스·스타렉스)·버스**다(`fp_other_vehicle.jpg`).
-- 1차 pilot(10클래스 유지)에서는 scooter가 이렇게 무너지지 않았다.
-- → **클래스는 10개를 그대로 학습하고, 평가·서비스에서 필요한 클래스만 쓰는 것이 맞다.** 같은 8,120장·100 epoch로 10클래스 E0를 다시 학습하면 약 2.5시간.
-
-**원인 2. 정답 라벨이 빠진 객체를 모델이 찾으면 오검출로 처리된다 (라벨 누락)**
-- **obstacle 오검출 상위 40개는 대부분 실제 장애물**(라바콘, 기둥, 입간판, 분전함, 고가 기둥, 볼라드)인데 정답 라벨이 없다(`fp_obstacle.jpg`). 라바콘은 AI Hub 원본 라벨 목록에 아예 없다.
-- **traffic_light 오검출의 상당수도 라벨 안 된 신호등**(옆면·뒷면)이고, 나머지는 **교통표지판**(속도제한 30, 주정차금지)이다. traffic_sign 38,918개를 학습에서 뺐기 때문에 모델이 표지판을 구분하지 못한다(`fp_traffic_light.jpg`).
-- **stairs 오검출에는 진짜 계단이 많다**: test의 Polygon 영상에 찍힌 계단은 라벨이 없어서 맞게 찾아도 오검출이 된다. 반대로 맨홀·배수구 덮개를 계단이라 하는 오검출도 있는데, 학습 라벨(4.1절)이 그렇게 가르쳤기 때문이다(`fp_stairs.jpg`).
-- → 이 부분은 모델이 아니라 **평가 데이터의 한계**다. 실제 성능은 숫자보다 좋다. 정확히 재려면 test 일부라도 라벨을 보완해야 한다.
-
-**원인 3. 작은 객체 (크기별 recall)**
-
-| 클래스 | 0~8px | 8~16px | 16~32px | 32~64px | 64px 이상 |
-|---|---|---|---|---|---|
-| scooter | 0% (11) | 10.5% (19) | 23.1% (26) | 48.1% (27) | 63.6% (11) |
-| stairs | 0% (6) | 0% (8) | 26.7% (15) | 28.6% (14) | 63.9% (36) |
-| obstacle | 40.6% (7,452) | 63.8% (15,671) | 72.7% (12,395) | 75.2% (5,847) | 73.3% (2,175) |
-| other_vehicle | 1.9% (311) | 14.8% (677) | 45.1% (1,571) | 61.9% (1,358) | 74.8% (1,400) |
-| traffic_light | 75.5% (2,707) | 82.3% (1,114) | 86.6% (322) | 91.5% (47) | – |
-
-- 박스 짧은 변이 16px 미만이면 scooter·stairs·other_vehicle은 거의 못 찾는다. 놓친 scooter도 대부분 줄지어 세워진 공유 킥보드(가늘고 겹침)이거나 아주 작은 것이다(`missed_scooter.jpg`). 3×1px, 5×2px처럼 라벨 자체가 잘못된 것도 있다.
-- **traffic_light는 위치는 잘 찾는데(8px 이하도 75%) mask AP50-95가 0.17로 낮다.** 4~8px 객체는 마스크 경계가 1~2px만 어긋나도 IoU가 크게 떨어지기 때문이다. 박스 AP50과 마스크 AP50-95의 차이가 여기서 나온다.
-- → 입력 해상도를 960~1280으로 올리면 직접적으로 좋아질 가능성이 큰 부분.
-
-**원인 4. 과적합**
-- val 점수는 64 epoch에서 최고(0.263)였고, 이후 train loss는 계속 줄지만 val loss는 다시 오른다. 8,120장에 100 epoch는 길다. 최종 점수는 best(64 epoch) 가중치라 영향은 없다.
-- 그림: `insight_fm/analysis/train_E0/learning_curve.png`
-
-**원인이 아닌 것**: 잘림(잘린 객체의 recall이 오히려 높음: obstacle 79.6% vs 58.0%, 큰 객체가 잘리기 때문), 밝기(어두운 객체 recall이 약간 낮지만 차이 작음, other_vehicle 36% vs 54%만 예외), 카메라 종류(스마트폰·ZED 차이 작음).
+⏳ 결과가 나오면: 10개 클래스 전체 표, 학습 곡선(과적합 여부), 혼동 행렬, 크기·잘림·밝기·카메라별 recall, 오검출 사례(`insight_fm/eval_errors.py`).
 
 ## 6. 추론 속도 ⏳
 
-`insight_fm/bench_speed.py`가 학습이 모두 끝난 뒤(GPU가 빈 상태) 자동으로 잰다(서버 `~/after_final.sh`). 결과는 `results/speed/speed.md`, Drive `gdrive:sideguide/runs_final5/results/speed/`.
+`insight_fm/bench_speed.py`가 학습이 모두 끝난 뒤(GPU가 빈 상태) 자동으로 잰다(`run_final10.sh` 마지막 단계). 결과는 `results/speed10/speed.md`, Drive `gdrive:sideguide/runs_final10/results/speed10/`.
 
 측정 항목: GPU FP16/FP32 bs1 지연과 E0 대비 배수, GPU bs8 처리량, 실제 test 이미지 end-to-end(전처리+추론+NMS·마스크 후처리), A5에서 C-RADIO가 차지하는 시간·비율, CPU 4/8스레드(노트북 대용, 실제 노트북과 다를 수 있음), 파라미터·GFLOPs.
 
@@ -288,11 +239,11 @@ cd ~/repo/insight_fm
 read -s -p "HF token: " HF_TOKEN && export HF_TOKEN; echo     # DINOv3만 필요. history에 안 남음
 bash setup.sh            # deps → data(약 1시간: zip 15개 받고 640px 추출, zip은 지움) → hf → prefetch → selftest → build
 python run_all.py --phase pilot          # 1차 pilot 재현
-# 5클래스 최종 학습
-CLASSES=scooter,stairs,obstacle,other_vehicle,traffic_light YOLO_OUT=~/sg/yolo5 STEP=build bash setup.sh
-SG_YOLO=~/sg/yolo5 python run_all.py --phase final --ids E0
-SG_YOLO=~/sg/yolo5 python run_all.py --phase final --ids A5
-python bench_speed.py --runs runs/final --images ~/sg/yolo5/full/images/test --out results/speed
+# 최종 학습 (10클래스, 8,120장, 100 epoch, test 평가): tools/run_final10.sh와 같음
+python run_all.py --phase final --ids E0
+python run_all.py --phase final --ids A5
+python eval_errors.py --weights runs/final/E0_s0/weights/best.pt --data ~/sg/yolo/full --out analysis/errors_E0
+python bench_speed.py --runs runs/final --images ~/sg/yolo/full/images/test --out results/speed
 ```
 
 - `RCLONE_REMOTE_RUNS=gdrive:...`를 export하면 epoch마다 결과가 Drive로 백업된다(반환 대비 필수).
@@ -328,7 +279,7 @@ python bench_speed.py --runs runs/final --images ~/sg/yolo5/full/images/test --o
 | 긴 명령 중 `Connection closed by remote host` | 서버가 오래 걸리는 SSH 세션을 끊음 | 오래 걸리는 작업은 전부 tmux 안에서 |
 | 터미널에 붙여넣은 명령이 깨짐 | 화면 폭에서 줄바꿈된 채로 복사됨 | 긴 명령은 스크립트 파일로 만들어 실행 |
 | 밤사이 감시가 멈춤 | Windows Modern Standby(화면 꺼지면 절전) | 전원 연결 시 화면 끄기·절전 "안 함" |
-| 2차 서버에서 `pip: command not found` | conda 없는 이미지 | venv 사용 (`insight_fm/tools/run_final5.sh` 참고) |
+| 2차 서버에서 `pip: command not found` | conda 없는 이미지 | venv 사용 (`insight_fm/tools/run_final10.sh` 참고) |
 
 ## 9. 결론: 무엇이 되고, 안 되고, 왜
 
@@ -339,21 +290,18 @@ python bench_speed.py --runs runs/final --images ~/sg/yolo5/full/images/test --o
 | ❌ FM distill | 1차에서 효과 없음 | 8/8개 ±0.008. 최종 학습에서는 제외 |
 | ❌ traffic_light | 구조적으로 어려움 | 89%가 16px 미만. 입력 해상도를 올리거나(960~1280) 타일/크롭 추론이 필요 |
 | ❌ stairs | 라벨이 틀림 | 원본 라벨의 상당수가 맨홀·보호판·연석. 재라벨링 필요 |
-| ❌ scooter (5클래스) | 오검출에 묻힘 | 자전거·유모차를 scooter로 잡음(precision 7.9%). 10클래스 유지로 개선 기대. 데이터도 224장으로 부족 |
-| ⚠️ 5클래스 축소 | 역효과 | 지운 클래스(자전거·승용차 등)가 오검출로 돌아옴. 클래스는 유지하고 출력만 고를 것 |
-| ⚠️ 평가 수치 | 실제보다 낮게 나옴 | 라벨 누락(라바콘·신호등 뒷면·계단)을 맞게 찾아도 오검출 처리 |
+| ⚠️ scooter | 데이터 절대량 부족 | 사진 224장. 추가 수집 또는 외부 데이터 필요 |
 | ⚠️ obstacle | 클래스가 너무 넓음 | 15종 혼합, 가는 기둥형 객체 다수 |
 | ✅ 흐림·조명 | 문제 아님 | 흐린 객체 0.2%, 어두운 프레임 0.4% |
 
 ## 10. 다음에 할 일 (우선순위)
 
-1. ⏳ A5 결과와 속도 확인, 5.3·6장 채우기.
-2. **10클래스를 유지하고 같은 8,120장으로 재학습**(E0 약 2.5시간, 필요하면 A5도). 5.4절 원인 1(지운 클래스의 오검출)을 없애는 가장 싼 방법. 평가는 5개 클래스만 보면 된다.
-3. **stairs 재라벨링**(372장, 몇 시간): 계단만 남기고, Polygon 영상 중 계단이 보이는 프레임도 추가 라벨. 이게 안 되면 stairs 수치는 의미가 없다.
-4. **노트북(그램) CPU에서 E0 / A5 FPS 실측.** fusion을 쓸 수 있는지는 이 숫자로 결정된다.
-5. traffic_light: imgsz 960 또는 1280으로 E0 재학습해 비교(작은 객체 개선 여부).
-6. obstacle 세분화 검토. 라바콘 등 원본에 없는 장애물 라벨 추가도 검토(기둥형 / 낮은 장애물 / 큰 구조물).
-7. traffic_sign(38,918개, 현재 미사용)을 클래스로 추가: 신호등 오검출을 줄이는 효과도 있음.
+1. ⏳ 최종 결과(E0/A5), 오류 분석, 속도 확인 후 5.3·6장 채우기.
+2. **stairs 재라벨링**(372장, 몇 시간): 계단만 남기고, Polygon 영상 중 계단이 보이는 프레임도 추가 라벨. 이게 안 되면 stairs 수치는 의미가 없다.
+3. **노트북(그램) CPU에서 E0 / A5 FPS 실측.** fusion을 쓸 수 있는지는 이 숫자로 결정된다.
+4. traffic_light: imgsz 960 또는 1280으로 E0 재학습해 비교(작은 객체 개선 여부).
+5. obstacle 세분화 검토(기둥형 / 낮은 장애물 / 큰 구조물).
+6. traffic_sign(38,918개, 현재 미사용) 추가 검토.
 
 ## 11. 계정·자격 증명 (값은 적지 않음)
 

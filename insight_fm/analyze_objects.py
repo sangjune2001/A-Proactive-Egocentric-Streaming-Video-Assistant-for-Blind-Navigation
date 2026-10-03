@@ -156,9 +156,9 @@ def main():
                   f"{pct(rs, lambda r: r['min_side'] < TINY_PX)} | {pct(rs, lambda r: r['truncated'])} | "
                   f"{pct(rs, lambda r: r['sharp'] < BLUR_THR)} | {pct(rs, lambda r: r['bright'] < DARK_THR)} | "
                   f"{med(rs, 'sharp')} |")
-    md.append("\n★ = 5클래스 최종 모델의 대상 클래스\n")
+    md.append("\n★ = 관심 클래스\n")
 
-    md.append("## 학습/평가 split별 (5클래스)\n\n| 클래스 | split | 객체 | 아주 작음(%) | 잘림(%) | 흐림(%) |\n|---|---|---|---|---|---|")
+    md.append("## 학습/평가 split별 (관심 클래스)\n\n| 클래스 | split | 객체 | 아주 작음(%) | 잘림(%) | 흐림(%) |\n|---|---|---|---|---|---|")
     for c in FOCUS:
         for s in ("train", "val", "test"):
             rs = [r for r in by[c] if r["split"] == s]
@@ -175,7 +175,7 @@ def main():
         "blurry": ("흐린 객체", lambda r: r["sharp"] < BLUR_THR and r["min_side"] >= TINY_PX),
         "dark": ("어두운 객체", lambda r: r["bright"] < DARK_THR),
     }
-    md.append("## 문제 유형별 예시 (5클래스)\n")
+    md.append("## 문제 유형별 예시 (관심 클래스)\n")
     for name, (title, f) in probs.items():
         rs = [r for r in rows if r["cls"] in FOCUS and f(r)]
         if sheet(rs, images, out / f"problem_{name}.jpg", f"{name}: random 40 of {len(rs)}"):

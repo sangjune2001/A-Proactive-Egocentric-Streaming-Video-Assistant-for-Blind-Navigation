@@ -21,7 +21,6 @@ from pathlib import Path
 import build_dataset as bd
 
 NAMES10 = list(bd.NAMES)
-FOCUS = ["scooter", "stairs", "obstacle", "other_vehicle", "traffic_light"]  # the 5-class final model
 COCO = {"person", "bicycle", "motorcycle", "car", "bus", "traffic_light"}     # also in the COCO pretraining
 SPLITS = ("train", "val", "test")
 # size buckets on relative mask area, COCO thresholds (32 px, 96 px) scaled to a 640 x 360 frame
@@ -184,15 +183,14 @@ def main():
     rng = random.Random(0)  # build_dataset.py draws train then val from one rng
     pilot1 = bd.per_class_sample(split_items["train"], 200, rng)
     pilot1_val = bd.per_class_sample(split_items["val"], 100, rng)
-    sub = {s: subset(split_items[s], FOCUS) for s in SPLITS}
-    take = frozenset(FOCUS.index(c) for c in ("scooter", "stairs", "traffic_light"))
+    take = frozenset(NAMES10.index(c) for c in ("scooter", "stairs", "traffic_light"))
     rng = random.Random(0)
-    final_train = bd.per_class_sample(sub["train"], 200, rng, take)
-    final_val = bd.per_class_sample(sub["val"], 100, rng)
+    final_train = bd.per_class_sample(split_items["train"], 200, rng, take)
+    final_val = bd.per_class_sample(split_items["val"], 100, rng)
 
     overall = stats(every, NAMES10)
     per_split = {s: stats(split_items[s], NAMES10) for s in SPLITS}
-    final = {"train": stats(final_train, FOCUS), "val": stats(final_val, FOCUS), "test": stats(sub["test"], FOCUS)}
+    final = {"train": stats(final_train, NAMES10), "val": stats(final_val, NAMES10), "test": per_split["test"]}
 
     write_csv(out / "class_stats_all.csv", overall)
     rows = []
@@ -202,7 +200,7 @@ def main():
     rows = []
     for s in SPLITS:
         rows += [{"split": s, **r} for r in final[s]]
-    write_csv(out / "final5_stats.csv", rows)
+    write_csv(out / "final_stats.csv", rows)
 
     # ---------------------------------------------------------------- facts for the report
     zips = Counter(zip_of[k] for k, _, _ in every)
@@ -211,10 +209,9 @@ def main():
     vids = {s: sum(1 for v in by_video if assign[v] == s) for s in SPLITS}
     stairs_zips = Counter(zip_of[k] for k, l, _ in every if any(int(x.split()[0]) == 7 + 1 for x in l))
     img_per_video = [len(r) for r in by_video.values()]
-    final_empty_test = sum(1 for _, l, _ in sub["test"] if not l)
     co = Counter()
     for _, l, _ in final_train:
-        co[len({int(x.split()[0]) for x in l})] += 1
+        co[len({int(x.split()[0]) for x in l} & set(take))] += 1
 
     figs = charts(out, overall, final["train"])
 
@@ -277,19 +274,19 @@ train/val/test 분할과 pilot 샘플은 `build_dataset.py`와 같은 함수·se
 클래스마다 그 클래스가 들어간 사진을 약 200장(val은 100장) 뽑음. 사진 수 기준이며 객체 수가 아님.
 train {len(pilot1):,}장, val {len(pilot1_val):,}장. 결과는 [`README.md`](../README.md) 참고.
 
-### 최종 학습 (5클래스: {', '.join(FOCUS)})
+### 최종 학습 (10클래스, 2026-10-04)
 
-- 라벨: 위 5개만 남기고 나머지(person, bicycle, motorcycle, car, bus)는 제거.
-- train: scooter·stairs·traffic_light가 들어간 train 사진 **전부** + obstacle·other_vehicle은 사진 200장 이상 되도록(이미 충족해서 추가 0장) → **{len(final_train):,}장**.
+- 라벨: 10개 클래스 모두 유지.
+- train: scooter·stairs·traffic_light가 들어간 train 사진 **전부** → **{len(final_train):,}장**. 다른 클래스는 이 사진들에 이미 사진 200장 이상씩 들어 있어 추가 0장.
 - val: 클래스당 사진 약 100장 → {len(final_val):,}장 (best epoch 선택용).
-- test: 전체 test {len(sub['test']):,}장 (5클래스 객체가 없는 사진 {final_empty_test:,}장은 배경 이미지로 포함).
-- train 사진 중 5클래스가 1개만 있는 사진 {co[1]:,}장, 2개 {co[2]:,}장, 3개 이상 {sum(v for k, v in co.items() if k >= 3):,}장.
+- test: 전체 test {len(split_items['test']):,}장.
+- train 사진 중 scooter·stairs·traffic_light가 1개 있는 사진 {co[1]:,}장, 2개 이상 {sum(v for k, v in co.items() if k >= 2):,}장.
 
 | 클래스 | train 객체 / 사진 | val 객체 / 사진 | test 객체 / 사진 |
 |---|---|---|---|
 """ + "".join(
         f"| {n} | " + " | ".join(f"{final[s][i]['objects']:,} / {final[s][i]['images']:,}" for s in SPLITS) + " |\n"
-        for i, n in enumerate(FOCUS))
+        for i, n in enumerate(NAMES10))
 
     if a.class_counts and Path(a.class_counts).exists():
         raw = list(csv.reader(open(a.class_counts, encoding="utf-8-sig")))[1:]

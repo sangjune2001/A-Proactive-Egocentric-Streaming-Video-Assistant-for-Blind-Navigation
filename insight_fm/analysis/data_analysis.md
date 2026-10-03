@@ -96,21 +96,26 @@ train/val/test 분할과 pilot 샘플은 `build_dataset.py`와 같은 함수·se
 클래스마다 그 클래스가 들어간 사진을 약 200장(val은 100장) 뽑음. 사진 수 기준이며 객체 수가 아님.
 train 996장, val 443장. 결과는 [`README.md`](../README.md) 참고.
 
-### 최종 학습 (5클래스: scooter, stairs, obstacle, other_vehicle, traffic_light)
+### 최종 학습 (10클래스, 2026-10-04)
 
-- 라벨: 위 5개만 남기고 나머지(person, bicycle, motorcycle, car, bus)는 제거.
-- train: scooter·stairs·traffic_light가 들어간 train 사진 **전부** + obstacle·other_vehicle은 사진 200장 이상 되도록(이미 충족해서 추가 0장) → **8,120장**.
-- val: 클래스당 사진 약 100장 → 267장 (best epoch 선택용).
-- test: 전체 test 13,721장 (5클래스 객체가 없는 사진 997장은 배경 이미지로 포함).
-- train 사진 중 5클래스가 1개만 있는 사진 482장, 2개 5,926장, 3개 이상 1,712장.
+- 라벨: 10개 클래스 모두 유지.
+- train: scooter·stairs·traffic_light가 들어간 train 사진 **전부** → **8,120장**. 다른 클래스는 이 사진들에 이미 사진 200장 이상씩 들어 있어 추가 0장.
+- val: 클래스당 사진 약 100장 → 443장 (best epoch 선택용).
+- test: 전체 test 13,721장.
+- train 사진 중 scooter·stairs·traffic_light가 1개 있는 사진 8,099장, 2개 이상 21장.
 
 | 클래스 | train 객체 / 사진 | val 객체 / 사진 | test 객체 / 사진 |
 |---|---|---|---|
+| person | 4,695 / 2,441 | 311 / 160 | 7,174 / 4,054 |
+| bicycle | 994 / 593 | 156 / 100 | 1,600 / 1,031 |
 | scooter | 197 / 144 | 60 / 47 | 94 / 33 |
+| motorcycle | 709 / 476 | 129 / 100 | 1,394 / 1,025 |
+| car | 12,820 / 4,783 | 596 / 226 | 22,566 / 8,307 |
+| bus | 1,432 / 823 | 175 / 100 | 1,978 / 1,138 |
+| other_vehicle | 3,146 / 1,778 | 163 / 100 | 5,317 / 3,286 |
+| obstacle | 35,116 / 7,556 | 1,341 / 355 | 43,540 / 12,123 |
 | stairs | 264 / 247 | 56 / 53 | 79 / 72 |
-| obstacle | 35,116 / 7,556 | 790 / 203 | 43,540 / 12,123 |
-| other_vehicle | 3,146 / 1,778 | 158 / 100 | 5,317 / 3,286 |
-| traffic_light | 18,598 / 7,750 | 250 / 100 | 4,193 / 1,680 |
+| traffic_light | 18,598 / 7,750 | 248 / 100 | 4,193 / 1,680 |
 
 ## 7. 원본 라벨 → 10클래스 매핑 (AI Hub 원본 개수)
 
