@@ -1,5 +1,5 @@
 #!/bin/bash
-# 5-class final training: E0 first, then C-RADIOv3 fusion (A5) and distill (B5).
+# 5-class final training: E0 first, then C-RADIOv3 fusion (A5).
 set -eo pipefail
 # bare Ubuntu image: no conda/pip, so use a venv
 if [ ! -x ~/venv/bin/python ]; then
@@ -19,5 +19,5 @@ STEP=selftest bash setup.sh
 STEP=build bash setup.sh
 python encoders.py --prefetch c-radio_v3-b
 python run_all.py --phase final --ids E0 2>&1 | tee -a results/final.log
-python run_all.py --phase final --ids A5,B5 2>&1 | tee -a results/final.log
+python run_all.py --phase final --ids A5 2>&1 | tee -a results/final.log
 echo "== ALL FINAL RUNS DONE"

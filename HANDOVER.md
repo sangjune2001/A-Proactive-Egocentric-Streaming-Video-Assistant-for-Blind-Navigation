@@ -3,7 +3,7 @@
 > 이 문서만 읽고 작업을 이어받을 수 있도록 쓴 보고서다. 무엇을 했고, 무엇이 되고 안 되는지, 왜 그런지, 숫자는 어디서 나왔는지, 어떻게 다시 돌리는지를 모두 담았다.
 > 숫자 옆의 경로는 그 숫자를 만든 파일이다. 같은 명령을 다시 실행하면 같은 숫자가 나온다.
 >
-> 작성: 2026-10-03. **⏳ 표시는 학습 진행 중이라 결과가 나오면 채울 부분**(5클래스 최종 학습 E0 / A5 / B5, 추론 속도).
+> 작성: 2026-10-03. **⏳ 표시는 학습 진행 중이라 결과가 나오면 채울 부분**(5클래스 최종 학습 E0 / A5, 추론 속도).
 
 ---
 
@@ -14,7 +14,7 @@
 | 무엇을 하나 | 시각장애인 보행 보조용 분할 모델(YOLO11s-seg)에 Foundation Model(FM) 인코더를 붙이면 성능이 오르는지 실험 |
 | 데이터 | AI Hub 「인도보행 영상」(dataSetSn 189). 라벨된 사진 92,772장, 영상 1,955개, 객체 581,529개 |
 | 1차 결과 (10클래스, 소량 데이터) | **FM을 추론에도 쓰는 fusion은 7개 모두 baseline보다 좋음**(mask mAP50-95 0.283 → 0.313~0.358). **FM을 학습 때만 쓰는 distill은 효과 없음**(±0.008) |
-| 지금 진행 중 | 5클래스(scooter, stairs, obstacle, other_vehicle, traffic_light) 전용 모델, 100 epoch, test 13,721장으로 최종 평가. baseline(E0) → C-RADIOv3 fusion(A5) → C-RADIOv3 distill(B5) 순서 |
+| 지금 진행 중 | 5클래스(scooter, stairs, obstacle, other_vehicle, traffic_light) 전용 모델, 100 epoch, test 13,721장으로 최종 평가. baseline(E0) → C-RADIOv3 fusion(A5) 순서 (distill B5는 요청에 따라 제외) |
 | mAP가 낮은 주원인 (데이터에서 확인됨) | ① **작은 객체**: traffic_light 89%가 박스 짧은 변 16px 미만 ② **라벨 노이즈**: stairs 라벨의 상당수가 실제로는 맨홀·가로수 보호판·연석 (AI Hub 원본 라벨 문제) ③ **극소량 클래스**: scooter 사진 224장(영상 124개), stairs 372장 ④ **obstacle은 생김새가 다른 15종을 합친 클래스**(기둥·나무·볼라드·입간판 등) |
 | 문제가 아닌 것 | 흐림(흐린 객체 0.2%, 대부분 야간), 어두운 프레임(0.4%) |
 | 가장 먼저 할 일 | ⏳ 최종 결과 확인 → stairs 재라벨링 여부 결정 → 배포 기기(노트북 CPU)에서 속도 실측 |
@@ -178,7 +178,7 @@
 - 실용 후보: A2a(DINOv2), A5(C-RADIOv3). 둘 다 지연 약 2배. 둘의 차이 0.009는 노이즈 범위.
 
 **안 되는 것**
-- distill은 8개 모두 효과 없음(teacher를 SO400M으로 키운 B6도 마찬가지). 학습 데이터 996장·30 epoch·λ=1이라는 조건에서는 FM 지식이 전달되지 않았다. → 5클래스 최종 학습에서 데이터 8배·epoch 3.3배로 다시 확인 중(B5).
+- distill은 8개 모두 효과 없음(teacher를 SO400M으로 키운 B6도 마찬가지). 학습 데이터 996장·30 epoch·λ=1이라는 조건에서는 FM 지식이 전달되지 않았다. 최종 학습에서는 제외했다(데이터·epoch를 늘렸을 때 달라지는지는 확인하지 않음).
 - 인코더 두 개 결합(A3a/A3b)은 하나보다 낫지 않고 느리다.
 - scooter·traffic_light는 모든 모델에서 AP 0.1~0.19.
 
@@ -195,15 +195,14 @@
 | val | 클래스당 사진 약 100장 = 267장 (best epoch 선택용) |
 | test | **전체 test 13,721장** (학습에 한 번도 안 쓴 데이터로 최종 점수) |
 | 학습 | 100 epoch, patience 30, imgsz 640, seed 0 |
-| 순서 | E0 → A5(C-RADIOv3 fusion) → B5(C-RADIOv3 distill) |
-| 명령 | [`insight_fm/tools/run_final5.sh`](insight_fm/tools/run_final5.sh) (설치 → 데이터 → 5클래스 빌드 → E0 → A5, B5) |
+| 순서 | E0 → A5(C-RADIOv3 fusion). distill(B5)은 1차 pilot에서 효과가 없어 제외 |
+| 명령 | [`insight_fm/tools/run_final5.sh`](insight_fm/tools/run_final5.sh) (설치 → 데이터 → 5클래스 빌드 → E0 → A5) |
 | 결과 위치 | 서버 `~/repo/insight_fm/runs/final/`, Drive `gdrive:sideguide/runs_final5/` |
 
 | ID | mask mAP50-95 (test) | mAP50 | scooter | stairs | obstacle | other_vehicle | traffic_light |
 |---|---|---|---|---|---|---|---|
 | E0 | ⏳ | | | | | | |
 | A5 | ⏳ | | | | | | |
-| B5 | ⏳ | | | | | | |
 
 ⏳ 결과가 나오면: 학습 곡선(과적합 여부), 혼동 행렬, 크기별·잘림별 recall(3장의 원인이 실제로 성능을 깎는지), stairs 오검출 사례를 추가한다.
 
@@ -217,7 +216,6 @@
 |---|---|---|---|---|---|
 | E0 | ⏳ | | | | – |
 | A5 | ⏳ | | | | |
-| B5 (plain) | ⏳ | | | | – |
 
 ## 7. 재현 방법 (서버)
 
@@ -246,7 +244,7 @@ python run_all.py --phase pilot          # 1차 pilot 재현
 # 5클래스 최종 학습
 CLASSES=scooter,stairs,obstacle,other_vehicle,traffic_light YOLO_OUT=~/sg/yolo5 STEP=build bash setup.sh
 SG_YOLO=~/sg/yolo5 python run_all.py --phase final --ids E0
-SG_YOLO=~/sg/yolo5 python run_all.py --phase final --ids A5,B5
+SG_YOLO=~/sg/yolo5 python run_all.py --phase final --ids A5
 python bench_speed.py --runs runs/final --images ~/sg/yolo5/full/images/test --out results/speed
 ```
 
@@ -291,7 +289,7 @@ python bench_speed.py --runs runs/final --images ~/sg/yolo5/full/images/test --o
 |---|---|---|
 | ✅ FM fusion | 성능 확실히 오름 | 1차 pilot 7/7개 +0.03~+0.07 |
 | ⚠️ FM fusion 실사용 | 속도가 관건 | GPU에서 약 2배, CPU에서는 더 느림(⏳ 실측) |
-| ❌ FM distill | 1차에서 효과 없음 | 8/8개 ±0.008. ⏳ 데이터·epoch 늘린 B5로 재확인 중 |
+| ❌ FM distill | 1차에서 효과 없음 | 8/8개 ±0.008. 최종 학습에서는 제외 |
 | ❌ traffic_light | 구조적으로 어려움 | 89%가 16px 미만. 입력 해상도를 올리거나(960~1280) 타일/크롭 추론이 필요 |
 | ❌ stairs | 라벨이 틀림 | 원본 라벨의 상당수가 맨홀·보호판·연석. 재라벨링 필요 |
 | ⚠️ scooter | 데이터 절대량 부족 | 사진 224장. 추가 수집 또는 외부 데이터 필요 |
@@ -300,9 +298,9 @@ python bench_speed.py --runs runs/final --images ~/sg/yolo5/full/images/test --o
 
 ## 10. 다음에 할 일 (우선순위)
 
-1. ⏳ 최종 결과(E0/A5/B5) 확인, 5.3·6장 채우기.
+1. ⏳ 최종 결과(E0/A5) 확인, 5.3·6장 채우기.
 2. **stairs 재라벨링**(372장, 몇 시간): 계단만 남기고, Polygon 영상 중 계단이 보이는 프레임도 추가 라벨. 이게 안 되면 stairs 수치는 의미가 없다.
-3. **노트북(그램) CPU에서 E0 / A5 / B5(plain) FPS 실측.** fusion을 쓸 수 있는지는 이 숫자로 결정된다.
+3. **노트북(그램) CPU에서 E0 / A5 FPS 실측.** fusion을 쓸 수 있는지는 이 숫자로 결정된다.
 4. traffic_light: imgsz 960 또는 1280으로 E0 재학습해 비교(작은 객체 개선 여부).
 5. obstacle 세분화 검토(기둥형 / 낮은 장애물 / 큰 구조물).
 6. 필요하면 traffic_sign(38,918개, 현재 미사용) 추가 검토.
