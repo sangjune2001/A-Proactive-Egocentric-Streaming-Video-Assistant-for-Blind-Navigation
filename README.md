@@ -15,6 +15,8 @@
 
 ## `detection` 브랜치: YOLO11s-seg × Foundation Model 인코더 실험
 
+> **인수인계 보고서: [`HANDOVER.md`](HANDOVER.md)** — 데이터, 실험 결과, 되는 것/안 되는 것과 이유, 재현 방법, 겪은 문제를 한 문서에 정리.
+
 ### 목적
 
 AI Hub 189 인도 보행 영상(Polygon)을 10개 클래스로 재라벨링한 데이터에서, Foundation Model(FM) 인코더를 YOLO11s-seg에 붙이면 분할 성능이 오르는지, 특히 데이터가 부족한 클래스(킥보드 등)가 개선되는지 확인한다.

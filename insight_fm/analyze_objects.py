@@ -7,7 +7,7 @@ Per object (all 10 classes, all splits) it measures, on the 640px training image
     Laplacian inside the object box, higher = sharper), brightness and contrast inside the box,
     plus the same sharpness/brightness for the whole frame.
 Writes objects.csv.gz (one row per object), object_quality.md (summary per class) and contact sheets
-(crops of real objects per class and per problem) as PNG so the data can be checked by eye.
+(crops of real objects per class and per problem) as JPEG so the data can be checked by eye.
 """
 
 from __future__ import annotations
@@ -167,8 +167,8 @@ def main():
 
     md.append("\n## 실제 객체 예시 (무작위 40개, 파란 박스 = 라벨, 아래 숫자 = 박스 크기 / 선명도 / T=잘림)\n")
     for c in FOCUS:
-        if sheet(by[c], images, out / f"sheet_{c}.png", f"{c}: random 40"):
-            md.append(f"### {c}\n\n![{c}](sheet_{c}.png)\n")
+        if sheet(by[c], images, out / f"sheet_{c}.jpg", f"{c}: random 40"):
+            md.append(f"### {c}\n\n![{c}](sheet_{c}.jpg)\n")
     probs = {
         "tiny": ("아주 작은 객체", lambda r: r["min_side"] < TINY_PX),
         "truncated": ("잘린 객체", lambda r: r["truncated"]),
@@ -178,8 +178,8 @@ def main():
     md.append("## 문제 유형별 예시 (5클래스)\n")
     for name, (title, f) in probs.items():
         rs = [r for r in rows if r["cls"] in FOCUS and f(r)]
-        if sheet(rs, images, out / f"problem_{name}.png", f"{name}: random 40 of {len(rs)}"):
-            md.append(f"### {title} ({len(rs):,}개)\n\n![{title}](problem_{name}.png)\n")
+        if sheet(rs, images, out / f"problem_{name}.jpg", f"{name}: random 40 of {len(rs)}"):
+            md.append(f"### {title} ({len(rs):,}개)\n\n![{title}](problem_{name}.jpg)\n")
 
     (out / "object_quality.md").write_text("\n".join(md) + "\n", encoding="utf-8")
     print(f"wrote {out / 'object_quality.md'}")
