@@ -70,6 +70,10 @@ tail -f results/run_all.log                       # 진행 상황
 touch results/HOLD_full                          # full 단계 직전에 멈추기 (지우고 다시 실행하면 이어서 진행)
 ```
 
+## 데이터 분석
+
+[`analysis/data_analysis.md`](analysis/data_analysis.md) (`python analyze_data.py --jsonl ~/sg/labels_all.jsonl --out analysis`로 재생성)
+
 ## Pilot + Tier 2 결과 (2026-10-01, RTX A5000)
 
 설정 (1차 pilot): train 996장 / val 443장(클래스당 사진 약 200 / 100장. 다음 pilot부터는 scooter·stairs·traffic_light 사진 전부 포함, train 8,120장), 30 epoch, seed 0, imgsz 640. 지표는 pilot val 기준.

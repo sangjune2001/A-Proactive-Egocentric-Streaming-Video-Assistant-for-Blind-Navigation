@@ -68,6 +68,10 @@ python run_all.py --phase all 2>&1 | tee -a results/all.log
 
 중단되어도 같은 명령을 다시 실행하면 끝난 실험은 건너뛰고, 중단된 실험은 이어서 학습한다.
 
+### 데이터 분석
+
+사진·객체 수, split별·클래스별 분포, 객체 크기, 실험별로 실제 쓴 데이터: [`insight_fm/analysis/data_analysis.md`](insight_fm/analysis/data_analysis.md)
+
 ### 1차 Pilot 결과 (2026-10-01)
 
 1차 pilot: train 사진 996장(클래스당 사진 약 200장), 30 epoch, seed 1개, pilot val 443장 기준. 다음 pilot부터는 scooter·stairs·traffic_light 사진을 전부 넣음(train 8,120장). 전체 표와 클래스별 AP는 [`insight_fm/README.md`](insight_fm/README.md#pilot--tier-2-결과-2026-10-01-rtx-a5000).
