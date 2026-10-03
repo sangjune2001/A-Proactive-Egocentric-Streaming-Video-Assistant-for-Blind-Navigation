@@ -14,7 +14,7 @@
 | 무엇을 하나 | 시각장애인 보행 보조용 분할 모델(YOLO11s-seg)에 Foundation Model(FM) 인코더를 붙이면 성능이 오르는지 실험 |
 | 데이터 | AI Hub 「인도보행 영상」(dataSetSn 189). 라벨된 사진 92,772장, 영상 1,955개, 객체 581,529개 |
 | 1차 결과 (10클래스, 소량 데이터) | **FM을 추론에도 쓰는 fusion은 7개 모두 baseline보다 좋음**(mask mAP50-95 0.283 → 0.313~0.358). **FM을 학습 때만 쓰는 distill은 효과 없음**(±0.008) |
-| 지금 진행 중 | 최종 학습: 10클래스 라벨을 모두 유지하고, scooter·stairs·traffic_light가 든 train 사진 전부(8,120장)로 100 epoch. baseline(E0) → C-RADIOv3 fusion(A5) 순서, test 13,721장으로 평가 |
+| 지금 진행 중 | 최종 학습: 10클래스 라벨을 모두 유지하고, scooter·stairs·traffic_light가 든 train 사진 전부(8,120장)로 E0(100 epoch)와 C-RADIOv3 fusion A5(70 epoch)를 동시에 학습, test 13,721장으로 평가. 이후 추론 속도 비교 |
 | mAP가 낮은 이유 (데이터에서 확인됨) | ① **작은 객체**: traffic_light 89%가 박스 짧은 변 16px 미만 ② **라벨 노이즈**: stairs 라벨의 상당수가 실제로는 맨홀·가로수 보호판·연석 (AI Hub 원본 라벨 문제) ③ **극소량 클래스**: scooter 사진 224장(영상 124개), stairs 372장 ④ **obstacle은 생김새가 다른 15종을 합친 클래스** ⏳ 최종 모델의 오류 분석으로 확인 예정 |
 | 문제가 아닌 것 | 흐림(흐린 객체 0.2%, 대부분 야간), 어두운 프레임(0.4%) |
 | 가장 먼저 할 일 | ⏳ 최종 결과 확인 → stairs 재라벨링 여부 결정 → 배포 기기(노트북 CPU)에서 속도 실측 |
@@ -192,9 +192,8 @@
 | train | scooter·stairs·traffic_light가 든 train 사진 **전부** = 8,120장. 다른 클래스도 이 사진들에 이미 200장 이상씩 들어 있음 |
 | val | 클래스당 사진 약 100장 (best epoch 선택용) |
 | test | **전체 test 13,721장** (학습에 한 번도 안 쓴 데이터로 최종 점수) |
-| 학습 | 100 epoch, patience 30, imgsz 640, seed 0 |
-| 순서 | E0 → A5(C-RADIOv3 fusion). distill은 1차 pilot에서 효과가 없어 제외 |
-| 명령 | [`insight_fm/tools/run_final10.sh`](insight_fm/tools/run_final10.sh) (빌드 → E0 → 오류 분석 → A5 → 속도 측정) |
+| 학습 | **E0: 100 epoch, patience 30 / A5(C-RADIOv3 fusion): 70 epoch, patience 15**. imgsz 640, seed 0. 두 모델을 같은 GPU에서 동시에 학습(학습 시간은 비교 대상 아님). distill은 1차 pilot에서 효과가 없어 제외 |
+| 명령 | [`insight_fm/tools/run_final10.sh`](insight_fm/tools/run_final10.sh) (E0·A5 동시 학습 → 오류 분석 → 추론 속도 측정) |
 | 결과 위치 | 서버 `~/repo/insight_fm/runs10/final/`, Drive `gdrive:sideguide/runs_final10/` |
 
 | ID | mask mAP50-95 (test) | mAP50 | scooter | stairs | obstacle | other_vehicle | traffic_light |
