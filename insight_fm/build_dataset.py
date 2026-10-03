@@ -8,7 +8,8 @@
 Output
     <out>/full/{images,labels}/{train,val,test}   70 / 15 / 15 by video folder
     <out>/full/data.yaml
-    <out>/pilot/...  train = up to --pilot-per-class frames per class from full train (rarest class first),
+    <out>/pilot/...  train = every full-train frame containing a --pilot-all-classes class, then up to
+                     --pilot-per-class frames per remaining class (rarest class first),
                      val = up to --pilot-val-per-class frames per class from full val (test is not used)
     <out>/stats.json   instance counts per class per split
 Images are symlinked, not copied.
@@ -179,14 +180,20 @@ def link(src: Path, dst: Path):
     os.symlink(src.resolve(), dst)
 
 
-def per_class_sample(items, per_class: int, rng: random.Random):
+def per_class_sample(items, per_class: int, rng: random.Random, take_all=frozenset()):
     """Pick frames so every class appears in about `per_class` frames (fewer if the class has fewer).
-    Rarest class first; a frame picked for one class also counts for every other class it contains."""
+    Every frame containing a class in `take_all` is taken first. Then rarest class first; a frame picked
+    for one class also counts for every other class it contains."""
     items = list(items)
     rng.shuffle(items)
     classes_of = [{int(ln.split()[0]) for ln in t[1]} for t in items]
     freq = Counter(c for cs in classes_of for c in cs)
     have, picked, chosen = Counter(), set(), []
+    for i, cs in enumerate(classes_of):
+        if cs & take_all:
+            picked.add(i)
+            chosen.append(items[i])
+            have.update(cs)
     for c in sorted(freq, key=freq.get):
         for i, cs in enumerate(classes_of):
             if have[c] >= per_class:
@@ -213,6 +220,8 @@ def main():
     ap.add_argument("--seed", type=int, default=0)
     ap.add_argument("--split-tries", type=int, default=50)
     ap.add_argument("--pilot-per-class", type=int, default=200, help="pilot train frames per class")
+    ap.add_argument("--pilot-all-classes", default="scooter,stairs,traffic_light",
+                    help="comma list of classes whose train frames all go into the pilot ('' for none)")
     ap.add_argument("--pilot-val-per-class", type=int, default=100, help="pilot val frames per class")
     a = ap.parse_args()
 
@@ -284,7 +293,8 @@ def main():
     pilot = out / "pilot"
     train = [(k, l, i) for v, r in by_video.items() if assign[v] == "train" for (k, l, i) in r]
     val = [(k, l, i) for v, r in by_video.items() if assign[v] == "val" for (k, l, i) in r]
-    ptrain = per_class_sample(train, a.pilot_per_class, rng)
+    take_all = frozenset(NAMES.index(c) for c in a.pilot_all_classes.split(",") if c)
+    ptrain = per_class_sample(train, a.pilot_per_class, rng, take_all)
     pval = per_class_sample(val, a.pilot_val_per_class, rng)
     pc = {"train": Counter(), "val": Counter()}
     for s, items in (("train", ptrain), ("val", pval)):

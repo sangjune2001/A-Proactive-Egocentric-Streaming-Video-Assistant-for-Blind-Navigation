@@ -46,7 +46,7 @@ AI Hub 189 인도 보행 영상(Polygon)을 10개 클래스로 재라벨링한 �
 
 ### 실험 단계
 
-`sanity`(동작 확인) → `pilot`(클래스당 약 200장, 30 epoch, 15개 실험) → `tier2` → `full`(E0 + pilot 상위 fusion 2개 + distill 2개, 전체 데이터, 100 epoch, seed 3개, test 평가)
+`sanity`(동작 확인) → `pilot`(scooter·stairs·traffic_light 사진 전부 + 나머지 클래스당 사진 약 200장, 30 epoch, 15개 실험) → `tier2` → `full`(E0 + pilot 상위 fusion 2개 + distill 2개, 전체 데이터, 100 epoch, seed 3개, test 평가)
 
 ### 실행 (몬드리안 RTX A5000)
 
@@ -68,9 +68,9 @@ python run_all.py --phase all 2>&1 | tee -a results/all.log
 
 중단되어도 같은 명령을 다시 실행하면 끝난 실험은 건너뛰고, 중단된 실험은 이어서 학습한다.
 
-### Pilot 결과 (2026-10-01)
+### 1차 Pilot 결과 (2026-10-01)
 
-클래스당 약 200장, 30 epoch, seed 1개, pilot val 443장 기준. 전체 표와 클래스별 AP는 [`insight_fm/README.md`](insight_fm/README.md#pilot--tier-2-결과-2026-10-01-rtx-a5000).
+1차 pilot: train 사진 996장(클래스당 사진 약 200장), 30 epoch, seed 1개, pilot val 443장 기준. 다음 pilot부터는 scooter·stairs·traffic_light 사진을 전부 넣음(train 8,120장). 전체 표와 클래스별 AP는 [`insight_fm/README.md`](insight_fm/README.md#pilot--tier-2-결과-2026-10-01-rtx-a5000).
 
 | | 인코더 | mask mAP50-95 | E0 대비 | 지연 (ms, A5000) |
 |---|---|---|---|---|

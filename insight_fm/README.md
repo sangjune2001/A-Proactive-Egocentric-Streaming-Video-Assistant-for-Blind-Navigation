@@ -28,7 +28,7 @@
 | 단계 | 내용 |
 |---|---|
 | sanity | E0, A2b, B3b를 데이터 2%, 1 epoch로. 실패하면 거기서 멈춤 |
-| pilot | E0 + A1~A5 + B1~B5 (15개), pilot 데이터(train에서 클래스당 약 200장, val은 클래스당 약 100장), 30 epoch, pilot val로 평가 |
+| pilot | E0 + A1~A5 + B1~B5 (15개), pilot 데이터(train에서 scooter·stairs·traffic_light가 있는 사진 전부 + 나머지 클래스는 사진 약 200장씩, val은 클래스당 사진 약 100장), 30 epoch, pilot val로 평가 |
 | tier2 | A6, B6 (C-RADIOv4-SO400M), pilot 설정 |
 | full | E0 + pilot 상위 fusion 2개 + 상위 distill 2개, 전체 데이터, 100 epoch(patience 20), seed 0/1/2, **test**로 평가 |
 
@@ -69,7 +69,7 @@ touch results/HOLD_full                          # full 단계 직전에 멈추�
 
 ## Pilot + Tier 2 결과 (2026-10-01, RTX A5000)
 
-설정: pilot train 996장 / val 443장(클래스당 약 200 / 100장), 30 epoch, seed 0, imgsz 640. 지표는 pilot val 기준.
+설정 (1차 pilot): train 996장 / val 443장(클래스당 사진 약 200 / 100장. 다음 pilot부터는 scooter·stairs·traffic_light 사진 전부 포함, train 8,120장), 30 epoch, seed 0, imgsz 640. 지표는 pilot val 기준.
 지연은 A5000에서 batch 1, FP16. 원본: `results/pilot_summary.csv`, 모델·로그: `gdrive:sideguide/runs/<ID>_s0/`.
 
 | ID | 방식 | 인코더 | mask mAP50-95 | E0 대비 | mask mAP50 | box mAP50-95 | 지연 (ms) |
