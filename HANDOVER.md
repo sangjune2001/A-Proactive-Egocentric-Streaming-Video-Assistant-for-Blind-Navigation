@@ -210,7 +210,7 @@
 
 `insight_fm/bench_speed.py`가 학습이 모두 끝난 뒤(GPU가 빈 상태) 자동으로 잰다(서버 `~/after_final.sh`). 결과는 `results/speed/speed.md`, Drive `gdrive:sideguide/runs_final5/results/speed/`.
 
-측정 항목: GPU FP16/FP32 bs1 지연과 E0 대비 배수, GPU bs8 처리량, 실제 test 이미지 end-to-end(전처리+추론+NMS·마스크 후처리), A5에서 C-RADIO가 차지하는 시간·비율, CPU 4/8스레드(노트북 대용, 실제 노트북과 다를 수 있음), 파라미터·GFLOPs, B5를 순수 YOLO로 변환한 뒤의 속도.
+측정 항목: GPU FP16/FP32 bs1 지연과 E0 대비 배수, GPU bs8 처리량, 실제 test 이미지 end-to-end(전처리+추론+NMS·마스크 후처리), A5에서 C-RADIO가 차지하는 시간·비율, CPU 4/8스레드(노트북 대용, 실제 노트북과 다를 수 있음), 파라미터·GFLOPs.
 
 | 모델 | GPU FP16 (ms) | E0 대비 | end-to-end (ms / FPS) | CPU 4스레드 (ms) | FM 비중 |
 |---|---|---|---|---|---|
