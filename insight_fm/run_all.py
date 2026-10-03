@@ -6,6 +6,8 @@
     python run_all.py --phase full                   # E0 + top-2 fusion + top-2 distill from pilot, 3 seeds, test set
     python run_all.py --phase full --ids E0,A5,B3    # or choose yourself
     python run_all.py --phase all                    # sanity -> pilot -> tier2 -> full
+    python run_all.py --phase final                  # E0 on pilot data, 100 epochs, patience 30, scored on full test
+    python run_all.py --phase final --ids A5,B5      # then the C-RADIOv3 runs, same setting
     python run_all.py --summary pilot                # just rebuild the summary table
 
 Touch results/HOLD_<phase> (e.g. HOLD_full) to stop before that phase, even while --phase all is running.
@@ -145,11 +147,13 @@ def pick_full_ids(k: int = 2) -> list[str]:
 
 def main():
     ap = argparse.ArgumentParser()
-    ap.add_argument("--phase", choices=["sanity", "pilot", "tier2", "full", "all"])
+    ap.add_argument("--phase", choices=["sanity", "pilot", "tier2", "full", "final", "all"])
     ap.add_argument("--ids", default="", help="comma list, overrides the default list of the phase")
     ap.add_argument("--seeds", default="0,1,2", help="seeds for the full phase")
     ap.add_argument("--pilot-epochs", type=int, default=30)
     ap.add_argument("--full-epochs", type=int, default=100)
+    ap.add_argument("--final-epochs", type=int, default=100)
+    ap.add_argument("--final-patience", type=int, default=30)
     ap.add_argument("--summary", default="", help="only print/save the summary of a phase")
     ap.add_argument("--device", default="0")
     ap.add_argument("--workers", type=int, default=8)
@@ -192,6 +196,12 @@ def main():
                 for eid in chosen:
                     run(eid, full_yaml, a.full_epochs, seed, RUNS / "full", "test")
             summarize("full")
+        elif ph == "final":
+            # pilot train (all scooter/stairs/traffic_light frames), best epoch picked on pilot val, scored on full test
+            for eid in ids or ["E0"]:
+                run(eid, pilot_yaml, a.final_epochs, 0, RUNS / "final", "test",
+                    extra=["--patience", str(a.final_patience)])
+            summarize("final")
     remote = os.environ.get("RCLONE_REMOTE_RUNS")
     if remote:
         subprocess.call(["rclone", "copy", str(RESULTS), f"{remote}/results"])

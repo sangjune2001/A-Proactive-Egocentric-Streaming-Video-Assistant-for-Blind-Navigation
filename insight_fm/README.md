@@ -31,6 +31,7 @@
 | pilot | E0 + A1~A5 + B1~B5 (15개), pilot 데이터(train에서 scooter·stairs·traffic_light가 있는 사진 전부 + 나머지 클래스는 사진 약 200장씩, val은 클래스당 사진 약 100장), 30 epoch, pilot val로 평가 |
 | tier2 | A6, B6 (C-RADIOv4-SO400M), pilot 설정 |
 | full | E0 + pilot 상위 fusion 2개 + 상위 distill 2개, 전체 데이터, 100 epoch(patience 20), seed 0/1/2, **test**로 평가 |
+| final | `--phase final`(기본 E0, `--ids`로 지정). pilot train으로 100 epoch(patience 30), best는 pilot val로 고르고 **full test 13,721장**으로 평가. `--phase all`에는 포함 안 됨 |
 
 ## 실행 순서
 
@@ -62,6 +63,8 @@ python run_all.py --phase all 2>&1 | tee -a results/all.log
 ```bash
 python run_all.py --phase pilot --ids E0,B3b      # 일부만
 python run_all.py --phase full --ids E0,A5,B3b    # full 대상 직접 지정
+python run_all.py --phase final                   # 최종 학습: E0, 100 epoch, test 평가
+python run_all.py --phase final --ids A5,B5       # 이어서 C-RADIOv3 fusion / distill
 python run_all.py --summary pilot                 # 결과표만 다시 만들기
 tail -f results/run_all.log                       # 진행 상황
 touch results/HOLD_full                          # full 단계 직전에 멈추기 (지우고 다시 실행하면 이어서 진행)

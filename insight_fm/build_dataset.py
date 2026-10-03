@@ -10,7 +10,8 @@ Output
     <out>/full/data.yaml
     <out>/pilot/...  train = every full-train frame containing a --pilot-all-classes class, then up to
                      --pilot-per-class frames per remaining class (rarest class first),
-                     val = up to --pilot-val-per-class frames per class from full val (test is not used)
+                     val = up to --pilot-val-per-class frames per class from full val,
+                     test = the full test split (symlinked)
     <out>/stats.json   instance counts per class per split
 Images are symlinked, not copied.
 
@@ -304,7 +305,12 @@ def main():
             lp.parent.mkdir(parents=True, exist_ok=True)
             lp.write_text("\n".join(lines))
             pc[s].update(int(ln.split()[0]) for ln in lines)
-    write_yaml(pilot, ("train", "val"))
+    # the pilot shares the full test split, so final runs on pilot train can be scored on the untouched test set
+    for kind in ("images", "labels"):
+        dst = pilot / kind / "test"
+        if not dst.exists():
+            dst.symlink_to((full / kind / "test").resolve(), target_is_directory=True)
+    write_yaml(pilot, ("train", "val", "test"))
     stats["pilot_train"] = {NAMES[k]: v for k, v in sorted(pc["train"].items())}
     stats["pilot_val"] = {NAMES[k]: v for k, v in sorted(pc["val"].items())}
     stats["images"] = {"train": len(train), "pilot_train": len(ptrain), "pilot_val": len(pval),
