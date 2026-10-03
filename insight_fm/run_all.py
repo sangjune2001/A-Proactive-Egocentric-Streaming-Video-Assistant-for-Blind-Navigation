@@ -95,8 +95,7 @@ def summarize(phase: str) -> list[dict]:
     if not rows:
         print(f"no finished runs in {project}")
         return []
-    names = ["person", "bicycle", "scooter", "motorcycle", "car", "bus", "other_vehicle", "obstacle", "stairs",
-             "traffic_light"]
+    names = list(dict.fromkeys(c for r in rows for c in r.get("per_class", {})))
     by_id: dict[str, list[dict]] = {}
     for r in rows:
         by_id.setdefault(r["id"], []).append(r)

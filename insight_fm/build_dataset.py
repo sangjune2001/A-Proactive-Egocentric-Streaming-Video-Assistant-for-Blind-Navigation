@@ -224,6 +224,10 @@ def main():
     ap.add_argument("--pilot-all-classes", default="scooter,stairs,traffic_light",
                     help="comma list of classes whose train frames all go into the pilot ('' for none)")
     ap.add_argument("--pilot-val-per-class", type=int, default=100, help="pilot val frames per class")
+    ap.add_argument("--classes", default="",
+                    help="comma list: keep only these classes (renumbered in this order), e.g. "
+                         "scooter,stairs,obstacle,other_vehicle,traffic_light. The video split is still chosen on "
+                         "all 10 classes, so it matches the 10-class build.")
     a = ap.parse_args()
 
     print("indexing images ...", flush=True)
@@ -273,6 +277,19 @@ def main():
 
     score, seed, assign = choose_split(by_video, a.split_tries, a.seed)
     print(f"video split seed {seed} (worst class count in val/test = {score})")
+    if a.classes:
+        keep = [c for c in a.classes.split(",") if c]
+        unknown = [c for c in keep if c not in NAMES]
+        if unknown:
+            sys.exit(f"unknown classes {unknown}; known: {NAMES}")
+        remap = {NAMES.index(c): i for i, c in enumerate(keep)}
+        for recs in by_video.values():
+            for j, (key, lines, img) in enumerate(recs):
+                lines = [f"{remap[int(ln.split()[0])]} {ln.split(' ', 1)[1]}" for ln in lines
+                         if int(ln.split()[0]) in remap]
+                recs[j] = (key, lines, img)  # frames left with no object stay as background images
+        NAMES[:] = keep
+        print(f"classes kept and renumbered: {NAMES}")
 
     out = Path(a.out)
     full = out / "full"

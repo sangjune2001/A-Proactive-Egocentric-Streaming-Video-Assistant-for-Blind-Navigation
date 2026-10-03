@@ -8,6 +8,8 @@ set -euo pipefail
 JSONL_REMOTE="${JSONL_REMOTE:-gdrive:aihub189_yolo/labels_all.jsonl}"  # relabelled 10-class labels
 DRIVE_ROOT="${DRIVE_ROOT:-gdrive:}"   # zip paths (sideguide/polygon/P*.zip, sideguide/surface/S1.zip) come from the jsonl
 DATA="${DATA:-$HOME/sg}"                                               # local disk on the instance
+CLASSES="${CLASSES:-}"            # e.g. scooter,stairs,obstacle,other_vehicle,traffic_light ('' = all 10)
+YOLO_OUT="${YOLO_OUT:-$DATA/yolo}" # dataset output; point run_all.py at it with SG_YOLO=$YOLO_OUT
 export HF_HOME="${HF_HOME:-$DATA/hf_cache}"
 export TORCH_HOME="${TORCH_HOME:-$DATA/torch_cache}"
 # ----------------------------------------------------------------------------------------------------------
@@ -66,7 +68,8 @@ fi
 if run build; then
   echo "== build YOLO dataset (inspect first)"
   (cd "$HERE" && python build_dataset.py --jsonl "$DATA/labels_all.jsonl" --images "$DATA/imgs" --inspect)
-  (cd "$HERE" && python build_dataset.py --jsonl "$DATA/labels_all.jsonl" --images "$DATA/imgs" --out "$DATA/yolo")
+  (cd "$HERE" && python build_dataset.py --jsonl "$DATA/labels_all.jsonl" --images "$DATA/imgs" --out "$YOLO_OUT" \
+      ${CLASSES:+--classes "$CLASSES"})
 fi
 
 echo "== setup done. Next:  tmux new -s exp   then   python run_all.py --phase all"
