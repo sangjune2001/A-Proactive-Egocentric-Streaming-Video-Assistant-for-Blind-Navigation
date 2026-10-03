@@ -99,9 +99,14 @@ def main():
     names = model.names
 
     gt_rows, fp_rows = [], []
-    for i, r in enumerate(model.predict([str(img_dir / f) for f in files], stream=True, conf=a.conf, imgsz=640,
-                                        half=True, device=a.device, verbose=False, batch=16, retina_masks=False)):
-        f = files[i]
+    def predictions():  # a list given to predict() is loaded as one batch, so feed it in chunks
+        for k in range(0, len(files), 32):
+            chunk = files[k:k + 32]
+            for f, r in zip(chunk, model.predict([str(img_dir / f) for f in chunk], conf=a.conf, imgsz=640,
+                                                 half=True, device=a.device, verbose=False)):
+                yield f, r
+
+    for i, (f, r) in enumerate(predictions()):
         h, w = r.orig_shape
         gray = cv2.cvtColor(r.orig_img, cv2.COLOR_BGR2GRAY)
         gts = read_gt(lab_dir / (Path(f).stem + ".txt"), w, h)
