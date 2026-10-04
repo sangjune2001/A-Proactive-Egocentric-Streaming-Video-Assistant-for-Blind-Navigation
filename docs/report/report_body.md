@@ -1,23 +1,4 @@
-# A Proactive Egocentric Streaming Video Assistant for Blind Navigation
-
-시각장애인 보행 보조를 위한 **능동형 1인칭 스트리밍 영상 어시스턴트** — Team Insight 캡스톤 프로젝트.
-
-스트리밍 영상의 매 프레임은 경량 모듈(YOLO-seg + Trigger)이 감시하고, 위험 이벤트가 감지될 때만 VLM을 호출해 음성(TTS)으로 알린다.
-
-## 브랜치
-
-| 브랜치 | 담당 | 내용 |
-|---|---|---|
-| `main` | 공통 | 통합본 |
-| `detection` | 박주영 | YOLO11s-seg 학습, 데이터셋 재라벨링, Foundation Model 인코더 비교 실험 |
-
----
-
-## `detection` 브랜치: YOLO11s-seg × Foundation Model 실험 결과 보고서
-
-> PDF 버전([`docs/report/report.pdf`](docs/report/report.pdf))과 같은 내용. 재현 방법·겪은 문제 등 자세한 기술 내용은 [`HANDOVER.md`](HANDOVER.md).
-
-### 한눈에 보기
+## 한눈에 보기
 
 | 질문 | 답 |
 |---|---|
@@ -28,7 +9,7 @@
 | 점수가 낮은 이유 | ① 정답 라벨이 빠진 물체를 맞게 찾아도 오답 처리 ② 아주 작은 물체 ③ scooter 데이터 부족 ④ stairs 원본 라벨 오류 |
 | 다음 할 일 | 노트북 CPU에서 속도 실측 → stairs 재라벨링 → scooter 데이터 보강 |
 
-### 1. 실험 구성
+## 1. 실험 구성
 
 | 모델 | 구성 | 추론 시 사용 |
 |---|---|---|
@@ -45,7 +26,7 @@
 
 클래스 (10개): person, bicycle, scooter, motorcycle, car, bus, other_vehicle(트럭·손수레·유모차·휠체어), obstacle(기둥·나무·볼라드 등 15종), stairs, traffic_light
 
-### 2. 데이터
+## 2. 데이터
 
 | 항목 | 값 |
 |---|---|
@@ -56,7 +37,7 @@
 
 "물체 수"와 "사진 수"는 다르다. 신호등 3개가 찍힌 사진 1장은 물체 3개, 사진 1장으로 센다.
 
-![클래스별 물체 수와 사진 수](docs/report/class_counts.png)
+![클래스별 물체 수와 사진 수](IMG/class_counts.png)
 
 | 클래스 | 물체 | 사진 | 학습(train) 사진 | 평가(test) 물체 |
 |---|---|---|---|---|
@@ -73,9 +54,9 @@
 
 **작은 물체가 많다.** 640px 화면 기준으로 traffic_light는 89%, obstacle은 48%가 짧은 변 16px 미만이다.
 
-![클래스별 물체 크기](docs/report/object_sizes.png)
+![클래스별 물체 크기](IMG/object_sizes.png)
 
-### 3. 성능 결과
+## 3. 성능 결과
 
 | 클래스 | E0 | A5 | 차이 |
 |---|---|---|---|
@@ -92,20 +73,20 @@
 | **전체 (mask mAP50-95)** | **0.308** | **0.331** | **+0.023** |
 | 전체 (mask mAP50) | 0.534 | 0.568 | +0.034 |
 
-![클래스별 성능](docs/report/ap_by_class.png)
+![클래스별 성능](IMG/ap_by_class.png)
 
 - C-RADIOv3를 붙이면 **거의 모든 클래스에서 오른다.** 특히 motorcycle, bus, other_vehicle.
 - stairs, scooter, traffic_light는 **두 모델 모두 낮다.** 모델보다 데이터 문제다 (5장).
 
-![학습 곡선](docs/report/learning_curve.png)
+![학습 곡선](IMG/learning_curve.png)
 
 A5는 처음부터 E0보다 점수가 높고 더 빨리 최고점에 도달한다. E0는 73 epoch 이후 과적합이 시작되지만, 평가에는 가장 좋았던 시점의 모델을 썼으므로 결과에는 영향이 없다.
 
-### 4. 추론 속도
+## 4. 추론 속도
 
 학습이 끝난 뒤 GPU가 빈 상태에서 모델을 하나씩 측정했다 (640×640, 이미지 1장씩).
 
-![추론 속도](docs/report/speed.png)
+![추론 속도](IMG/speed.png)
 
 | 항목 | E0 | A5 | 배수 |
 |---|---|---|---|
@@ -121,7 +102,7 @@ A5는 처음부터 E0보다 점수가 높고 더 빨리 최고점에 도달한�
 - **CPU에서는 A5가 1초에 1장도 처리하지 못한다.** 노트북 CPU에서 돌려야 한다면 E0만 현실적이며, E0도 OpenVINO 변환이 필요하다.
 - CPU 수치는 서버 CPU의 스레드 수를 제한해 잰 값이다. 실제 노트북에서는 다를 수 있어 다시 재야 한다.
 
-### 5. 점수가 낮은 이유
+## 5. 점수가 낮은 이유
 
 test 전체에서 정답 물체 하나하나를 모델이 찾았는지, 모델이 찾은 것이 정답이었는지를 확인했다 (기준: 확신도 0.25 이상, 위치 겹침 50% 이상).
 
@@ -135,63 +116,63 @@ test 전체에서 정답 물체 하나하나를 모델이 찾았는지, 모델�
 | stairs | 43% | 30% |
 | scooter | 36% | **10%** |
 
-#### ① 정답 라벨이 빠진 물체를 맞게 찾아도 오답이 된다
+### ① 정답 라벨이 빠진 물체를 맞게 찾아도 오답이 된다
 
 모델이 "오답"으로 처리된 예측을 직접 보면, **상당수가 실제로 맞는 물체인데 정답 라벨이 없는 경우**다.
 
 - **obstacle**: 라바콘, 고가 기둥, 벤치, 분전함, 입간판 (라바콘은 AI Hub 원본 라벨 종류에 아예 없음)
 
-![obstacle 오답 예시](docs/report/fp_obstacle.jpg)
+![obstacle 오답 예시](IMG/fp_obstacle.jpg)
 
 - **traffic_light**: 라벨이 안 된 신호등 옆면·뒷면, 횡단보도 표지판
 
-![traffic_light 오답 예시](docs/report/fp_traffic_light.jpg)
+![traffic_light 오답 예시](IMG/fp_traffic_light.jpg)
 
 → **실제 성능은 숫자보다 좋다.** 정확히 재려면 test 라벨을 보완해야 한다.
 
-#### ② 아주 작은 물체는 못 찾는다
+### ② 아주 작은 물체는 못 찾는다
 
-![크기별 recall](docs/report/recall_by_size.png)
+![크기별 recall](IMG/recall_by_size.png)
 
 - car와 person은 16px 이상이면 80~97%를 찾지만, 8px 이하는 16~26%만 찾는다.
 - traffic_light는 위치는 잘 찾는다(8px 이하도 75%). 하지만 4~8px 물체는 윤곽(마스크)이 1~2px만 어긋나도 점수가 크게 깎여서 mask 점수가 낮다.
 - → **입력 해상도를 960~1280px로 올리면** 직접 좋아질 부분이다.
 
-#### ③ scooter: 데이터가 너무 적고, 오토바이·자전거와 헷갈린다
+### ③ scooter: 데이터가 너무 적고, 오토바이·자전거와 헷갈린다
 
 - 학습 사진이 **144장**뿐이다 (motorcycle 476장, bicycle 593장).
 - scooter라고 잘못 부른 것의 절반(49%)이 **오토바이·자전거·사람** 위에 있다. 나머지는 손수레·유모차·어린이 탈것이다.
 - test 정답이 94개뿐이라 점수 자체도 크게 흔들린다.
 - → 모델을 바꿔도 안 된다 (A5도 0.040). **scooter 데이터를 늘려야 한다.**
 
-![scooter 오답 예시](docs/report/fp_scooter.jpg)
+![scooter 오답 예시](IMG/fp_scooter.jpg)
 
-#### ④ stairs: 원본 라벨이 틀렸다
+### ④ stairs: 원본 라벨이 틀렸다
 
 stairs 라벨은 전부 Surface 데이터(S1.zip)에서 왔다. 원본 라벨을 원본 이미지에 그려 보면 **실제 계단은 3분의 1 정도**이고, 나머지는 가로수 보호판·맨홀·연석에 stairs가 붙어 있다. 보행 영상(Polygon)에는 계단 라벨이 아예 없어서, 거기 찍힌 계단은 배경으로 학습된다.
 
-![stairs 원본 라벨 (빨간 선)](docs/report/stairs_label_noise.jpg)
+![stairs 원본 라벨 (빨간 선)](IMG/stairs_label_noise.jpg)
 
 → **재라벨링이 먼저다.** 372장이라 몇 시간이면 된다.
 
-#### 원인이 아닌 것
+### 원인이 아닌 것
 
 - **흐림**: 흐린 물체 0.2% (대부분 야간 장면)
 - **조명**: 어두운 프레임 0.4%. "어두운 물체"는 대부분 원래 색이 검은 기둥
 - **화면 밖으로 잘림**: 잘린 물체를 오히려 더 잘 찾음 (잘린 것은 대부분 큰 물체)
 - **카메라 종류**: 스마트폰과 ZED의 차이가 작음
 
-### 6. 참고: 1차 pilot (인코더 비교)
+## 6. 참고: 1차 pilot (인코더 비교)
 
 본 실험 전에, 적은 데이터(사진 996장, 30 epoch)로 인코더 8종을 두 방식으로 비교했다.
 
-![1차 pilot](docs/report/pilot.png)
+![1차 pilot](IMG/pilot.png)
 
 - **fusion** (추론에도 인코더 사용): 8개 모두 E0보다 상승 (+0.03 ~ +0.07)
 - **distill** (학습에만 인코더 사용, 추론은 YOLO만): 8개 모두 효과 없음 (±0.008)
 - 그래서 최종 실험은 fusion 중 **상업 이용이 가능하면서 가장 빠른 C-RADIOv3 (A5)** 로 진행했다.
 
-### 7. 결론과 다음 할 일
+## 7. 결론과 다음 할 일
 
 | | 판단 |
 |---|---|
@@ -210,7 +191,7 @@ stairs 라벨은 전부 Surface 데이터(S1.zip)에서 왔다. 원본 라벨을
 4. test 라벨 보완 (라바콘·신호등 뒷면 등)
 5. traffic_light 개선을 위해 입력 해상도 960~1280px 실험
 
-### 부록: 파일 위치
+## 부록: 파일 위치
 
 | 무엇 | 어디 |
 |---|---|
