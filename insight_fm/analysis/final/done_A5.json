@@ -1,0 +1,63 @@
+{
+  "id": "A5",
+  "seed": 0,
+  "mode": "fusion",
+  "encoder": "c-radio_v3-b",
+  "lam": 1.0,
+  "data": "/home/ubuntu/sg/yolo10/pilot/data.yaml",
+  "eval_split": "test",
+  "weights": "/home/ubuntu/repo/insight_fm/runs10/final/A5_s0/weights/best.pt",
+  "mask_map50": 0.5681,
+  "mask_map50_95": 0.3305,
+  "box_map50": 0.6241,
+  "box_map50_95": 0.4331,
+  "per_class": {
+    "person": {
+      "mask_ap50": 0.7786,
+      "mask_ap50_95": 0.4625
+    },
+    "bicycle": {
+      "mask_ap50": 0.5357,
+      "mask_ap50_95": 0.2362
+    },
+    "scooter": {
+      "mask_ap50": 0.1537,
+      "mask_ap50_95": 0.0395
+    },
+    "motorcycle": {
+      "mask_ap50": 0.6977,
+      "mask_ap50_95": 0.3775
+    },
+    "car": {
+      "mask_ap50": 0.849,
+      "mask_ap50_95": 0.5858
+    },
+    "bus": {
+      "mask_ap50": 0.6406,
+      "mask_ap50_95": 0.4275
+    },
+    "other_vehicle": {
+      "mask_ap50": 0.6201,
+      "mask_ap50_95": 0.414
+    },
+    "obstacle": {
+      "mask_ap50": 0.6468,
+      "mask_ap50_95": 0.3758
+    },
+    "stairs": {
+      "mask_ap50": 0.3136,
+      "mask_ap50_95": 0.2103
+    },
+    "traffic_light": {
+      "mask_ap50": 0.4455,
+      "mask_ap50_95": 0.1755
+    }
+  },
+  "missing_classes_in_eval": [],
+  "train_hours_this_session": 3.78,
+  "latency_ms_bs1_fp16": 25.28,
+  "fps_bs1_fp16": 39.6,
+  "params_yolo": 10070686,
+  "params_adapter_used_at_inference": 1186304,
+  "params_fm_used_at_inference": 98254848
+}

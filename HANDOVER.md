@@ -3,7 +3,7 @@
 > 이 문서만 읽고 작업을 이어받을 수 있도록 쓴 보고서다. 무엇을 했고, 무엇이 되고 안 되는지, 왜 그런지, 숫자는 어디서 나왔는지, 어떻게 다시 돌리는지를 모두 담았다.
 > 숫자 옆의 경로는 그 숫자를 만든 파일이다. 같은 명령을 다시 실행하면 같은 숫자가 나온다.
 >
-> 작성: 2026-10-04. **⏳ 표시는 학습 진행 중이라 결과가 나오면 채울 부분**(최종 학습 E0 / A5, 오류 분석, 추론 속도).
+> 작성: 2026-10-04. 모든 실험·분석 완료.
 
 ---
 
@@ -14,10 +14,11 @@
 | 무엇을 하나 | 시각장애인 보행 보조용 분할 모델(YOLO11s-seg)에 Foundation Model(FM) 인코더를 붙이면 성능이 오르는지 실험 |
 | 데이터 | AI Hub 「인도보행 영상」(dataSetSn 189). 라벨된 사진 92,772장, 영상 1,955개, 객체 581,529개 |
 | 1차 결과 (10클래스, 소량 데이터) | **FM을 추론에도 쓰는 fusion은 7개 모두 baseline보다 좋음**(mask mAP50-95 0.283 → 0.313~0.358). **FM을 학습 때만 쓰는 distill은 효과 없음**(±0.008) |
-| 지금 진행 중 | 최종 학습: 10클래스 라벨을 모두 유지하고, scooter·stairs·traffic_light가 든 train 사진 전부(8,120장)로 E0(100 epoch)와 C-RADIOv3 fusion A5(70 epoch)를 동시에 학습, test 13,721장으로 평가. 이후 추론 속도 비교 |
-| mAP가 낮은 이유 (데이터에서 확인됨) | ① **작은 객체**: traffic_light 89%가 박스 짧은 변 16px 미만 ② **라벨 노이즈**: stairs 라벨의 상당수가 실제로는 맨홀·가로수 보호판·연석 (AI Hub 원본 라벨 문제) ③ **극소량 클래스**: scooter 사진 224장(영상 124개), stairs 372장 ④ **obstacle은 생김새가 다른 15종을 합친 클래스** ⏳ 최종 모델의 오류 분석으로 확인 예정 |
+| 최종 결과 (10클래스, test 13,721장) | mask mAP50-95: **E0 0.308 → A5(C-RADIOv3 fusion) 0.331 (+0.023)**. 10개 중 9개 클래스에서 A5가 높음 |
+| 추론 속도 (A5000, 640, batch 1) | E0 **13.4ms(75 FPS)** vs A5 **22.5ms(44 FPS)**, 실제 이미지 end-to-end 기준. CPU 4스레드에서는 E0 0.29초 vs A5 **2.87초**(약 10배) |
+| mAP가 낮은 이유 (실제 이미지와 오류 분석으로 확인) | ① **라벨 누락**: 모델이 찾은 라바콘·기둥·벤치·신호등 뒷면·Polygon 영상의 계단이 정답에 없어 오검출로 처리됨 → 실제 성능은 숫자보다 좋음 ② **작은 객체**: 짧은 변 16px 미만은 대부분 못 찾음, traffic_light는 89%가 16px 미만 ③ **scooter는 데이터 부족 + 오토바이·자전거와 혼동**(train 144장, AP 0.04) ④ **stairs 라벨 오류**(원본의 상당수가 맨홀·보호판·연석) |
 | 문제가 아닌 것 | 흐림(흐린 객체 0.2%, 대부분 야간), 어두운 프레임(0.4%) |
-| 가장 먼저 할 일 | ⏳ 최종 결과 확인 → stairs 재라벨링 여부 결정 → 배포 기기(노트북 CPU)에서 속도 실측 |
+| 가장 먼저 할 일 | 배포 기기(노트북 CPU)에서 속도 실측 → fusion 사용 여부 결정 → stairs 재라벨링, scooter 데이터 보강 |
 
 ---
 
@@ -182,9 +183,9 @@
 - 인코더 두 개 결합(A3a/A3b)은 하나보다 낫지 않고 느리다.
 - scooter·traffic_light는 모든 모델에서 AP 0.1~0.19.
 
-**한계**: seed 1개, val 443장 → ±0.01 이하 차이는 믿지 말 것. 지연은 GPU 기준이고, 노트북 CPU에서는 fusion이 훨씬 더 느려진다(⏳ 6장).
+**한계**: seed 1개, val 443장 → ±0.01 이하 차이는 믿지 말 것. 지연은 GPU 기준이고, 노트북 CPU에서는 fusion이 훨씬 더 느려진다(6장).
 
-### 5.3 최종 학습 (진행 중, 2026-10-04)
+### 5.3 최종 학습 (2026-10-04)
 
 | 항목 | 설정 |
 |---|---|
@@ -198,21 +199,99 @@
 
 | ID | mask mAP50-95 (test) | mAP50 | scooter | stairs | obstacle | other_vehicle | traffic_light |
 |---|---|---|---|---|---|---|---|
-| E0 | ⏳ | | | | | | |
-| A5 | ⏳ | | | | | | |
+| **E0** | 0.308 | 0.534 | 0.037 | 0.219 | 0.363 | 0.379 | 0.165 |
+| **A5** | **0.331** | **0.568** | 0.040 | 0.210 | 0.376 | 0.414 | 0.176 |
 
-⏳ 결과가 나오면: 10개 클래스 전체 표, 학습 곡선(과적합 여부), 혼동 행렬, 크기·잘림·밝기·카메라별 recall, 오검출 사례(`insight_fm/eval_errors.py`).
+10개 클래스 전체 (mask AP50-95):
 
-## 6. 추론 속도 ⏳
+| 클래스 | E0 | A5 | 차이 |
+|---|---|---|---|
+| car | 0.577 | 0.586 | +0.009 |
+| person | 0.437 | 0.463 | +0.026 |
+| bus | 0.390 | 0.428 | +0.038 |
+| other_vehicle | 0.379 | 0.414 | +0.035 |
+| obstacle | 0.363 | 0.376 | +0.013 |
+| motorcycle | 0.302 | 0.378 | **+0.075** |
+| bicycle | 0.209 | 0.236 | +0.027 |
+| stairs | 0.219 | 0.210 | −0.009 |
+| traffic_light | 0.165 | 0.176 | +0.011 |
+| scooter | 0.037 | 0.040 | +0.003 |
+| **전체** | **0.308** | **0.331** | **+0.023** |
 
-`insight_fm/bench_speed.py`가 학습이 모두 끝난 뒤(GPU가 빈 상태) 자동으로 잰다(`run_final10.sh` 마지막 단계). 결과는 `results/speed10/speed.md`, Drive `gdrive:sideguide/runs_final10/results/speed10/`.
+- E0: 100 epoch 완주, best epoch 73. A5: 61 epoch에서 patience로 정지, best epoch 56. 둘 다 best 가중치로 평가.
+- 학습 곡선: [`analysis/final/learning_curve.png`](insight_fm/analysis/final/learning_curve.png). E0는 73 epoch 이후 val loss가 다시 오른다(과적합). A5는 처음부터 E0보다 val 점수가 높고 더 빨리 수렴한다.
+- 혼동 행렬: `analysis/final/confusion_E0.png`, `confusion_A5.png`. 원본 수치: `analysis/final/final_summary.csv`, `done_E0.json`, `done_A5.json`
+- 모델 가중치: `gdrive:sideguide/runs_final10/<E0_s0|A5_s0>/weights/best.pt`
+- 1차 pilot(train 996장, 30 epoch, pilot val)보다 점수가 높은 것은 학습 데이터 8배·epoch 증가 효과이며, 평가셋이 달라 직접 비교는 하지 않는다.
 
-측정 항목: GPU FP16/FP32 bs1 지연과 E0 대비 배수, GPU bs8 처리량, 실제 test 이미지 end-to-end(전처리+추론+NMS·마스크 후처리), A5에서 C-RADIO가 차지하는 시간·비율, CPU 4/8스레드(노트북 대용, 실제 노트북과 다를 수 있음), 파라미터·GFLOPs.
+### 5.4 오류 분석: mAP가 왜 낮은가 (최종 E0 기준, A5도 경향 동일)
 
-| 모델 | GPU FP16 (ms) | E0 대비 | end-to-end (ms / FPS) | CPU 4스레드 (ms) | FM 비중 |
+test 전체에서 정답 객체마다 찾았는지(confidence ≥ 0.25, 같은 클래스 박스 IoU ≥ 0.5), 예측마다 정답이 있었는지 판정했다(`insight_fm/eval_errors.py`). 결과: [`analysis/final/errors_E0/errors.md`](insight_fm/analysis/final/errors_E0/errors.md), [`errors_A5/errors.md`](insight_fm/analysis/final/errors_A5/errors.md), 객체별 원본 `gdrive:sideguide/runs_final10/analysis/`.
+
+| 클래스 | 정답 객체 | 찾음 (recall) | 오검출 (FP) | 정답 1개당 FP | precision |
 |---|---|---|---|---|---|
-| E0 | ⏳ | | | | – |
-| A5 | ⏳ | | | | |
+| person | 7,174 | 74.9% | 1,537 | 0.21 | 77.8% |
+| car | 22,566 | 83.3% | 6,815 | 0.30 | 73.4% |
+| obstacle | 43,540 | 65.0% | 14,844 | 0.34 | 65.6% |
+| other_vehicle | 5,317 | 57.8% | 1,682 | 0.32 | 64.6% |
+| bus | 1,978 | 55.0% | 528 | 0.27 | 67.3% |
+| motorcycle | 1,394 | 66.3% | 799 | 0.57 | 53.6% |
+| bicycle | 1,600 | 57.6% | 680 | 0.42 | 57.6% |
+| traffic_light | 4,193 | 78.6% | 3,787 | 0.90 | 46.5% |
+| stairs | 79 | 43.0% | 80 | 1.01 | 29.8% |
+| **scooter** | **94** | **36.2%** | **312** | **3.32** | **9.8%** |
+
+**원인 1. 라벨 누락 → 맞게 찾아도 오검출로 처리 (평가 수치를 깎음)**
+- **obstacle** 오검출 상위 40개는 대부분 **실제 장애물**(라바콘, 고가 기둥, 벤치, 분전함, 입간판, 볼라드)인데 정답 라벨이 없다(`errors_E0/fp_obstacle.jpg`). 라바콘은 AI Hub 원본 라벨 목록에 아예 없다.
+- **traffic_light** 오검출은 대부분 **라벨 안 된 신호등**(옆면·뒷면·멀리 있는 것)과 **횡단보도 표지판**이다(`fp_traffic_light.jpg`). traffic_sign을 학습에서 뺐기 때문에 표지판을 구분할 근거가 없다.
+- **stairs** 오검출에는 **진짜 계단이 많다**(Polygon 영상에는 계단 라벨이 없음). 나머지는 연석·맨홀·배수구로, 학습 라벨(4.1절)이 그렇게 가르쳤다(`fp_stairs.jpg`).
+- → 모델보다 **평가 데이터의 한계**다. 실제 성능은 숫자보다 좋다. 정확히 재려면 test 일부라도 라벨을 보완해야 한다.
+
+**원인 2. 작은 객체 (크기별 recall, 박스 짧은 변 기준)**
+
+| 클래스 | 0~8px | 8~16px | 16~32px | 32~64px | 64px 이상 |
+|---|---|---|---|---|---|
+| person | 25.8% | 68.4% | 83.0% | 88.6% | 94.2% |
+| car | 16.3% | 65.6% | 87.2% | 93.2% | 97.0% |
+| bicycle | 0.0% | 24.1% | 56.1% | 78.1% | 82.0% |
+| other_vehicle | 3.2% | 18.3% | 53.4% | 70.3% | 81.9% |
+| obstacle | 41.4% | 64.4% | 73.2% | 75.6% | 74.8% |
+| scooter | 0.0% | 10.5% | 30.8% | 70.4% | 45.5% |
+| traffic_light | 75.4% | 82.4% | 89.1% | 97.9% | – |
+
+- 16px 미만이면 대부분 클래스가 크게 떨어진다. 데이터에서 16px 미만 비율은 traffic_light 89%, obstacle 48%, person 39%, scooter 31%(3장).
+- **traffic_light는 8px 이하도 75%를 찾는데 mask AP50-95는 0.17**이다. 4~8px 객체는 마스크 경계가 1~2px만 어긋나도 IoU가 크게 떨어지기 때문. → 입력 해상도(960~1280)를 올리면 직접적으로 좋아질 부분.
+
+**원인 3. scooter: 데이터 부족 + 비슷한 클래스와 혼동**
+- train에 사진 144장(객체 197개)뿐이다. motorcycle 476장, bicycle 593장과 비교해 너무 적다.
+- 오검출 312개 중 **49%가 다른 클래스 정답(오토바이·자전거·사람)과 겹친다**: 오토바이·자전거를 scooter로 잘못 부른다. 나머지는 손수레·유모차·어린이 탈것(`fp_scooter.jpg`).
+- 놓친 scooter는 줄지어 세워진 공유 킥보드(가늘고 겹침)와 아주 작은 것이 대부분이다(`missed_scooter.jpg`). 3×1px 같은 잘못된 라벨도 섞여 있다.
+- test 정답이 94개(사진 33장)뿐이라 AP 자체도 몇 개 차이로 크게 흔들린다.
+- → 모델 구조로는 안 풀린다(A5도 0.040). **scooter 데이터 추가가 필요하다.**
+
+**원인 4. 과적합 (E0)**: 73 epoch 이후 val loss 상승. best 가중치를 쓰므로 결과에는 영향 없음.
+
+**원인이 아닌 것**: 잘림(잘린 객체 recall이 오히려 높음, 큰 객체가 잘리기 때문), 밝기(어두운 객체가 조금 낮지만 other_vehicle 43% vs 61% 정도), 카메라 종류(대체로 스마트폰이 ZED보다 높지만 차이는 −2~+14%p, 큰 차이는 other_vehicle·bus).
+
+## 6. 추론 속도 (E0 vs C-RADIO fusion A5)
+
+학습이 모두 끝난 뒤 GPU가 빈 상태에서 모델을 하나씩 측정(`insight_fm/bench_speed.py`). 결과: [`analysis/final/speed.md`](insight_fm/analysis/final/speed.md), `speed.csv`.
+
+| 항목 | E0 (YOLO11s-seg) | A5 (+ C-RADIOv3-B) | 배수 |
+|---|---|---|---|
+| 파라미터 (YOLO + FM) | 10.1M | 108.3M | 10.7x |
+| 연산량 (640×640 1장) | 32.9 GFLOPs | 408 GFLOPs | 12.4x |
+| **GPU FP16, 모델만** | **11.1 ms** | **21.1 ms** | **1.91x** |
+| GPU FP32, 모델만 | 10.4 ms | 20.2 ms | 1.94x |
+| GPU FP16, 8장 묶음 처리량 | 555 장/초 | 93 장/초 | 0.17x |
+| **실제 이미지 end-to-end** (전처리+추론+NMS·마스크) | **13.4 ms (75 FPS)** | **22.5 ms (44 FPS)** | 1.68x |
+| **CPU 4스레드, 모델만** | **294 ms (3.4 FPS)** | **2,867 ms (0.35 FPS)** | **9.8x** |
+| CPU 8스레드, 모델만 | 195 ms (5.1 FPS) | 1,615 ms (0.6 FPS) | 8.3x |
+
+- A5의 GPU 시간 21.1ms 중 **C-RADIO 인코더가 10.1ms(48%)**. CPU 4스레드에서는 C-RADIO만 2,539ms로 대부분을 차지한다.
+- **GPU에서는 A5도 44 FPS로 실시간 가능.** 정확도 +0.023을 위해 속도를 약 절반으로 쓰는 셈.
+- **CPU에서는 A5가 1초에 1장도 처리하지 못한다.** 노트북 CPU 배포가 목표라면 fusion은 그대로 쓸 수 없다(E0도 CPU 4스레드 PyTorch로는 3.4 FPS라 OpenVINO 변환이 필요).
+- CPU 수치는 서버 CPU의 스레드 수를 제한해 잰 값이다. 실제 그램 노트북과 다를 수 있어 **실측이 필요**하다. GPU 측정은 batch 1, 640×640, 210장 중 앞 10장을 워밍업으로 제외한 중앙값.
 
 ## 7. 재현 방법 (서버)
 
@@ -239,8 +318,8 @@ read -s -p "HF token: " HF_TOKEN && export HF_TOKEN; echo     # DINOv3만 필요
 bash setup.sh            # deps → data(약 1시간: zip 15개 받고 640px 추출, zip은 지움) → hf → prefetch → selftest → build
 python run_all.py --phase pilot          # 1차 pilot 재현
 # 최종 학습 (10클래스, 8,120장, 100 epoch, test 평가): tools/run_final10.sh와 같음
-python run_all.py --phase final --ids E0
-python run_all.py --phase final --ids A5
+python run_all.py --phase final --final-epochs 100 --final-patience 30 --ids E0
+python run_all.py --phase final --final-epochs 70 --final-patience 15 --ids A5
 python eval_errors.py --weights runs/final/E0_s0/weights/best.pt --data ~/sg/yolo/full --out analysis/errors_E0
 python bench_speed.py --runs runs/final --images ~/sg/yolo/full/images/test --out results/speed
 ```
@@ -284,23 +363,25 @@ python bench_speed.py --runs runs/final --images ~/sg/yolo/full/images/test --ou
 
 | | 판단 | 근거 |
 |---|---|---|
-| ✅ FM fusion | 성능 확실히 오름 | 1차 pilot 7/7개 +0.03~+0.07 |
-| ⚠️ FM fusion 실사용 | 속도가 관건 | GPU에서 약 2배, CPU에서는 더 느림(⏳ 실측) |
-| ❌ FM distill | 1차에서 효과 없음 | 8/8개 ±0.008. 최종 학습에서는 제외 |
-| ❌ traffic_light | 구조적으로 어려움 | 89%가 16px 미만. 입력 해상도를 올리거나(960~1280) 타일/크롭 추론이 필요 |
-| ❌ stairs | 라벨이 틀림 | 원본 라벨의 상당수가 맨홀·보호판·연석. 재라벨링 필요 |
-| ⚠️ scooter | 데이터 절대량 부족 | 사진 224장. 추가 수집 또는 외부 데이터 필요 |
-| ⚠️ obstacle | 클래스가 너무 넓음 | 15종 혼합, 가는 기둥형 객체 다수 |
-| ✅ 흐림·조명 | 문제 아님 | 흐린 객체 0.2%, 어두운 프레임 0.4% |
+| ✅ FM fusion (C-RADIOv3) | 성능 확실히 오름 | 최종 test +0.023, 10개 중 9개 클래스 상승. 1차 pilot에서도 fusion 7/7개 상승 |
+| ✅ GPU 실시간 | 가능 | A5도 end-to-end 44 FPS (E0 75 FPS) |
+| ❌ CPU에서 fusion | 사실상 불가 | CPU 4스레드 2.9초/장 (E0의 약 10배). 노트북 CPU 배포라면 E0(+OpenVINO)만 현실적 |
+| ❌ FM distill | 효과 없음 | 1차 pilot 8/8개 ±0.008. 최종 학습에서는 제외 |
+| ⚠️ 평가 수치 | 실제보다 낮게 나옴 | 라벨 누락(라바콘·기둥·신호등 뒷면·계단)을 맞게 찾아도 오검출 처리 |
+| ❌ traffic_light | 작은 객체 문제 | 89%가 16px 미만. 위치는 79% 찾지만 마스크 정밀도에서 손해 → 해상도 상향 필요 |
+| ❌ stairs | 라벨이 틀림 | 원본 라벨의 상당수가 맨홀·보호판·연석, Polygon 영상의 계단은 라벨 없음 → 재라벨링 필요 |
+| ❌ scooter | 데이터 부족 + 혼동 | train 144장, 오토바이·자전거와 혼동, test 94개라 수치도 불안정 → 데이터 추가 필요 |
+| ⚠️ obstacle | 클래스가 넓음 | 15종 혼합, 가는 기둥형 객체 다수, 라벨 누락 많음 |
+| ✅ 흐림·조명·카메라 | 문제 아님 | 흐린 객체 0.2%, 어두운 프레임 0.4%, 카메라별 차이 작음 |
 
 ## 10. 다음에 할 일 (우선순위)
 
-1. ⏳ 최종 결과(E0/A5), 오류 분석, 속도 확인 후 5.3·6장 채우기.
-2. **stairs 재라벨링**(372장, 몇 시간): 계단만 남기고, Polygon 영상 중 계단이 보이는 프레임도 추가 라벨. 이게 안 되면 stairs 수치는 의미가 없다.
-3. **노트북(그램) CPU에서 E0 / A5 FPS 실측.** fusion을 쓸 수 있는지는 이 숫자로 결정된다.
-4. traffic_light: imgsz 960 또는 1280으로 E0 재학습해 비교(작은 객체 개선 여부).
-5. obstacle 세분화 검토(기둥형 / 낮은 장애물 / 큰 구조물).
-6. traffic_sign(38,918개, 현재 미사용) 추가 검토.
+1. **노트북(그램) CPU에서 E0 / A5 실측** (OpenVINO 변환 포함). fusion을 쓸 수 있는지는 이 숫자로 결정된다. 모델은 Drive `runs_final10/`.
+2. **stairs 재라벨링**(372장, 몇 시간): 계단만 남기고, Polygon 영상 중 계단이 보이는 프레임도 추가 라벨.
+3. **scooter 데이터 보강**: 외부 데이터 또는 추가 라벨링. 지금 양(144장)으로는 어떤 모델도 안 된다.
+4. **test 라벨 보완**(일부라도): 라바콘·신호등 뒷면 등 누락 라벨을 채워야 성능을 제대로 잴 수 있다.
+5. traffic_light: imgsz 960 또는 1280으로 재학습해 비교(작은 객체 개선 여부).
+6. obstacle 세분화(기둥형 / 낮은 장애물 / 큰 구조물), traffic_sign 클래스 추가 검토.
 
 ## 11. 계정·자격 증명 (값은 적지 않음)
 

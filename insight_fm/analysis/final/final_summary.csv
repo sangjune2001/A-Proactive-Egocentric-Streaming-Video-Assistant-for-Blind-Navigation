@@ -1,0 +1,3 @@
+id,mode,encoder,seeds,mask_map50_95,mask_map50_95_std,mask_map50,mask_map50_std,box_map50_95,box_map50_95_std,person_ap,bicycle_ap,scooter_ap,motorcycle_ap,car_ap,bus_ap,other_vehicle_ap,obstacle_ap,stairs_ap,traffic_light_ap,latency_ms_bs1_fp16,fps_bs1_fp16,params_fm_used_at_inference,delta_vs_E0
+A5,fusion,c-radio_v3-b,1,0.3305,0.0,0.5681,0.0,0.4331,0.0,0.4625,0.2362,0.0395,0.3775,0.5858,0.4275,0.414,0.3758,0.2103,0.1755,25.28,39.6,98254848,0.0226
+E0,none,-,1,0.3079,0.0,0.5344,0.0,0.4041,0.0,0.4373,0.2094,0.0374,0.3023,0.5771,0.3899,0.379,0.3628,0.2187,0.1651,13.77,72.6,0,0.0
