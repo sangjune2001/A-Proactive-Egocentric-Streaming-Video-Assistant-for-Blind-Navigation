@@ -1,0 +1,109 @@
+{
+ "clip": "c09_bike_on_tactile",
+ "version": 3,
+ "W": 720,
+ "H": 1280,
+ "events": [
+  {
+   "id": 2,
+   "kind": "warn",
+   "scenario": "S2",
+   "tier": "clear",
+   "t_start": 13.79,
+   "t_end": 15.53,
+   "target_coarse": "obstacle",
+   "target_fine": "parked_scooter",
+   "target_ok": [
+    "parked_scooter",
+    "scooter",
+    "motorcycle",
+    "parked_bicycle",
+    "bicycle"
+   ],
+   "motion": "static",
+   "direction": "front",
+   "direction_src": "manual",
+   "target_track": null,
+   "action_ok": [
+    "veer_left",
+    "veer_right",
+    "stop"
+   ],
+   "text_ref": "Bicycle ahead at the end of the tactile path. Please veer left to avoid.",
+   "annotator": "claude-draft",
+   "note": "점자블록 끝 노란 전동스쿠터 (정답 문장은 bicycle), 검출 없음 · 트랙 164는 가로수",
+   "src": "viabench"
+  },
+  {
+   "id": 6,
+   "kind": "warn",
+   "scenario": "S2",
+   "tier": "ambiguous",
+   "t_start": 33.54,
+   "t_end": 34.98,
+   "target_coarse": "obstacle",
+   "target_fine": "parked_scooter",
+   "target_ok": [
+    "parked_scooter",
+    "scooter",
+    "motorcycle"
+   ],
+   "motion": "static",
+   "direction": "left",
+   "direction_src": "bbox",
+   "target_track": {
+    "track_id": 626,
+    "bbox": [
+     113.6,
+     113.3,
+     322.9,
+     443.8
+    ]
+   },
+   "action_ok": [
+    "veer_right",
+    "caution"
+   ],
+   "text_ref": "Electric vehicle ahead, please be cautious.",
+   "annotator": "claude-draft",
+   "note": "왼쪽 앞 주차 전동스쿠터, tier ambiguous",
+   "src": "viabench"
+  },
+  {
+   "id": 8,
+   "kind": "warn",
+   "scenario": "S2",
+   "tier": "clear",
+   "t_start": 36.33,
+   "t_end": 38.59,
+   "target_coarse": "obstacle",
+   "target_fine": "parked_scooter",
+   "target_ok": [
+    "parked_scooter",
+    "scooter",
+    "motorcycle"
+   ],
+   "motion": "static",
+   "direction": "front",
+   "direction_src": "bbox",
+   "target_track": {
+    "track_id": 723,
+    "bbox": [
+     77.2,
+     58.0,
+     444.3,
+     562.7
+    ]
+   },
+   "action_ok": [
+    "veer_left",
+    "veer_right",
+    "stop"
+   ],
+   "text_ref": "There is an electric scooter ahead, please walk on the right side.",
+   "annotator": "claude-draft",
+   "note": "정면 주차 전동스쿠터",
+   "src": "viabench"
+  }
+ ]
+}

@@ -1,0 +1,97 @@
+{
+ "clip": "c07_light_rg",
+ "file": "신호등 변화(빨-초).mp4",
+ "viabench_id": "3_douyin_2_c/0434",
+ "events": [
+  {
+   "t_start": 2.87,
+   "t_end": 23.09,
+   "src": "viabench",
+   "viabench_task": "Pedestrian Traffic Light",
+   "text": "The upcoming intersection has a red light, please wait.",
+   "scenario": "S3",
+   "kind": "neutral",
+   "state": "STOP",
+   "review": false,
+   "id": 1
+  },
+  {
+   "t_start": 23.26,
+   "t_end": 27.29,
+   "src": "viabench",
+   "viabench_task": "Pedestrian Traffic Light",
+   "text": "The red light ahead has turned green, you may cross the street.",
+   "scenario": "S3",
+   "kind": "warn",
+   "state": "GO",
+   "review": false,
+   "id": 2
+  },
+  {
+   "t_start": 28.07,
+   "t_end": 29.08,
+   "src": "viabench",
+   "viabench_task": "Direction Deviation",
+   "text": "You have veered towards the 2 o'clock direction, moving away from the crosswalk into a non-crosswalk area.",
+   "scenario": "-",
+   "kind": "neutral",
+   "review": false,
+   "id": 3
+  },
+  {
+   "t_start": 29.92,
+   "t_end": 30.74,
+   "src": "viabench",
+   "viabench_task": "Direction Deviation",
+   "text": "You have veered towards the 3 o'clock direction, heading into a non-crosswalk area.",
+   "scenario": "-",
+   "kind": "neutral",
+   "review": false,
+   "id": 4
+  },
+  {
+   "t_start": 30.53,
+   "t_end": 30.53,
+   "src": "viabench",
+   "viabench_task": "Crosswalk",
+   "text": "You have left the crosswalk area. Please turn left to return to the crosswalk area.",
+   "scenario": "-",
+   "kind": "neutral",
+   "review": false,
+   "id": 5
+  },
+  {
+   "t_start": 42.88,
+   "t_end": 44.41,
+   "src": "viabench",
+   "viabench_task": "Crossing to Other Side",
+   "text": "Approaching the other side of the street ahead.",
+   "scenario": "-",
+   "kind": "neutral",
+   "review": false,
+   "id": 6
+  },
+  {
+   "t_start": 42.88,
+   "t_end": 44.78,
+   "src": "viabench",
+   "viabench_task": "Stairs Up/Down",
+   "text": "Step up ahead",
+   "scenario": "S4",
+   "kind": "warn",
+   "review": false,
+   "id": 7
+  },
+  {
+   "t_start": 46.53,
+   "t_end": 47.69,
+   "src": "viabench",
+   "viabench_task": "Blind Path Recognition",
+   "text": "The tactile paving is ahead of you.",
+   "scenario": "-",
+   "kind": "neutral",
+   "review": false,
+   "id": 8
+  }
+ ]
+}

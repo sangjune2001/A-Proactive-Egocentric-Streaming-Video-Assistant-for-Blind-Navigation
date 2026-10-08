@@ -1,0 +1,100 @@
+{
+ "clip": "c09_bike_on_tactile",
+ "file": "점자위에자전거.mp4",
+ "viabench_id": "3_douyin_2_c/0503",
+ "events": [
+  {
+   "t_start": 11.93,
+   "t_end": 13.66,
+   "src": "viabench",
+   "viabench_task": "Obstacle Alert",
+   "text": "Tree ahead on the left, please be cautious.",
+   "scenario": "S2",
+   "kind": "neutral",
+   "review": true,
+   "id": 1
+  },
+  {
+   "t_start": 13.79,
+   "t_end": 15.53,
+   "src": "viabench",
+   "viabench_task": "Active Avoidance",
+   "text": "Bicycle ahead at the end of the tactile path. Please veer left to avoid.",
+   "scenario": "S2",
+   "kind": "warn",
+   "review": true,
+   "tier": "clear",
+   "id": 2
+  },
+  {
+   "t_start": 21.95,
+   "t_end": 23.42,
+   "src": "viabench",
+   "viabench_task": "Direction Deviation",
+   "text": "You have veered towards the 1 o'clock direction, heading towards a bicycle.",
+   "scenario": "-",
+   "kind": "neutral",
+   "review": false,
+   "id": 3
+  },
+  {
+   "t_start": 27.74,
+   "t_end": 28.67,
+   "src": "viabench",
+   "viabench_task": "Obstacle Alert",
+   "text": "Bicycle ahead on the right",
+   "scenario": "S2",
+   "kind": "neutral",
+   "review": true,
+   "id": 4
+  },
+  {
+   "t_start": 32.24,
+   "t_end": 32.8,
+   "src": "viabench",
+   "viabench_task": "Active Avoidance",
+   "text": "There is a tree on the left, please walk on the right side.",
+   "scenario": "S2",
+   "kind": "neutral",
+   "review": true,
+   "note": "왼쪽 옆 가로수 — 옆 장애물",
+   "id": 5
+  },
+  {
+   "t_start": 33.54,
+   "t_end": 34.98,
+   "src": "viabench",
+   "viabench_task": "Obstacle Alert",
+   "text": "Electric vehicle ahead, please be cautious.",
+   "scenario": "S2",
+   "kind": "warn",
+   "review": true,
+   "tier": "ambiguous",
+   "note": "왼쪽 앞 주차 전동차",
+   "id": 6
+  },
+  {
+   "t_start": 35.25,
+   "t_end": 40.73,
+   "src": "viabench",
+   "viabench_task": "Direction Deviation",
+   "text": "You have veered towards the 11 o'clock direction, ahead is an electric scooter.",
+   "scenario": "-",
+   "kind": "neutral",
+   "review": false,
+   "id": 7
+  },
+  {
+   "t_start": 36.33,
+   "t_end": 38.59,
+   "src": "viabench",
+   "viabench_task": "Active Avoidance",
+   "text": "There is an electric scooter ahead, please walk on the right side.",
+   "scenario": "S2",
+   "kind": "warn",
+   "review": true,
+   "tier": "clear",
+   "id": 8
+  }
+ ]
+}

@@ -1,0 +1,75 @@
+{
+ "clip": "c08_light_rgr_night",
+ "file": "신호등(빨-초-빨).mp4",
+ "viabench_id": "3_douyin_2_c/0470",
+ "events": [
+  {
+   "t_start": 1.84,
+   "t_end": 5.35,
+   "src": "viabench",
+   "viabench_task": "Pedestrian Traffic Light",
+   "text": "Traffic light ahead is red.",
+   "scenario": "S3",
+   "kind": "neutral",
+   "state": "STOP",
+   "review": false,
+   "id": 1
+  },
+  {
+   "t_start": 5.35,
+   "t_end": 5.56,
+   "src": "viabench",
+   "viabench_task": "Pedestrian Traffic Light",
+   "text": "The red light ahead is turning green.",
+   "scenario": "S3",
+   "kind": "warn",
+   "state": "GO",
+   "review": false,
+   "id": 2
+  },
+  {
+   "t_start": 24.88,
+   "t_end": 27.36,
+   "src": "viabench",
+   "viabench_task": "Crossing to Other Side",
+   "text": "Approaching the other side of the street ahead.",
+   "scenario": "-",
+   "kind": "neutral",
+   "review": false,
+   "id": 3
+  },
+  {
+   "t_start": 32.44,
+   "t_end": 34.13,
+   "src": "viabench",
+   "viabench_task": "Stairs Up/Down",
+   "text": "Steps ahead.",
+   "scenario": "S4",
+   "kind": "warn",
+   "review": false,
+   "id": 4
+  },
+  {
+   "t_start": 33.48,
+   "t_end": 34.53,
+   "src": "viabench",
+   "viabench_task": "Obstacle Alert",
+   "text": "There is a stone pillar ahead on the left, please be cautious.",
+   "scenario": "S2",
+   "kind": "neutral",
+   "review": true,
+   "id": 5
+  },
+  {
+   "t_start": 37.58,
+   "t_end": 38.68,
+   "src": "viabench",
+   "viabench_task": "Direction Guidance",
+   "text": "The tactile path ahead turns left and right.",
+   "scenario": "-",
+   "kind": "neutral",
+   "review": false,
+   "id": 6
+  }
+ ]
+}

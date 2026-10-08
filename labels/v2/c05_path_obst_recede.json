@@ -1,0 +1,77 @@
+{
+ "clip": "c05_path_obst_recede",
+ "file": "보행경로 장애물접근 + 멀어지는 vehcile.mp4",
+ "viabench_id": "3_douyin_2_c/0443",
+ "events": [
+  {
+   "t_start": 3.22,
+   "t_end": 4.85,
+   "src": "viabench",
+   "viabench_task": "Obstacle Alert",
+   "text": "Electric tricycle parked ahead on the left, please be cautious.",
+   "scenario": "S2",
+   "kind": "neutral",
+   "review": true,
+   "id": 1
+  },
+  {
+   "t_start": 5.8,
+   "t_end": 8.01,
+   "src": "viabench",
+   "viabench_task": "Obstacle Alert",
+   "text": "Electric scooter parked on the left, please be cautious.",
+   "scenario": "S2",
+   "kind": "neutral",
+   "review": true,
+   "id": 2
+  },
+  {
+   "t_start": 8.88,
+   "t_end": 10.58,
+   "src": "viabench",
+   "viabench_task": "Obstacle Alert",
+   "text": "Electric scooter parked on the left, please be cautious.",
+   "scenario": "S2",
+   "kind": "neutral",
+   "review": true,
+   "id": 3
+  },
+  {
+   "t_start": 10.76,
+   "t_end": 12.43,
+   "src": "viabench",
+   "viabench_task": "Active Avoidance",
+   "text": "At the end of the road, there is an electric vehicle. Please move to the right to avoid it.",
+   "scenario": "S2",
+   "kind": "warn",
+   "review": true,
+   "tier": "ambiguous",
+   "note": "왼쪽 주차 이륜차 줄의 끝",
+   "id": 4
+  },
+  {
+   "t_start": 14.75,
+   "t_end": 15.71,
+   "src": "viabench",
+   "viabench_task": "Obstacle Alert",
+   "text": "Bicycles parked on the left, please be cautious.",
+   "scenario": "S2",
+   "kind": "neutral",
+   "review": true,
+   "id": 5
+  },
+  {
+   "t_start": 15.8,
+   "t_end": 17.33,
+   "src": "viabench",
+   "viabench_task": "Active Avoidance",
+   "text": "The end of the road is for bicycles; please keep to the right.",
+   "scenario": "S2",
+   "kind": "warn",
+   "review": true,
+   "tier": "ambiguous",
+   "note": "자전거 주차 구역 안내 — 왼쪽 줄",
+   "id": 6
+  }
+ ]
+}

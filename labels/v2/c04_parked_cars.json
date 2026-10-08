@@ -1,0 +1,84 @@
+{
+ "clip": "c04_parked_cars",
+ "file": "보행경로 옆 주차된 차들.mp4",
+ "viabench_id": "3_douyin_2_c/0464",
+ "events": [
+  {
+   "t_start": 0.0,
+   "t_end": 38.0,
+   "scenario": "S2",
+   "kind": "suppress",
+   "text": "경로 옆 주차 차량·가로수·쓰레기통 줄 — 경로 밖",
+   "review": true,
+   "viabench_task": null,
+   "src": "ours",
+   "id": 1
+  },
+  {
+   "t_start": 0.0,
+   "t_end": 38.0,
+   "scenario": "S1",
+   "kind": "suppress",
+   "text": "주차 차량 — 움직이지 않음",
+   "review": true,
+   "viabench_task": null,
+   "src": "ours",
+   "id": 2
+  },
+  {
+   "t_start": 4.89,
+   "t_end": 6.25,
+   "src": "viabench",
+   "viabench_task": "Obstacle Alert",
+   "text": "Trash bin on the left, please be careful.",
+   "scenario": "S2",
+   "kind": "neutral",
+   "review": true,
+   "id": 3
+  },
+  {
+   "t_start": 4.89,
+   "t_end": 6.25,
+   "src": "viabench",
+   "viabench_task": "Service Facility Detection",
+   "text": "Trash bin on the left, please be careful.",
+   "scenario": "-",
+   "kind": "neutral",
+   "review": false,
+   "id": 4
+  },
+  {
+   "t_start": 20.94,
+   "t_end": 21.76,
+   "src": "viabench",
+   "viabench_task": "Obstacle Alert",
+   "text": "There is a tree on the left side of the tactile path, please be careful.",
+   "scenario": "S2",
+   "kind": "neutral",
+   "review": true,
+   "id": 5
+  },
+  {
+   "t_start": 28.19,
+   "t_end": 37.92,
+   "src": "viabench",
+   "viabench_task": "Obstacle Alert",
+   "text": "There is a row of trees on the left side of the tactile path. Please be careful.",
+   "scenario": "S2",
+   "kind": "neutral",
+   "review": true,
+   "id": 6
+  },
+  {
+   "t_start": 30.59,
+   "t_end": 31.3,
+   "src": "viabench",
+   "viabench_task": "Obstacle Alert",
+   "text": "There is a fire hydrant on the right side of the tactile path. Please be careful.",
+   "scenario": "S2",
+   "kind": "neutral",
+   "review": true,
+   "id": 7
+  }
+ ]
+}

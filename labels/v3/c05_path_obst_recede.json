@@ -1,0 +1,78 @@
+{
+ "clip": "c05_path_obst_recede",
+ "version": 3,
+ "W": 3840,
+ "H": 2160,
+ "events": [
+  {
+   "id": 4,
+   "kind": "warn",
+   "scenario": "S2",
+   "tier": "ambiguous",
+   "t_start": 10.76,
+   "t_end": 12.43,
+   "target_coarse": "obstacle",
+   "target_fine": "parked_scooter",
+   "target_ok": [
+    "parked_scooter",
+    "scooter",
+    "motorcycle"
+   ],
+   "motion": "static",
+   "direction": "front",
+   "direction_src": "bbox",
+   "target_track": {
+    "track_id": 705,
+    "bbox": [
+     1358.2,
+     1125.6,
+     1813.2,
+     2160.0
+    ]
+   },
+   "action_ok": [
+    "veer_left",
+    "veer_right",
+    "stop"
+   ],
+   "text_ref": "At the end of the road, there is an electric vehicle. Please move to the right to avoid it.",
+   "annotator": "claude-draft",
+   "note": "경로 위 주차 전동스쿠터, tier ambiguous",
+   "src": "viabench"
+  },
+  {
+   "id": 6,
+   "kind": "warn",
+   "scenario": "S2",
+   "tier": "ambiguous",
+   "t_start": 15.8,
+   "t_end": 17.33,
+   "target_coarse": "obstacle",
+   "target_fine": "parked_bicycle",
+   "target_ok": [
+    "parked_bicycle",
+    "bicycle"
+   ],
+   "motion": "static",
+   "direction": "left",
+   "direction_src": "bbox",
+   "target_track": {
+    "track_id": 1252,
+    "bbox": [
+     385.6,
+     957.0,
+     1931.6,
+     2160.0
+    ]
+   },
+   "action_ok": [
+    "veer_right",
+    "caution"
+   ],
+   "text_ref": "The end of the road is for bicycles; please keep to the right.",
+   "annotator": "claude-draft",
+   "note": "왼쪽 앞 공유자전거 줄, tier ambiguous",
+   "src": "viabench"
+  }
+ ]
+}

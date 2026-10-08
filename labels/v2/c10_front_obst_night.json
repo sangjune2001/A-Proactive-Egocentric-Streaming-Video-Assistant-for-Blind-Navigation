@@ -1,0 +1,53 @@
+{
+ "clip": "c10_front_obst_night",
+ "file": "정면 장애물.mp4",
+ "viabench_id": "3_douyin_2_c/0424",
+ "events": [
+  {
+   "t_start": 0.0,
+   "t_end": 39.29,
+   "src": "viabench",
+   "viabench_task": "Camera Content Anomaly",
+   "text": "The camera view has switched to landscape. Please rotate 90 degrees counterclockwise to adjust.",
+   "scenario": "-",
+   "kind": "neutral",
+   "review": false,
+   "id": 1
+  },
+  {
+   "t_start": 10.83,
+   "t_end": 12.9,
+   "src": "viabench",
+   "viabench_task": "Service Facility Detection",
+   "text": "Trash bin ahead on the left.",
+   "scenario": "-",
+   "kind": "neutral",
+   "review": false,
+   "id": 2
+  },
+  {
+   "t_start": 20.59,
+   "t_end": 27.41,
+   "src": "viabench",
+   "viabench_task": "Obstacle Alert",
+   "text": "There are rows of large trees ahead on the left. Please be cautious.",
+   "scenario": "S2",
+   "kind": "warn",
+   "review": true,
+   "note": "23–24 s 가로수가 진행 방향 정면 (VIABench는 '왼쪽'이라 표기)",
+   "tier": "clear",
+   "id": 3
+  },
+  {
+   "t_start": 31.36,
+   "t_end": 36.68,
+   "src": "viabench",
+   "viabench_task": "Obstacle Alert",
+   "text": "There is a long railing ahead on the right, please be cautious.",
+   "scenario": "S2",
+   "kind": "neutral",
+   "review": true,
+   "id": 4
+  }
+ ]
+}

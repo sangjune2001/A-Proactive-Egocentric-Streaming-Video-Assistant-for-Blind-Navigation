@@ -1,0 +1,33 @@
+{
+ "clip": "c03_offpath_obst",
+ "version": 3,
+ "W": 720,
+ "H": 1280,
+ "events": [
+  {
+   "id": 1,
+   "kind": "warn",
+   "scenario": "S4",
+   "tier": null,
+   "t_start": 0.0,
+   "t_end": 4.06,
+   "target_coarse": "stairs",
+   "target_fine": "stairs",
+   "target_ok": [
+    "stairs"
+   ],
+   "motion": "up",
+   "direction": "front",
+   "direction_src": "manual",
+   "target_track": null,
+   "action_ok": [
+    "stop",
+    "caution"
+   ],
+   "text_ref": "Steps ahead",
+   "annotator": "claude-draft",
+   "note": "정면 오르는 계단",
+   "src": "viabench"
+  }
+ ]
+}

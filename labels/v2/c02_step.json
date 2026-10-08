@@ -1,0 +1,156 @@
+{
+ "clip": "c02_step",
+ "file": "단차.mp4",
+ "viabench_id": "3_douyin_2_c/0416",
+ "events": [
+  {
+   "t_start": 0.0,
+   "t_end": 1.73,
+   "src": "viabench",
+   "viabench_task": "Obstacle Alert",
+   "text": "Pedestrians ahead, please be cautious.",
+   "scenario": "-",
+   "kind": "neutral",
+   "review": false,
+   "id": 1
+  },
+  {
+   "t_start": 0.0,
+   "t_end": 2.69,
+   "src": "viabench",
+   "viabench_task": "Sign Recognition",
+   "text": "Ahead is an escalator coming up from the lower level. Entry is prohibited.",
+   "scenario": "-",
+   "kind": "neutral",
+   "review": false,
+   "id": 2
+  },
+  {
+   "t_start": 1.11,
+   "t_end": 3.7,
+   "src": "viabench",
+   "viabench_task": "Active Avoidance",
+   "text": "Handrail ahead on the right, please keep to the right.",
+   "scenario": "S2",
+   "kind": "neutral",
+   "review": true,
+   "note": "에스컬레이터 오른쪽 난간 — 경로 안내이지 막힘 아님",
+   "id": 3
+  },
+  {
+   "t_start": 4.11,
+   "t_end": 7.86,
+   "src": "viabench",
+   "viabench_task": "Staircase Up/Down",
+   "text": "Stairs ahead, going down.",
+   "scenario": "S4",
+   "kind": "warn",
+   "review": false,
+   "id": 4
+  },
+  {
+   "t_start": 30.73,
+   "t_end": 32.01,
+   "src": "viabench",
+   "viabench_task": "Staircase Up/Down",
+   "text": "Stairs ahead",
+   "scenario": "S4",
+   "kind": "warn",
+   "review": false,
+   "id": 5
+  },
+  {
+   "t_start": 34.56,
+   "t_end": 38.12,
+   "src": "viabench",
+   "viabench_task": "Obstacle Alert",
+   "text": "There are many bicycles and electric scooters parked ahead. Please be cautious.",
+   "scenario": "S2",
+   "kind": "warn",
+   "review": true,
+   "tier": "clear",
+   "id": 6
+  },
+  {
+   "t_start": 45.03,
+   "t_end": 48.76,
+   "src": "viabench",
+   "viabench_task": "Obstacle Alert",
+   "text": "Cyclist ahead on the right, please be cautious.",
+   "scenario": "S1",
+   "kind": "neutral",
+   "review": true,
+   "note": "구간 내내 휴대폰이 화면을 가림 — 자전거가 보이지 않음",
+   "id": 7
+  },
+  {
+   "t_start": 89.81,
+   "t_end": 91.08,
+   "src": "viabench",
+   "viabench_task": "Active Avoidance",
+   "text": "There is a wall ahead. Please follow the direction of the tactile paving.",
+   "scenario": "S2",
+   "kind": "warn",
+   "review": true,
+   "tier": "ambiguous",
+   "note": "벽 앞 꺾임 — 방향 안내 성격",
+   "id": 8
+  },
+  {
+   "t_start": 98.52,
+   "t_end": 99.14,
+   "src": "viabench",
+   "viabench_task": "Obstacle Alert",
+   "text": "There is a pedestrian ahead on the left walking to your right. Please be cautious.",
+   "scenario": "-",
+   "kind": "neutral",
+   "review": false,
+   "id": 9
+  },
+  {
+   "t_start": 99.15,
+   "t_end": 103.07,
+   "src": "viabench",
+   "viabench_task": "Obstacle Alert",
+   "text": "Pedestrian ahead on the left, please be cautious.",
+   "scenario": "-",
+   "kind": "neutral",
+   "review": false,
+   "id": 10
+  },
+  {
+   "t_start": 103.18,
+   "t_end": 106.68,
+   "src": "viabench",
+   "viabench_task": "Active Avoidance",
+   "text": "Sign ahead on the right, baggage screening machine ahead. Please walk on the left side.",
+   "scenario": "S2",
+   "kind": "warn",
+   "review": true,
+   "tier": "clear",
+   "id": 11
+  },
+  {
+   "t_start": 127.8,
+   "t_end": 134.67,
+   "src": "viabench",
+   "viabench_task": "Obstacle Alert",
+   "text": "A pedestrian is walking behind you from the right front. Please be cautious.",
+   "scenario": "-",
+   "kind": "neutral",
+   "review": false,
+   "id": 12
+  },
+  {
+   "t_start": 136.75,
+   "t_end": 137.2,
+   "src": "viabench",
+   "viabench_task": "Obstacle Alert",
+   "text": "Pedestrian ahead on the left moving behind you, please be cautious.",
+   "scenario": "-",
+   "kind": "neutral",
+   "review": false,
+   "id": 13
+  }
+ ]
+}

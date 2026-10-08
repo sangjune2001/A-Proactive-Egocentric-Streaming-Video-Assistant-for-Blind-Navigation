@@ -1,0 +1,127 @@
+{
+ "clip": "c01_vehicle_cross",
+ "version": 3,
+ "W": 720,
+ "H": 1280,
+ "events": [
+  {
+   "id": 1,
+   "kind": "warn",
+   "scenario": "S2",
+   "tier": "clear",
+   "t_start": 0.0,
+   "t_end": 2.72,
+   "target_coarse": "obstacle",
+   "target_fine": "sign",
+   "target_ok": [
+    "sign"
+   ],
+   "motion": "static",
+   "direction": "front",
+   "direction_src": "bbox",
+   "target_track": {
+    "track_id": 1,
+    "bbox": [
+     346.7,
+     416.2,
+     469.1,
+     672.1
+    ]
+   },
+   "action_ok": [
+    "veer_left",
+    "veer_right",
+    "stop"
+   ],
+   "text_ref": "There is a sign ahead. Please detour to the left or right.",
+   "annotator": "claude-draft",
+   "note": "정면 '此摆处摊' 입간판",
+   "src": "viabench"
+  },
+  {
+   "id": 9,
+   "kind": "warn",
+   "scenario": "S2",
+   "tier": "ambiguous",
+   "t_start": 30.04,
+   "t_end": 30.96,
+   "target_coarse": "obstacle",
+   "target_fine": "stall",
+   "target_ok": [
+    "stall"
+   ],
+   "motion": "static",
+   "direction": "left",
+   "direction_src": "bbox",
+   "target_track": {
+    "track_id": 586,
+    "bbox": [
+     0.0,
+     270.6,
+     240.7,
+     669.8
+    ]
+   },
+   "action_ok": [
+    "veer_right",
+    "caution"
+   ],
+   "text_ref": "Chestnut stand ahead on the left, please walk slightly to the right.",
+   "annotator": "claude-draft",
+   "note": "왼쪽 군밤 노점 (트랙 586은 car로 오검출된 노점+사람 박스)",
+   "src": "viabench"
+  },
+  {
+   "id": 10,
+   "kind": "warn",
+   "scenario": "S2",
+   "tier": "clear",
+   "t_start": 31.17,
+   "t_end": 32.1,
+   "target_coarse": "obstacle",
+   "target_fine": "stall",
+   "target_ok": [
+    "stall"
+   ],
+   "motion": "static",
+   "direction": "front",
+   "direction_src": "manual",
+   "target_track": null,
+   "action_ok": [
+    "veer_left",
+    "veer_right",
+    "stop"
+   ],
+   "text_ref": "Ahead is a fruit stand, and on the left is a chestnut stand. Please walk slightly towards the left front.",
+   "annotator": "claude-draft",
+   "note": "정면 과일 노점, t_start에 검출 없음",
+   "src": "viabench"
+  },
+  {
+   "id": 11,
+   "kind": "warn",
+   "scenario": "S2",
+   "tier": "clear",
+   "t_start": 33.08,
+   "t_end": 35.11,
+   "target_coarse": "obstacle",
+   "target_fine": "stall",
+   "target_ok": [
+    "stall"
+   ],
+   "motion": "static",
+   "direction": "front",
+   "direction_src": "manual",
+   "target_track": null,
+   "action_ok": [
+    "veer_left",
+    "veer_right",
+    "stop"
+   ],
+   "text_ref": "There is a row of stalls ahead. Please turn and walk to either side.",
+   "annotator": "claude-draft",
+   "note": "정면 핫도그 노점 줄, 검출 없음",
+   "src": "viabench"
+  }
+ ]
+}

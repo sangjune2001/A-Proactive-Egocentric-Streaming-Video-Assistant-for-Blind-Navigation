@@ -1,0 +1,75 @@
+{
+ "clip": "c03_offpath_obst",
+ "file": "보행경로 아닌 장애물접근.mp4",
+ "viabench_id": "3_douyin_2_c/0438",
+ "events": [
+  {
+   "t_start": 0.0,
+   "t_end": 4.06,
+   "src": "viabench",
+   "viabench_task": "Stairs Up/Down",
+   "text": "Steps ahead",
+   "scenario": "S4",
+   "kind": "warn",
+   "review": false,
+   "id": 1
+  },
+  {
+   "t_start": 5.0,
+   "t_end": 56.0,
+   "scenario": "S2",
+   "kind": "suppress",
+   "text": "넓은 광장·경로 옆 계단 난간·나무 — 경로 밖",
+   "review": true,
+   "viabench_task": null,
+   "src": "ours",
+   "id": 2
+  },
+  {
+   "t_start": 56.77,
+   "t_end": 59.9,
+   "src": "viabench",
+   "viabench_task": "Direction Deviation",
+   "text": "You have veered towards the 11 o'clock direction, heading into a landscaped area.",
+   "scenario": "-",
+   "kind": "neutral",
+   "review": false,
+   "note": "방향 이탈(화단 쪽) — 4개 시나리오 밖",
+   "id": 3
+  },
+  {
+   "t_start": 56.77,
+   "t_end": 59.9,
+   "src": "viabench",
+   "viabench_task": "Active Avoidance",
+   "text": "Green area ahead on the left, walk towards the right front.",
+   "scenario": "S2",
+   "kind": "neutral",
+   "review": true,
+   "note": "방향 이탈(화단 쪽) — 4개 시나리오 밖",
+   "id": 4
+  },
+  {
+   "t_start": 61.0,
+   "t_end": 70.0,
+   "scenario": "S2",
+   "kind": "suppress",
+   "text": "화단 속 가로수 — 경로 밖",
+   "review": true,
+   "viabench_task": null,
+   "src": "ours",
+   "id": 5
+  },
+  {
+   "t_start": 64.64,
+   "t_end": 66.07,
+   "src": "viabench",
+   "viabench_task": "Service Facility Detection",
+   "text": "Bench ahead on the left.",
+   "scenario": "-",
+   "kind": "neutral",
+   "review": false,
+   "id": 6
+  }
+ ]
+}

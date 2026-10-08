@@ -1,0 +1,57 @@
+{
+ "clip": "c08_light_rgr_night",
+ "version": 3,
+ "W": 1080,
+ "H": 1920,
+ "events": [
+  {
+   "id": 2,
+   "kind": "warn",
+   "scenario": "S3",
+   "tier": null,
+   "t_start": 5.35,
+   "t_end": 5.56,
+   "target_coarse": "traffic_light",
+   "target_fine": "traffic_light",
+   "target_ok": [
+    "traffic_light"
+   ],
+   "motion": "to_green",
+   "direction": "front",
+   "direction_src": "manual",
+   "target_track": null,
+   "action_ok": [
+    "cross"
+   ],
+   "text_ref": "The red light ahead is turning green.",
+   "annotator": "claude-draft",
+   "note": "야간, 먼 보행 신호등 검출 없음",
+   "src": "viabench"
+  },
+  {
+   "id": 4,
+   "kind": "warn",
+   "scenario": "S4",
+   "tier": null,
+   "t_start": 32.44,
+   "t_end": 34.13,
+   "target_coarse": "stairs",
+   "target_fine": "stairs",
+   "target_ok": [
+    "stairs"
+   ],
+   "motion": "up",
+   "direction": "front",
+   "direction_src": "manual",
+   "target_track": null,
+   "action_ok": [
+    "stop",
+    "caution"
+   ],
+   "text_ref": "Steps ahead.",
+   "annotator": "claude-draft",
+   "note": "야간 정면 연석 턱 (트랙 292는 안내견 오검출)",
+   "src": "viabench"
+  }
+ ]
+}

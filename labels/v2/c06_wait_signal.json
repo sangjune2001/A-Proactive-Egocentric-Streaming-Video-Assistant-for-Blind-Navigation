@@ -1,0 +1,166 @@
+{
+ "clip": "c06_wait_signal",
+ "file": "보행자가 멈춰있는경우.mp4",
+ "viabench_id": "4_bilibili_c/0645",
+ "events": [
+  {
+   "t_start": 0.0,
+   "t_end": 7.03,
+   "src": "viabench",
+   "viabench_task": "Pedestrian Traffic Light",
+   "text": "The traffic light at the upcoming intersection is red.",
+   "scenario": "S3",
+   "kind": "neutral",
+   "state": "STOP",
+   "review": false,
+   "id": 1
+  },
+  {
+   "t_start": 0.0,
+   "t_end": 25.23,
+   "src": "viabench",
+   "viabench_task": "Camera Content Anomaly",
+   "text": "The camera image is tilted counterclockwise. Please rotate clockwise to adjust properly.",
+   "scenario": "-",
+   "kind": "neutral",
+   "review": false,
+   "id": 2
+  },
+  {
+   "t_start": 7.05,
+   "t_end": 16.4,
+   "src": "viabench",
+   "viabench_task": "Pedestrian Traffic Light",
+   "text": "The traffic light ahead has changed from red to green.",
+   "scenario": "S3",
+   "kind": "warn",
+   "state": "GO",
+   "review": false,
+   "id": 3
+  },
+  {
+   "t_start": 15.59,
+   "t_end": 17.45,
+   "src": "viabench",
+   "viabench_task": "Sidewalk Detection",
+   "text": "Sidewalk ahead. It's recommended to walk on the sidewalk.",
+   "scenario": "-",
+   "kind": "neutral",
+   "review": false,
+   "id": 4
+  },
+  {
+   "t_start": 16.15,
+   "t_end": 17.55,
+   "src": "viabench",
+   "viabench_task": "Blind Path Recognition",
+   "text": "The tactile paving is ahead of you.",
+   "scenario": "-",
+   "kind": "neutral",
+   "review": false,
+   "id": 5
+  },
+  {
+   "t_start": 24.63,
+   "t_end": 25.25,
+   "src": "viabench",
+   "viabench_task": "Service Facility Detection",
+   "text": "Trash can ahead on the left.",
+   "scenario": "-",
+   "kind": "neutral",
+   "review": false,
+   "id": 6
+  },
+  {
+   "t_start": 25.24,
+   "t_end": 26.18,
+   "src": "viabench",
+   "viabench_task": "Camera Content Anomaly",
+   "text": "Camera content is abnormal, affecting the model's perception of the surroundings. Please provide a timely alert.",
+   "scenario": "-",
+   "kind": "neutral",
+   "review": false,
+   "id": 7
+  },
+  {
+   "t_start": 26.2,
+   "t_end": 29.7,
+   "src": "viabench",
+   "viabench_task": "Pedestrian Traffic Light",
+   "text": "The upcoming intersection has a red light.",
+   "scenario": "S3",
+   "kind": "neutral",
+   "state": "STOP",
+   "review": false,
+   "id": 8
+  },
+  {
+   "t_start": 28.04,
+   "t_end": 43.28,
+   "src": "viabench",
+   "viabench_task": "Camera Obstruction",
+   "text": "The center of the camera is blocked by a hand or phone.",
+   "scenario": "-",
+   "kind": "neutral",
+   "review": false,
+   "id": 9
+  },
+  {
+   "t_start": 30.06,
+   "t_end": 44.93,
+   "src": "viabench",
+   "viabench_task": "Pedestrian Traffic Light",
+   "text": "The traffic light ahead has changed from red to green.",
+   "scenario": "S3",
+   "kind": "warn",
+   "state": "GO",
+   "review": false,
+   "id": 10
+  },
+  {
+   "t_start": 40.0,
+   "t_end": 58.0,
+   "scenario": "S1",
+   "kind": "suppress",
+   "text": "신호 대기 중(내가 멈춤) 앞 차로를 지나가는 차",
+   "review": true,
+   "viabench_task": null,
+   "src": "ours",
+   "id": 11
+  },
+  {
+   "t_start": 44.95,
+   "t_end": 52.01,
+   "src": "viabench",
+   "viabench_task": "Pedestrian Traffic Light",
+   "text": "The traffic light ahead is changing from green to red.",
+   "scenario": "S3",
+   "kind": "warn",
+   "state": "STOP",
+   "review": false,
+   "id": 12
+  },
+  {
+   "t_start": 46.94,
+   "t_end": 56.19,
+   "src": "viabench",
+   "viabench_task": "Crosswalk",
+   "text": "You are on the right side of the crosswalk; please walk on the left side.",
+   "scenario": "-",
+   "kind": "neutral",
+   "review": false,
+   "id": 13
+  },
+  {
+   "t_start": 56.19,
+   "t_end": 58.0,
+   "src": "viabench",
+   "viabench_task": "Camera Content Anomaly",
+   "text": "Camera content is abnormal, affecting the model's perception of the surroundings. Please provide a timely alert.",
+   "scenario": "-",
+   "kind": "neutral",
+   "review": false,
+   "id": 14
+  }
+ ]
+}

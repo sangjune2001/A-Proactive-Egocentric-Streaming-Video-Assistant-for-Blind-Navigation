@@ -1,0 +1,12 @@
+__pycache__/
+*.pyc
+results/
+benchmarks/
+labels/evidence/
+*.pt
+*.pth
+*.onnx
+*.safetensors
+*.wav
+*.mp4
+*.pem

@@ -1,0 +1,33 @@
+{
+ "clip": "c10_front_obst_night",
+ "version": 3,
+ "W": 1080,
+ "H": 1920,
+ "events": [
+  {
+   "id": 3,
+   "kind": "warn",
+   "scenario": "S2",
+   "tier": "clear",
+   "t_start": 20.59,
+   "t_end": 27.41,
+   "target_coarse": "obstacle",
+   "target_fine": "tree",
+   "target_ok": [
+    "tree"
+   ],
+   "motion": "static",
+   "direction": "right",
+   "direction_src": "manual",
+   "target_track": null,
+   "action_ok": [
+    "veer_left",
+    "caution"
+   ],
+   "text_ref": "There are rows of large trees ahead on the left. Please be cautious.",
+   "annotator": "claude-draft",
+   "note": "야간 가로수 줄. 화면상 보행로 오른쪽(정답 문장은 'left' → 회전 보정 확인 필요)",
+   "src": "viabench"
+  }
+ ]
+}

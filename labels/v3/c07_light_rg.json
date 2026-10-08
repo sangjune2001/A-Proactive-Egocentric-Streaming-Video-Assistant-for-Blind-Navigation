@@ -1,0 +1,65 @@
+{
+ "clip": "c07_light_rg",
+ "version": 3,
+ "W": 1080,
+ "H": 1920,
+ "events": [
+  {
+   "id": 2,
+   "kind": "warn",
+   "scenario": "S3",
+   "tier": null,
+   "t_start": 23.26,
+   "t_end": 27.29,
+   "target_coarse": "traffic_light",
+   "target_fine": "traffic_light",
+   "target_ok": [
+    "traffic_light"
+   ],
+   "motion": "to_green",
+   "direction": "left",
+   "direction_src": "bbox",
+   "target_track": {
+    "track_id": 62,
+    "bbox": [
+     50.6,
+     450.6,
+     86.7,
+     533.0
+    ]
+   },
+   "action_ok": [
+    "cross"
+   ],
+   "text_ref": "The red light ahead has turned green, you may cross the street.",
+   "annotator": "claude-draft",
+   "note": "왼쪽 아래 보행 신호등",
+   "src": "viabench"
+  },
+  {
+   "id": 7,
+   "kind": "warn",
+   "scenario": "S4",
+   "tier": null,
+   "t_start": 42.88,
+   "t_end": 44.78,
+   "target_coarse": "stairs",
+   "target_fine": "stairs",
+   "target_ok": [
+    "stairs"
+   ],
+   "motion": "up",
+   "direction": "front",
+   "direction_src": "manual",
+   "target_track": null,
+   "action_ok": [
+    "stop",
+    "caution"
+   ],
+   "text_ref": "Step up ahead",
+   "annotator": "claude-draft",
+   "note": "정면 연석 턱 (트랙 302는 안내견 오검출)",
+   "src": "viabench"
+  }
+ ]
+}

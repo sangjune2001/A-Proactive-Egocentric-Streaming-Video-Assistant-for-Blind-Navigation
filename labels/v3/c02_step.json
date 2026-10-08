@@ -1,0 +1,142 @@
+{
+ "clip": "c02_step",
+ "version": 3,
+ "W": 1080,
+ "H": 1906,
+ "events": [
+  {
+   "id": 4,
+   "kind": "warn",
+   "scenario": "S4",
+   "tier": null,
+   "t_start": 4.11,
+   "t_end": 7.86,
+   "target_coarse": "stairs",
+   "target_fine": "stairs",
+   "target_ok": [
+    "stairs"
+   ],
+   "motion": "down",
+   "direction": "front",
+   "direction_src": "manual",
+   "target_track": null,
+   "action_ok": [
+    "stop",
+    "caution"
+   ],
+   "text_ref": "Stairs ahead, going down.",
+   "annotator": "claude-draft",
+   "note": "정면 내려가는 계단 (小心台阶)",
+   "src": "viabench"
+  },
+  {
+   "id": 5,
+   "kind": "warn",
+   "scenario": "S4",
+   "tier": null,
+   "t_start": 30.73,
+   "t_end": 32.01,
+   "target_coarse": "stairs",
+   "target_fine": "stairs",
+   "target_ok": [
+    "stairs"
+   ],
+   "motion": "up",
+   "direction": "front",
+   "direction_src": "manual",
+   "target_track": null,
+   "action_ok": [
+    "stop",
+    "caution"
+   ],
+   "text_ref": "Stairs ahead",
+   "annotator": "claude-draft",
+   "note": "정면 올라가는 계단",
+   "src": "viabench"
+  },
+  {
+   "id": 6,
+   "kind": "warn",
+   "scenario": "S2",
+   "tier": "clear",
+   "t_start": 34.56,
+   "t_end": 38.12,
+   "target_coarse": "obstacle",
+   "target_fine": "parked_bicycle",
+   "target_ok": [
+    "parked_bicycle",
+    "bicycle",
+    "parked_scooter",
+    "scooter",
+    "motorcycle"
+   ],
+   "motion": "static",
+   "direction": "front",
+   "direction_src": "manual",
+   "target_track": null,
+   "action_ok": [
+    "veer_left",
+    "veer_right",
+    "stop"
+   ],
+   "text_ref": "There are many bicycles and electric scooters parked ahead. Please be cautious.",
+   "annotator": "claude-draft",
+   "note": "정면 주차 자전거·전동스쿠터 무리, 검출 없음",
+   "src": "viabench"
+  },
+  {
+   "id": 8,
+   "kind": "warn",
+   "scenario": "S2",
+   "tier": "ambiguous",
+   "t_start": 89.81,
+   "t_end": 91.08,
+   "target_coarse": "obstacle",
+   "target_fine": "other",
+   "target_ok": [
+    "other",
+    "barrier"
+   ],
+   "motion": "static",
+   "direction": "front",
+   "direction_src": "manual",
+   "target_track": null,
+   "action_ok": [
+    "veer_left",
+    "veer_right",
+    "stop"
+   ],
+   "text_ref": "There is a wall ahead. Please follow the direction of the tactile paving.",
+   "annotator": "claude-draft",
+   "note": "정면 벽 (점자블록 꺾임), tier ambiguous",
+   "src": "viabench"
+  },
+  {
+   "id": 11,
+   "kind": "warn",
+   "scenario": "S2",
+   "tier": "clear",
+   "t_start": 103.18,
+   "t_end": 106.68,
+   "target_coarse": "obstacle",
+   "target_fine": "sign",
+   "target_ok": [
+    "sign",
+    "barrier",
+    "other"
+   ],
+   "motion": "static",
+   "direction": "right",
+   "direction_src": "manual",
+   "target_track": null,
+   "action_ok": [
+    "veer_left",
+    "caution"
+   ],
+   "text_ref": "Sign ahead on the right, baggage screening machine ahead. Please walk on the left side.",
+   "annotator": "claude-draft",
+   "note": "오른쪽 바로 앞 안내판 + 정면 검색대",
+   "src": "viabench"
+  }
+ ]
+}

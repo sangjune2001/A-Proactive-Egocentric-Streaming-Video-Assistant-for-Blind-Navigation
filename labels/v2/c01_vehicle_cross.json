@@ -1,0 +1,179 @@
+{
+ "clip": "c01_vehicle_cross",
+ "file": "Vehicle 수직.mp4",
+ "viabench_id": "3_douyin_2_c/0432",
+ "events": [
+  {
+   "t_start": 0.0,
+   "t_end": 2.72,
+   "src": "viabench",
+   "viabench_task": "Active Avoidance",
+   "text": "There is a sign ahead. Please detour to the left or right.",
+   "scenario": "S2",
+   "kind": "warn",
+   "review": true,
+   "tier": "clear",
+   "id": 1
+  },
+  {
+   "t_start": 5.61,
+   "t_end": 7.35,
+   "src": "viabench",
+   "viabench_task": "Active Avoidance",
+   "text": "There is a sign ahead on the left, please move to the right.",
+   "scenario": "S2",
+   "kind": "neutral",
+   "review": true,
+   "note": "표지판이 이미 왼쪽 0.5 m 옆을 지나는 중 — 옆 장애물",
+   "id": 2
+  },
+  {
+   "t_start": 6.26,
+   "t_end": 7.55,
+   "src": "viabench",
+   "viabench_task": "Obstacle Alert",
+   "text": "Pedestrian ahead on the right, please be cautious.",
+   "scenario": "-",
+   "kind": "neutral",
+   "review": false,
+   "id": 3
+  },
+  {
+   "t_start": 9.54,
+   "t_end": 11.6,
+   "src": "viabench",
+   "viabench_task": "Pedestrian Traffic Light",
+   "text": "The pedestrian traffic light is not visible from the current viewpoint.",
+   "scenario": "S3",
+   "kind": "neutral",
+   "state": null,
+   "review": false,
+   "id": 4
+  },
+  {
+   "t_start": 9.54,
+   "t_end": 24.06,
+   "src": "viabench",
+   "viabench_task": "Direction Deviation",
+   "text": "You have veered off the crosswalk towards the 11 o'clock direction, heading into the roadway.",
+   "scenario": "-",
+   "kind": "neutral",
+   "review": false,
+   "id": 5
+  },
+  {
+   "t_start": 18.0,
+   "t_end": 24.0,
+   "scenario": "S1",
+   "kind": "suppress",
+   "text": "횡단 중 먼 차로(10 m+)를 가로지르는 차·버스 — 충돌 코스 아님",
+   "review": true,
+   "viabench_task": null,
+   "src": "ours",
+   "id": 6
+  },
+  {
+   "t_start": 24.0,
+   "t_end": 30.5,
+   "scenario": "S1",
+   "kind": "neutral",
+   "text": "왼쪽 4–6 m 전동 삼륜차 서행 — 애매",
+   "review": true,
+   "viabench_task": null,
+   "src": "ours",
+   "id": 7
+  },
+  {
+   "t_start": 24.1,
+   "t_end": 30.02,
+   "src": "viabench",
+   "viabench_task": "Crosswalk",
+   "text": "You are at the left edge of the crosswalk. Please walk on the right side.",
+   "scenario": "-",
+   "kind": "neutral",
+   "review": false,
+   "id": 8
+  },
+  {
+   "t_start": 30.04,
+   "t_end": 30.96,
+   "src": "viabench",
+   "viabench_task": "Active Avoidance",
+   "text": "Chestnut stand ahead on the left, please walk slightly to the right.",
+   "scenario": "S2",
+   "kind": "warn",
+   "review": true,
+   "tier": "ambiguous",
+   "note": "왼쪽 군밤 노점 — 경로 왼쪽 끝",
+   "id": 9
+  },
+  {
+   "t_start": 31.17,
+   "t_end": 32.1,
+   "src": "viabench",
+   "viabench_task": "Active Avoidance",
+   "text": "Ahead is a fruit stand, and on the left is a chestnut stand. Please walk slightly towards the left front.",
+   "scenario": "S2",
+   "kind": "warn",
+   "review": true,
+   "tier": "clear",
+   "id": 10
+  },
+  {
+   "t_start": 33.08,
+   "t_end": 35.11,
+   "src": "viabench",
+   "viabench_task": "Active Avoidance",
+   "text": "There is a row of stalls ahead. Please turn and walk to either side.",
+   "scenario": "S2",
+   "kind": "warn",
+   "review": true,
+   "tier": "clear",
+   "id": 11
+  },
+  {
+   "t_start": 33.08,
+   "t_end": 35.11,
+   "src": "viabench",
+   "viabench_task": "Direction Guidance",
+   "text": "There is a row of stalls ahead. Please turn and walk to either side.",
+   "scenario": "-",
+   "kind": "neutral",
+   "review": false,
+   "id": 12
+  },
+  {
+   "t_start": 37.11,
+   "t_end": 38.69,
+   "src": "viabench",
+   "viabench_task": "Obstacle Alert",
+   "text": "There is a stall on the right side, please be cautious.",
+   "scenario": "S2",
+   "kind": "neutral",
+   "review": true,
+   "id": 13
+  },
+  {
+   "t_start": 39.47,
+   "t_end": 39.59,
+   "src": "viabench",
+   "viabench_task": "Obstacle Alert",
+   "text": "Pedestrian ahead on the left moving to your left. Please be cautious.",
+   "scenario": "-",
+   "kind": "neutral",
+   "review": false,
+   "id": 14
+  },
+  {
+   "t_start": 39.54,
+   "t_end": 39.59,
+   "src": "viabench",
+   "viabench_task": "Obstacle Alert",
+   "text": "A pedestrian is passing on your left from behind. Please be cautious.",
+   "scenario": "-",
+   "kind": "neutral",
+   "review": false,
+   "id": 15
+  }
+ ]
+}
