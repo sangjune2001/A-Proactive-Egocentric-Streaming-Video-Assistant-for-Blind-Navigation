@@ -26,12 +26,14 @@ if __name__ == "__main__":
     ap = argparse.ArgumentParser()
     ap.add_argument("model", choices=list(MODELS))
     ap.add_argument("--print", action="store_true")
+    ap.add_argument("--gpu-util", default="0.90", help="실행 시스템과 GPU를 나눠 쓸 때 낮춤 (YOLO 몫)")
     a = ap.parse_args()
     m = MODELS[a.model]
     # Runyour AI 템플릿엔 CUDA 툴킷이 없고 pip nvcc(13.4)는 런타임 헤더(13.0)와 안 맞음
     # → JIT 빌드가 필요한 flashinfer 샘플러를 끄고 PyTorch 샘플러 사용 (어텐션은 원래 FLASH_ATTN)
     os.environ.setdefault("VLLM_USE_FLASHINFER_SAMPLER", "0")
-    cmd = ["vllm", "serve", m["hf"], *COMMON, *m["serve"]]
+    common = [a.gpu_util if c == "0.90" else c for c in COMMON]
+    cmd = ["vllm", "serve", m["hf"], *common, *m["serve"]]
     print(" ".join(shlex.quote(c) for c in cmd), flush=True)
     if not a.print:
         os.execvp(cmd[0], cmd)

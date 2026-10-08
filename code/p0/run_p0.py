@@ -58,6 +58,7 @@ def main():
     ap.add_argument("--tts-url", default=None, help="로컬 TTS 서버 (예: supertonic serve). 없으면 TTS 생략")
     ap.add_argument("--tts-model", default="supertonic")
     ap.add_argument("--tts-voice", default="F3")
+    ap.add_argument("--prompt", default="v0", help="지시문 판 (code/p0/prompts.py). h2 · h2g = 대상 · 움직임 2칸 (G3)")
     ap.add_argument("--dry", action="store_true", help="서버 호출 없이 입력 이미지·프롬프트만 저장")
     ap.add_argument("--run", default=None, help="결과 폴더 이름")
     a = ap.parse_args()
@@ -105,11 +106,18 @@ def main():
                 rec["out"] = None
             else:
                 from describe import describe
-                runs = [describe(client, served, ev, imgs, times, boxes, a.bbox, (W, H)) for _ in range(a.repeat)]
+                runs = [describe(client, served, ev, imgs, times, boxes, a.bbox, (W, H), prompt=a.prompt) for _ in range(a.repeat)]
                 rec.update(out=runs[0]["out"], raw=runs[0]["raw"], usage=runs[0]["usage"],
                            lat_runs=[r["lat"] for r in runs],
                            lat={k: sorted(r["lat"][k] for r in runs)[len(runs) // 2] for k in runs[0]["lat"]})
 
+            if rec.get("out") and "direction" not in rec["out"]:     # 2칸 출력(G3) → 방향 · 행동은 코드가 채움
+                from ko_template import action_ok, scenario_of
+                o = dict(rec["out"], hazard=True)
+                o["direction"] = direction_of(box_now, W) if box_now is not None else "front"
+                sc = ev.get("scenario") or scenario_of("other" if ev.get("cls") == "obstacle" else ev.get("cls"))
+                o["action"] = (action_ok(sc, o["direction"], o["motion"]) or ["caution"])[0]
+                rec["out_vlm"], rec["out"] = rec["out"], o
             rec["sentence"] = sentence(rec["out"]) if rec.get("out") else None
             if tts:
                 _, rec["tts_warn"] = tts.synth(rec["warn_text"])

@@ -5,7 +5,8 @@ VLM 설명   : 트리거 순간의 프레임 창을 VLM 작업자에 넘김 → 
 중복 방지  : 같은 트랙 cooldown_s 안 재경고 금지, 같은 경고 문장 same_text_s 안 반복 금지
 
 VLM ↔ 트리거 정합성 규칙 (docs/13 '정해야 할 규칙' — 기본값, 실험으로 바꿀 수 있게 설정으로 둠)
-  · VLM이 위험 아님(hazard=false) → 설명 생략 (경고는 이미 나갔음). skip_no_hazard=False면 그래도 말함
+  · 위험 판단은 트리거 몫 (10/9 결정, G2: VLM hazard는 모델별 버릇) → 기본은 VLM이 위험 아님이라 해도 설명을 말함.
+    skip_no_hazard=True(`--vlm-filter`)면 예전처럼 생략 (비교용). hazard 값은 항상 로그에 남김
   · VLM 대상 ≠ YOLO 클래스 (coarse) → VLM 쪽을 말함 (여러 프레임을 보고 판단한 쪽). 불일치는 로그로 남겨 채점
 """
 from __future__ import annotations
@@ -29,8 +30,9 @@ class DispatchConfig:
     frames: str = "F8"
     bbox: str = "draw"
     use_hybrid: bool = True
-    skip_no_hazard: bool = True
+    skip_no_hazard: bool = False     # 10/9: 위험 판단은 트리거가 함 (G2)
     use_vlm: bool = True
+    dump_dir: str | None = None      # 지정하면 VLM에 넣은 이미지를 그대로 저장 (연결 확인용)
 
 
 def warn_text_of(ev) -> str:
@@ -74,6 +76,18 @@ class Dispatcher:
         if c.use_vlm and self.vlm is not None:
             imgs, times, boxes = build_inputs(self.buffer, frame, ev, c.frames, c.bbox)
             self.stats["vlm_jobs"] += 1
+            self.log("vlm_input", ev_t=ev.t, scenario=ev.scenario, cls=ev.cls, track_id=ev.track_id,
+                     ev_box=None if ev.box is None else [round(v) for v in ev.box], warn_text=text,
+                     img_times=[round(t, 2) for t in times], n_img=len(imgs),
+                     boxes=[None if b is None else [round(v) for v in b] for b in boxes],
+                     img_shapes=[list(im.shape[:2]) for im in imgs])
+            if c.dump_dir:
+                import cv2
+                from pathlib import Path
+                d = Path(c.dump_dir) / f"ev{ev.t:06.2f}_{ev.cls}_{ev.track_id}"
+                d.mkdir(parents=True, exist_ok=True)
+                for k, (im, t) in enumerate(zip(imgs, times)):
+                    cv2.imwrite(str(d / f"{k}_t{t:06.2f}.jpg"), im)
             self.vlm.submit(dict(ev=ev, imgs=imgs, times=times, boxes=boxes))
 
     def _push(self, fut, kind, text, ev, deadline):

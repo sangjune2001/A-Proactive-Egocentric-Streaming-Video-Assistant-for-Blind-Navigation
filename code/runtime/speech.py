@@ -118,15 +118,17 @@ class ServerEngine(Engine):
         super().__init__(cache_dir)
 
     def _open(self):
-        from openai import OpenAI
-        self.client = OpenAI(base_url=self.base_url, api_key="local")
+        pass
 
     def _synth(self, text, path):
-        with self.client.audio.speech.with_streaming_response.create(
-                model=self.model, voice=self.voice, input=text, response_format="wav") as r:
-            with open(path, "wb") as f:
-                for chunk in r.iter_bytes():
-                    f.write(chunk)
+        # openai 패키지 없이 urllib로 호출. lang="ko"를 주지 않으면 Supertonic이 언어를 추측해 발음이 달라짐
+        import json
+        import urllib.request
+        body = json.dumps({"model": self.model, "voice": self.voice, "input": text,
+                           "response_format": "wav", "lang": "ko"}).encode()
+        req = urllib.request.Request(f"{self.base_url}/audio/speech", body, {"Content-Type": "application/json"})
+        with urllib.request.urlopen(req, timeout=60) as r, open(path, "wb") as f:
+            f.write(r.read())
 
 
 def make_engine(spec: str, cache_dir: Path, **kw) -> Engine:

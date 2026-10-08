@@ -50,8 +50,11 @@ def build_inputs(buffer, frame, ev, setting="F8", bbox_mode="draw"):
 
 def hybrid(out: dict, ev) -> dict:
     o = dict(out)
+    o.setdefault("hazard", True)                      # 2칸 출력(G3): 위험은 트리거 몫
     if ev.box is not None:
         o["direction"] = direction_of(ev.box, ev.W)
+    o.setdefault("direction", "front")
+    o.setdefault("action", "caution")
     sc = ev.scenario or scenario_of("other" if ev.cls == "obstacle" else ev.cls)
     o["action"] = (action_ok(sc, o["direction"], o["motion"]) or [o["action"]])[0]
     return o
@@ -81,17 +84,17 @@ class MockBackend(PTBackend):
 
 
 class ServerBackend:
-    def __init__(self, base_url, model_key="qwen2_5-vl-7b", bbox_mode="draw"):
+    def __init__(self, base_url, model_key="qwen2_5-vl-7b", bbox_mode="draw", prompt="v0"):
         from openai import OpenAI
         self.client = OpenAI(base_url=base_url, api_key="local")       # 로컬 vLLM — 외부 API 아님
         self.served = MODELS[model_key]["hf"]
-        self.bbox_mode = bbox_mode
-        self.name = f"server:{model_key}"
+        self.bbox_mode, self.prompt = bbox_mode, prompt
+        self.name = f"server:{model_key}:{prompt}"
 
     def __call__(self, ev, imgs, times, boxes):
         from describe import describe
         return describe(self.client, self.served, dict(cls=ev.cls, **ev.extra), imgs, times, boxes,
-                        self.bbox_mode, (ev.W, ev.H))
+                        self.bbox_mode, (ev.W, ev.H), prompt=self.prompt)
 
 
 class VLMWorker(threading.Thread):
@@ -133,7 +136,8 @@ class VLMWorker(threading.Thread):
                 res = self.backend(ev, job["imgs"], job["times"], job["boxes"])
             except Exception as e:                  # 서버 오류가 경고 경로를 멈추면 안 된다
                 res = {"out": None, "error": repr(e), "lat": {}}
-            self.log("vlm_end", ev_t=ev.t, out=res.get("out"), lat=res.get("lat"), error=res.get("error"))
+            self.log("vlm_end", ev_t=ev.t, out=res.get("out"), raw=res.get("raw"), usage=res.get("usage"), lat=res.get("lat"),
+                     error=res.get("error"))
             try:
                 self.on_result(job, res)
             finally:

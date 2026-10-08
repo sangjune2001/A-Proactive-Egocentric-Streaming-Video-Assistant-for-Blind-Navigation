@@ -64,4 +64,15 @@ OUTPUT_SCHEMA = {
     "additionalProperties": False,
 }
 
+# G3 하이브리드 정식: VLM은 대상 · 움직임만 (방향 = 상자, 행동 = 규칙표, 위험 = 트리거)
+OUTPUT_SCHEMA_H2 = {
+    "type": "object",
+    "properties": {
+        "target": {"type": "string", "enum": TARGETS},
+        "motion": {"type": "string", "enum": MOTIONS},
+    },
+    "required": ["target", "motion"],
+    "additionalProperties": False,
+}
+
 GEN = dict(temperature=0.0, max_tokens=64)

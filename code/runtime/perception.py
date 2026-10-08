@@ -96,6 +96,12 @@ class YoloTracker:
         self.m = YOLO(str(WEIGHTS[model_id]))
         self.device, self.imgsz, self.conf = device, imgsz, conf
 
+    def warmup(self, image, n=3):
+        """시계를 시작하기 전에 GPU에 모델을 올림. 안 하면 첫 프레임이 약 3 s 걸려 실시간에서 뒤처진다
+        (10/8 A5000 실측). 추적기 상태가 생기지 않게 track이 아니라 predict로."""
+        for _ in range(n):
+            self.m.predict(image, imgsz=self.imgsz, conf=self.conf, device=self.device, verbose=False)
+
     def __call__(self, fidx, image):
         from dump_tracks import cv2_area, foot_point
         H, W = image.shape[:2]

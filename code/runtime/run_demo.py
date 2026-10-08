@@ -60,8 +60,9 @@ def main():
     ap.add_argument("--base-url", default="http://localhost:8000/v1")
     ap.add_argument("--frames", default="F8")
     ap.add_argument("--bbox", default="draw")
+    ap.add_argument("--prompt", default="h2", help="VLM 지시문 판 (code/p0/prompts.py). 기본 h2 = 대상 · 움직임 2칸 (G3, 10/9). v0 = 예전 5칸")
     ap.add_argument("--no-hybrid", action="store_true")
-    ap.add_argument("--speak-no-hazard", action="store_true", help="VLM이 위험 아님이라 해도 설명을 말함")
+    ap.add_argument("--vlm-filter", action="store_true", help="VLM이 위험 아님이라 답하면 설명 생략 (10/9 전 기본값, 비교용)")
     ap.add_argument("--tts", default="sapi", choices=["sapi", "server"])
     ap.add_argument("--tts-url", default=None)
     ap.add_argument("--tts-model", default="supertonic")
@@ -69,6 +70,7 @@ def main():
     ap.add_argument("--play", action="store_true", help="스피커로 실제 재생")
     ap.add_argument("--render", action="store_true", help="끝난 뒤 demo.mp4 (소리 · 박스 · 자막) 생성")
     ap.add_argument("--run", default=None)
+    ap.add_argument("--dump-vlm-inputs", action="store_true", help="VLM에 넣은 이미지를 <결과>/vlm_inputs/에 저장")
     a = ap.parse_args()
 
     vlm_tag = f"mock{a.mock_latency:g}s" if a.vlm == "mock" else a.model if a.vlm == "server" else a.vlm
@@ -94,12 +96,13 @@ def main():
     buffer = FrameBuffer()
     audio = AudioQueue(clock, log, play=a.play)
     cfg = DispatchConfig(frames=a.frames, bbox=a.bbox, use_hybrid=not a.no_hybrid,
-                         skip_no_hazard=not a.speak_no_hazard, use_vlm=a.vlm != "none")
+                         skip_no_hazard=a.vlm_filter, use_vlm=a.vlm != "none",
+                         dump_dir=str(od / "vlm_inputs") if a.dump_vlm_inputs else None)
     disp = Dispatcher(cfg, log, buffer, audio, tts)
     vlm = None
     if a.vlm != "none":
         backend = {"pt": lambda: PTBackend(), "mock": lambda: MockBackend(a.mock_latency),
-                   "server": lambda: ServerBackend(a.base_url, a.model, a.bbox)}[a.vlm]()
+                   "server": lambda: ServerBackend(a.base_url, a.model, a.bbox, a.prompt)}[a.vlm]()
         vlm = VLMWorker(backend, disp.on_vlm, log)
         disp.vlm = vlm
         vlm.start()
@@ -112,22 +115,32 @@ def main():
     info = clip_info(a.clip)
     print(f"{a.clip}  {info['dur']:.1f}s  perception={perception.name} trigger={trigger.name} "
           f"vlm={a.vlm} tts={tts.name}", flush=True)
-    dets_log, lag = open(od / "dets.jsonl", "w", encoding="utf-8"), []
+    if hasattr(perception, "warmup"):                  # 첫 프레임 GPU 초기화 시간을 실시간 밖으로
+        t0 = time.perf_counter()
+        _, _, im0 = next(iter(stream_frames(a.clip, a.fps)))
+        perception.warmup(im0)
+        print(f"인식 모델 예열 {time.perf_counter() - t0:.1f}s", flush=True)
+    dets_log, lag, perc = open(od / "dets.jsonl", "w", encoding="utf-8"), [], []
     clock.start()
     log("start", clip=a.clip)
     for fidx, t, im in stream_frames(a.clip, a.fps):
         clock.sleep_until(t)                           # 실제 속도 (늦으면 기다리지 않고 바로 처리)
+        tp = time.perf_counter()
         dets = perception(fidx, im)
+        perc.append(time.perf_counter() - tp)
         fr = Frame(fidx, t, im, dets, im.shape[1], im.shape[0])
         buffer.push(fr)
         for ev in trigger.step(fr):
             disp.on_event(fr, ev)
         lag.append(clock.now() - t)
-        dets_log.write(json.dumps({"f": fidx, "t": round(t, 3),
+        dets_log.write(json.dumps({"f": fidx, "t": round(t, 3), "perc_s": round(perc[-1], 4),
                                    "d": [[d.track_id, d.cls, *[round(v) for v in d.box]] for d in dets]},
                                   ensure_ascii=False) + "\n")
     dets_log.close()
     log("video_end", lag_median=round(statistics.median(lag), 3))
+    perc_ms = sorted(x * 1000 for x in perc[3:] or perc)               # 처음 몇 프레임은 예열
+    print(f"인식(perception) 프레임당 중앙 {statistics.median(perc_ms):.1f} ms · p90 {perc_ms[int(len(perc_ms) * .9)]:.1f} ms"
+          f" → 최대 {1000 / statistics.median(perc_ms):.0f} FPS (입력 {a.fps:g} fps)", flush=True)
 
     deadline = time.perf_counter() + 15                # 남은 설명 · 재생이 끝나길 기다림
     while time.perf_counter() < deadline and not (audio.idle() and (vlm is None or vlm.idle())):
@@ -141,6 +154,10 @@ def main():
     timeline = sorted(audio.timeline, key=lambda it: it.get("t_start", it.get("t_drop", 0)))
     json.dump(timeline, open(od / "timeline.json", "w", encoding="utf-8"), ensure_ascii=False, indent=1, default=str)
     summ = summarize(timeline, disp.stats, lag)
+    summ["perception_ms"] = {"median": round(statistics.median(perc_ms), 1), "p90": round(perc_ms[int(len(perc_ms) * .9)], 1)}
+    vl = [r["lat"]["total_s"] for r in log.rows if r.get("stage") == "vlm_end" and (r.get("lat") or {}).get("total_s")]
+    if vl:
+        summ["vlm_call_s"] = {"n": len(vl), "median": round(statistics.median(vl), 3), "max": round(max(vl), 3)}
     json.dump(summ, open(od / "summary.json", "w", encoding="utf-8"), ensure_ascii=False, indent=1)
     log.close()
 

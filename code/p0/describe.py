@@ -5,7 +5,7 @@ from __future__ import annotations
 import json
 import time
 
-from config import ACTIONS, DIRECTIONS, GEN, MOTIONS, OUTPUT_SCHEMA, TARGETS
+from config import ACTIONS, DIRECTIONS, GEN, MOTIONS, OUTPUT_SCHEMA, OUTPUT_SCHEMA_H2, TARGETS
 from frames import to_data_url
 
 SYSTEM = (
@@ -25,7 +25,8 @@ FIELD_GUIDE = (
 )
 
 
-def build_prompt(event: dict, times: list[float], boxes: list, bbox_mode: str, img_wh: tuple[int, int]) -> str:
+def build_prompt(event: dict, times: list[float], boxes: list, bbox_mode: str, img_wh: tuple[int, int],
+                 guide: str = FIELD_GUIDE) -> str:
     t0 = times[-1]
     lines = [f"Frames at t = {', '.join(f'{t - t0:+.1f}s' for t in times)} (last = now)."]
     if bbox_mode == "crop":
@@ -40,23 +41,26 @@ def build_prompt(event: dict, times: list[float], boxes: list, bbox_mode: str, i
         lines.append(f"Flagged object box in the last frame (x1, y1, x2, y2, normalized 0-1000): {n}.")
     if bbox_mode == "none" or boxes[-1] is None:
         lines.append(f"The detector labeled the flagged object as '{event.get('cls', 'unknown')}'.")
-    lines.append(FIELD_GUIDE)
+    lines.append(guide)
     return "\n".join(lines)
 
 
 def describe(client, model: str, event: dict, images: list, times: list[float], boxes: list,
-             bbox_mode: str, img_wh: tuple[int, int]) -> dict:
+             bbox_mode: str, img_wh: tuple[int, int], prompt: str = "v0") -> dict:
     """스트리밍으로 받아 TTFT를 잰다. 반환: {"out": dict|None, "raw": str, "lat": {...}, "usage": {...}}"""
     t_start = time.perf_counter()
     content = [{"type": "image_url", "image_url": {"url": to_data_url(im)}} for im in images]
-    content.append({"type": "text", "text": build_prompt(event, times, boxes, bbox_mode, img_wh)})
+    from prompts import PROMPTS, SCHEMA_OF           # 지시문 판 (G2 · G3). v0 = 지금까지 쓴 SYSTEM · FIELD_GUIDE와 같음
+    system, guide = PROMPTS[prompt]
+    schema = OUTPUT_SCHEMA_H2 if SCHEMA_OF.get(prompt) == "h2" else OUTPUT_SCHEMA
+    content.append({"type": "text", "text": build_prompt(event, times, boxes, bbox_mode, img_wh, guide)})
     t_prep = time.perf_counter()
 
     stream = client.chat.completions.create(
         model=model,
-        messages=[{"role": "system", "content": SYSTEM}, {"role": "user", "content": content}],
+        messages=[{"role": "system", "content": system}, {"role": "user", "content": content}],
         response_format={"type": "json_schema",
-                         "json_schema": {"name": "hazard_report", "schema": OUTPUT_SCHEMA, "strict": True}},
+                         "json_schema": {"name": "hazard_report", "schema": schema, "strict": True}},
         stream=True, stream_options={"include_usage": True}, **GEN)
     raw, t_first, usage = "", None, {}
     for ch in stream:

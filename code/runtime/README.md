@@ -37,7 +37,7 @@ python run_demo.py --clip c09_bike_on_tactile --perception yolo --device 0 \
 | `--trigger` | `b0` (스트리밍 B0) · `replay:<results/events 폴더>` |
 | `--vlm` | `none` (경고만) · `pt` (VLM 없이 템플릿, 지연 0) · `mock` (pt + `--mock-latency` 대기) · `server` (vLLM) |
 | `--tts` | `sapi` (Windows Heami, 임시) · `server` (OpenAI 호환 TTS 서버, 예: `supertonic serve`) |
-| `--no-hybrid` · `--speak-no-hazard` | 하이브리드 끄기 · VLM이 위험 아님이라 해도 설명 |
+| `--no-hybrid` · `--vlm-filter` | 하이브리드 끄기 · VLM이 위험 아님이라 답하면 설명 생략 (10/9부터 기본은 항상 설명, 위험 판단은 트리거) |
 
 ## 트리거 끼우기 (임태규 최종 코드)
 
