@@ -80,7 +80,7 @@
 
 | off로 표시된 보행신호 crop (옆면/뒷면) | red로 표시된 보행신호 crop |
 |---|---|
-*(사진 생략: AI Hub/외부 데이터 이미지는 공개 저장소에 올리지 않음 → 비공개 저장소 `window7458/aihub-ped-signal-kickboard` 또는 드라이브 `aihub_traffic_code/docs/img` 참고)*
+| ![](docs/img/188_ped_off_crops.jpg) | ![](docs/img/188_ped_red_crops.jpg) |
 
 ### 2-3. 71579: 신호 변화 장면
 
@@ -92,13 +92,13 @@
 
 | Clip_0556 (red → green → off) | Clip_0574 |
 |---|---|
-*(사진 생략: AI Hub/외부 데이터 이미지는 공개 저장소에 올리지 않음 → 비공개 저장소 `window7458/aihub-ped-signal-kickboard` 또는 드라이브 `aihub_traffic_code/docs/img` 참고)*
+| ![](docs/img/Clip_0556.jpg) | ![](docs/img/Clip_0574.jpg) |
 
 ### 2-4. 614: 킥보드
 - Validation 라벨 56,423장 **전부**에 PM 박스가 있다. 원천은 VS1 하나(39GB)다.
 - **PM 박스는 탑승자와 킥보드를 함께 감싼다**(아래 사진의 주황 박스). 189와 kdigital의 scooter 박스는 기구만 감싼다 → [§6](#6-남은-문제--다음-할-일) 참고.
 
-*(사진 생략: AI Hub/외부 데이터 이미지는 공개 저장소에 올리지 않음 → 비공개 저장소 `window7458/aihub-ped-signal-kickboard` 또는 드라이브 `aihub_traffic_code/docs/img` 참고)*
+![](docs/img/label_check_188_614.jpg)
 
 ---
 
@@ -110,20 +110,20 @@
 ### 3-1. ✅ 사용 (한국 보행신호등이 확실한 것만)
 | 데이터셋 | 변환 이미지 / 박스 | 국가 근거 | 샘플 |
 |---|---|---|---|
-| `crosswalk-traffic-light/robot-hsuip` | 1,236 / 1,236 | KB국민은행 거리, 보행자 시점 |  |
-| `chanyoung/pedestrian-light-crosswalk` | 1,057 / 1,067 | 여의대로 표지판 |  |
-| `cap-8nhra/crosswalk-pedestrian-light` | 122 / 128 | 선곡초 앞, 한국어 음향신호기 안내문 |  |
-| `usrg2/pedestrian-signal-p6xjj` | 522 / 522 | 청운대 앞 |  |
-| `s-workspace-ddokc/pedestrian-signal` | 1,718 / 1,903 | 영남대역, 연원로 |  |
-| `kdigital/electric-scooter-cd7hw` (킥보드) | 4,939 / 6,770 | 한국 뉴스 사진 위주, 박스가 기구만 감쌈 |  |
+| `crosswalk-traffic-light/robot-hsuip` | 1,236 / 1,236 | KB국민은행 거리, 보행자 시점 | ![](docs/img/rf_crosswalk-traffic-light__robot-hsuip.jpg) |
+| `chanyoung/pedestrian-light-crosswalk` | 1,057 / 1,067 | 여의대로 표지판 | ![](docs/img/rf_chanyoung__pedestrian-light-crosswalk.jpg) |
+| `cap-8nhra/crosswalk-pedestrian-light` | 122 / 128 | 선곡초 앞, 한국어 음향신호기 안내문 | ![](docs/img/rf_cap-8nhra__crosswalk-pedestrian-light.jpg) |
+| `usrg2/pedestrian-signal-p6xjj` | 522 / 522 | 청운대 앞 | ![](docs/img/rf_usrg2__pedestrian-signal-p6xjj.jpg) |
+| `s-workspace-ddokc/pedestrian-signal` | 1,718 / 1,903 | 영남대역, 연원로 | ![](docs/img/rf_s-workspace-ddokc__pedestrian-signal.jpg) |
+| `kdigital/electric-scooter-cd7hw` (킥보드) | 4,939 / 6,770 | 한국 뉴스 사진 위주, 박스가 기구만 감쌈 | ![](docs/img/rf_kdigital__electric-scooter-cd7hw.jpg) |
 
 ### 3-2. ❌ 제외
 | 데이터셋 | 이유 |
 |---|---|
-| `pedestrian-traffic-signal/pedestrian-signal-lights-d2upo` (13k) | **대만**(번체 간판, 대만 택시)  |
-| `obb-bhjmx/pedestrian-traffic-light-e1zx9` | **홍콩** 거리뷰  |
-| `s-workspace-cosh1/pedestrian-traffic-light-pbbl6` | 한국·일본·대만 웹 이미지가 섞임  |
-| `cible/pedestrian-traffic-light-3p4dd` (2,555) | 대부분 한국이지만 일부 외국 신호등이 섞임 → "정확히 한국만" 기준으로 제외. **넣을지는 결정 필요**  |
+| `pedestrian-traffic-signal/pedestrian-signal-lights-d2upo` (13k) | **대만**(번체 간판, 대만 택시) ![](docs/img/rf_pedestrian-traffic-signal__pedestrian-signal-lights-d2upo.jpg) |
+| `obb-bhjmx/pedestrian-traffic-light-e1zx9` | **홍콩** 거리뷰 ![](docs/img/rf_obb-bhjmx__pedestrian-traffic-light-e1zx9.jpg) |
+| `s-workspace-cosh1/pedestrian-traffic-light-pbbl6` | 한국·일본·대만 웹 이미지가 섞임 ![](docs/img/rf_s-workspace-cosh1__pedestrian-traffic-light-pbbl6.jpg) |
+| `cible/pedestrian-traffic-light-3p4dd` (2,555) | 대부분 한국이지만 일부 외국 신호등이 섞임 → "정확히 한국만" 기준으로 제외. **넣을지는 결정 필요** ![](docs/img/rf_cible__pedestrian-traffic-light-3p4dd.jpg) |
 | `cv-workspace-2oidl`, `project-xmdfq`, `pedestrain-light-crossing`, `traffic-light-gp1ey`, `crosswalk-signal-detection`, `keirishan-balachandran`, `ono-gedd7`, `project-wdkej` | 각각 중국, 터키, 유럽, 인도네시아(차량신호), 미국·독일·일본, 스리랑카, 여러 나라 섞임 |
 | `min-yong-park/original-korean-traffic-light` | 한국이지만 **차량 신호등** 데이터 |
 
@@ -261,7 +261,7 @@ python3 infer.py <탐지 best.pt> <분류 best.pt> <이미지|폴더|영상> --s
 
 | 혼동행렬 | 예측 예시 (빨강=red, 초록=green, 회색=off, 주황=vehicle) |
 |---|---|
-| ![](docs/img/results/cls_confusion_matrix_normalized.png) |  |
+| ![](docs/img/results/cls_confusion_matrix_normalized.png) | ![](docs/img/results/pred_examples.jpg) |
 
 ![](docs/img/results/det_results.png)
 

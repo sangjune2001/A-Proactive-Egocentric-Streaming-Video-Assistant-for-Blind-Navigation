@@ -48,6 +48,10 @@
 | 614 킥보드 | scooter | 0.005 | **0.921** |
 | 189 인도보행 | all (10클래스) | 0.646 | 0.576 |
 
+예측 예시(탐지 + 상태 분류, 빨강=red, 초록=green, 회색=off, 주황=vehicle):
+
+![](ped_signal_kickboard/docs/img/results/pred_examples.jpg)
+
 - 신호 상태 분류 top-1 정확도는 **0.913**이다(red 0.91, green 0.88, off 0.83, vehicle 0.96).
 - **문제점**: 기존 클래스 성능이 떨어졌다(189 검증셋 bicycle 0.656→0.398, other_vehicle 0.707→0.518, person 0.799→0.724).
   - 원인은 **부분 라벨**이다. 새 이미지 6만 장에 사람·자전거·차 라벨이 없어서 배경으로 학습됐다.

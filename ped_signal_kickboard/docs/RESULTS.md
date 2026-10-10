@@ -70,4 +70,4 @@
 
 traffic_light 박스는 상태 분류 결과(red/green/off/vehicle)로 표시했습니다. 색: 빨강=red, 초록=green, 회색=off, 주황=vehicle
 
-*(사진 생략: AI Hub/외부 데이터 이미지는 공개 저장소에 올리지 않음 → 비공개 저장소 `window7458/aihub-ped-signal-kickboard` 또는 드라이브 `aihub_traffic_code/docs/img` 참고)*
+![](img/results/pred_examples.jpg)
