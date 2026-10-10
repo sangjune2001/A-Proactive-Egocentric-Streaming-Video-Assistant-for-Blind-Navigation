@@ -1,0 +1,75 @@
+The contents are encoded in UTF-8 including Korean characters. 
+If the following contents are not output normally, 
+Please modify the character information of the OS. 
+=================공지사항=================== 
+========================================== 
+
+    └─058.생활도로 객체인식 자율주행 데이터
+        └─3.개방데이터
+            └─1.데이터
+                ├─Other
+                │  └─Other.zip | 70 MB | 541750
+                ├─Training
+                │  ├─01.원천데이터
+                │  │  ├─TS_calib_K_가시광이미지_image_B_1.zip | 94 GB | 541751
+                │  │  ├─TS_calib_K_가시광이미지_image_B_2.zip | 22 GB | 541752
+                │  │  ├─TS_calib_K_가시광이미지_image_F_1.zip | 94 GB | 541753
+                │  │  ├─TS_calib_K_가시광이미지_image_F_2.zip | 38 GB | 541754
+                │  │  ├─TS_calib_K_가시광이미지_image_L_1.zip | 95 GB | 541755
+                │  │  ├─TS_calib_K_가시광이미지_image_L_2.zip | 41 GB | 541756
+                │  │  ├─TS_calib_K_가시광이미지_image_R_1.zip | 94 GB | 541757
+                │  │  ├─TS_calib_K_가시광이미지_image_R_2.zip | 36 GB | 541758
+                │  │  ├─TS_calib_K_라이다_lidar.zip | 68 GB | 541759
+                │  │  ├─TS_calib_K_열화상이미지_thermal.zip | 9 GB | 541760
+                │  │  ├─TS_calib_V_가시광이미지_image_B.zip | 72 GB | 541761
+                │  │  ├─TS_calib_V_가시광이미지_image_F.zip | 80 GB | 541762
+                │  │  ├─TS_calib_V_가시광이미지_image_L.zip | 72 GB | 541763
+                │  │  ├─TS_calib_V_가시광이미지_image_R.zip | 70 GB | 541764
+                │  │  ├─TS_calib_V_라이다_lidar_1.zip | 73 GB | 541765
+                │  │  ├─TS_calib_V_라이다_lidar_2.zip | 14 GB | 541766
+                │  │  └─TS_calib_V_열화상이미지_thermal.zip | 14 GB | 541767
+                │  └─02.라벨링데이터
+                │      ├─TL_calib_K_가시광이미지_image_B.zip | 249 MB | 541768
+                │      ├─TL_calib_K_가시광이미지_image_F.zip | 354 MB | 541769
+                │      ├─TL_calib_K_가시광이미지_image_L.zip | 252 MB | 541770
+                │      ├─TL_calib_K_가시광이미지_image_R.zip | 236 MB | 541771
+                │      ├─TL_calib_K_라이다_lidar_1.zip | 18 GB | 541772
+                │      ├─TL_calib_K_라이다_lidar_2.zip | 7 GB | 541773
+                │      ├─TL_calib_K_열화상이미지_thermal.zip | 61 MB | 541774
+                │      ├─TL_calib_V_가시광이미지_image_B.zip | 139 MB | 541775
+                │      ├─TL_calib_V_가시광이미지_image_F.zip | 184 MB | 541776
+                │      ├─TL_calib_V_가시광이미지_image_L.zip | 124 MB | 541777
+                │      ├─TL_calib_V_가시광이미지_image_R.zip | 123 MB | 541778
+                │      ├─TL_calib_V_라이다_lidar_1.zip | 18 GB | 541779
+                │      ├─TL_calib_V_라이다_lidar_2.zip | 11 GB | 541780
+                │      └─TL_calib_V_열화상이미지_thermal.zip | 45 MB | 541781
+                ├─Validation
+                │  ├─01.원천데이터
+                │  │  ├─VS_calib_K_가시광이미지_image_B.zip | 15 GB | 541782
+                │  │  ├─VS_calib_K_가시광이미지_image_F.zip | 16 GB | 541783
+                │  │  ├─VS_calib_K_가시광이미지_image_L.zip | 17 GB | 541784
+                │  │  ├─VS_calib_K_가시광이미지_image_R.zip | 16 GB | 541785
+                │  │  ├─VS_calib_K_라이다_lidar.zip | 8 GB | 541786
+                │  │  ├─VS_calib_K_열화상이미지_thermal.zip | 1 GB | 541787
+                │  │  ├─VS_calib_V_가시광이미지_image_B.zip | 9 GB | 541788
+                │  │  ├─VS_calib_V_가시광이미지_image_F.zip | 10 GB | 541789
+                │  │  ├─VS_calib_V_가시광이미지_image_L.zip | 9 GB | 541790
+                │  │  ├─VS_calib_V_가시광이미지_image_R.zip | 9 GB | 541791
+                │  │  ├─VS_calib_V_라이다_lidar.zip | 11 GB | 541792
+                │  │  └─VS_calib_V_열화상이미지_thermal.zip | 2 GB | 541793
+                │  └─02.라벨링데이터
+                │      ├─VL_calib_K_가시광이미지_image_B.zip | 31 MB | 541794
+                │      ├─VL_calib_K_가시광이미지_image_F.zip | 45 MB | 541795
+                │      ├─VL_calib_K_가시광이미지_image_L.zip | 32 MB | 541796
+                │      ├─VL_calib_K_가시광이미지_image_R.zip | 30 MB | 541797
+                │      ├─VL_calib_K_라이다_lidar.zip | 3 GB | 541798
+                │      ├─VL_calib_K_열화상이미지_thermal.zip | 8 MB | 541799
+                │      ├─VL_calib_V_가시광이미지_image_B.zip | 18 MB | 541800
+                │      ├─VL_calib_V_가시광이미지_image_F.zip | 23 MB | 541801
+                │      ├─VL_calib_V_가시광이미지_image_L.zip | 16 MB | 541802
+                │      ├─VL_calib_V_가시광이미지_image_R.zip | 16 MB | 541803
+                │      ├─VL_calib_V_라이다_lidar.zip | 4 GB | 541804
+                │      └─VL_calib_V_열화상이미지_thermal.zip | 6 MB | 541805
+                └─Sublabel
+                    └─SbL.zip | 55 GB | 549779
+

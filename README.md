@@ -9,7 +9,7 @@
 | 브랜치 | 담당 | 내용 |
 |---|---|---|
 | `main` | 공통 | 통합본 |
-| `detection` | 박주영 | YOLO11s-seg 학습, 데이터셋 재라벨링, Foundation Model 인코더 비교 실험 |
+| `detection` | 박주영 | YOLO11s-seg 학습, 데이터셋 재라벨링, Foundation Model 인코더 비교 실험, 보행신호등·킥보드 추가 학습(6주차) |
 
 ---
 
@@ -20,6 +20,47 @@
 | 주차 | 기간 | 한 일 | 결과물 |
 |---|---|---|---|
 | [5주차](#5주차-2026-09-29--10-05) | 2026-09-29 ~ 10-05 | GPU 서버 학습 파이프라인 구축, 1차 pilot 17개(인코더 8종 × fusion/distill), 데이터·라벨 품질 분석, 최종 학습(E0 vs C-RADIOv3 fusion), 오류 원인 분석, 추론 속도 비교 | [요약 PDF](docs/report/report.pdf), [상세 PDF](docs/report/report_detailed.pdf), [HANDOVER.md](HANDOVER.md) |
+| [6주차](#6주차-2026-10-06--10-12) | 2026-10-06 ~ 10-12 | 보행신호등·킥보드 데이터 구축(AI Hub 188/71579/614 + Roboflow 한국 보행신호), seg10 이어 학습(10클래스 유지), 신호 변화 장면 강조, 신호 상태 분류 모델 추가, 기존 클래스 하락 원인 분석·v2 학습 | [ped_signal_kickboard/README.md](ped_signal_kickboard/README.md), [RESULTS](ped_signal_kickboard/docs/RESULTS.md) |
+
+---
+
+## 6주차 (2026-10-06 ~ 10-12)
+
+> 상세 문서(데이터 분석, 결과, 원인 분석, 실행 방법, 재발 방지 기록): [`ped_signal_kickboard/README.md`](ped_signal_kickboard/README.md) · 전체 결과 표: [`ped_signal_kickboard/docs/RESULTS.md`](ped_signal_kickboard/docs/RESULTS.md) · 시간순 작업 기록: [`ped_signal_kickboard/HANDOFF.md`](ped_signal_kickboard/HANDOFF.md)
+
+### 이번 주 진행 기록
+- 보행자 신호등과 킥보드 데이터를 구축했다.
+  - **AI Hub**: 188(보행신호 포함 도로), 71579(신호 변화 클립), 614(개인형 이동장치)에서 필요한 이미지만 골라냈다. 원본 묶음을 받으면서 바로 걸러내는 스트리밍 방식을 썼다.
+  - **Roboflow**: 18개 후보의 샘플을 직접 보고 **한국 보행신호등 5종과 킥보드 1종**만 골랐다.
+- **seg10(yolo11n-seg) `best.pt`를 그대로 이어서** 학습했다.
+  - 클래스는 10개를 유지했다. 신호등은 `traffic_light`, 킥보드는 `scooter`로 넣었다.
+  - 재라벨링은 하지 않았다.
+- **신호 변화(red↔green) 장면 강조**: 71579의 변화 클립 157개 프레임을 학습에 5배로 넣었다.
+- **신호 상태 분류 모델**(yolo11n-cls, red/green/off/vehicle)을 추가했다. 탐지된 `traffic_light` 영역을 잘라서 상태를 판정한다.
+- 런유어AI RTX A5000에서 다운로드, 학습, 자동 평가를 했다.
+
+### 한눈에 보기 (같은 검증 이미지에서 seg10 vs 새 모델, Box mAP50)
+| 검증셋 | 클래스 | seg10 | 새 모델(v1) |
+|---|---|---|---|
+| 189 인도보행 | traffic_light | 0.461 | **0.785** |
+| 188 보행신호 도로 | traffic_light | 0.039 | **0.725** |
+| Roboflow 한국 보행신호 | traffic_light | 0.022 | **0.964** |
+| 614 킥보드 | scooter | 0.005 | **0.921** |
+| 189 인도보행 | all (10클래스) | 0.646 | 0.576 |
+
+- 신호 상태 분류 top-1 정확도는 **0.913**이다(red 0.91, green 0.88, off 0.83, vehicle 0.96).
+- **문제점**: 기존 클래스 성능이 떨어졌다(189 검증셋 bicycle 0.656→0.398, other_vehicle 0.707→0.518, person 0.799→0.724).
+  - 원인은 **부분 라벨**이다. 새 이미지 6만 장에 사람·자전거·차 라벨이 없어서 배경으로 학습됐다.
+  - 자전거는 탑승자를 포함한 킥보드 박스(614)와도 혼동된 것으로 보인다.
+- **대응(진행 중)**: v2를 학습하고 있다.
+  - v1 best.pt에서 15 epoch를 추가로 학습한다.
+  - 189 데이터를 10배 반복하고, 188은 1만 장, 614는 5천 장으로 줄였다. lr0는 0.002다.
+  - 결과는 `ped_signal_kickboard/docs_v2`에 추가할 예정이다.
+
+### 결론과 다음 할 일
+- v2로 기존 클래스가 회복되는지 확인한다. 기준은 189 검증셋 클래스별 mAP를 seg10과 비교하는 것이다.
+- 신호 상태 분류의 green 데이터를 보강한다. AI Hub 187(미승인)과 Roboflow `cible`(일부 외국 이미지 섞여 보류)이 후보다.
+- 실제 연속 영상으로 신호 변화 구간을 평가한다.
 
 ---
 

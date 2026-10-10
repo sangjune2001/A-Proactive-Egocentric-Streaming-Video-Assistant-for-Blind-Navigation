@@ -1,0 +1,23 @@
+The contents are encoded in UTF-8 including Korean characters. 
+If the following contents are not output normally, 
+Please modify the character information of the OS. 
+=================공지사항=================== 
+========================================== 
+
+    └─180.자율주행차의 다양한 주행환경에서의 신호등 신호정보 인지 영상 데이터
+        └─01-1.정식개방데이터
+            ├─Other
+            │  └─Other.zip | 9 MB | 497019
+            ├─Training
+            │  ├─01.원천데이터
+            │  │  ├─TS.z01 | 100 GB | 497020
+            │  │  ├─TS.z02 | 100 GB | 497021
+            │  │  └─TS.zip | 49 GB | 497022
+            │  └─02.라벨링데이터
+            │      └─TL.zip | 73 MB | 497023
+            └─Validation
+                ├─01.원천데이터
+                │  └─VS.zip | 31 GB | 497024
+                └─02.라벨링데이터
+                    └─VL.zip | 10 MB | 497025
+

@@ -1,0 +1,25 @@
+The contents are encoded in UTF-8 including Korean characters. 
+If the following contents are not output normally, 
+Please modify the character information of the OS. 
+=================공지사항=================== 
+========================================== 
+
+    └─120.개인형 이동장치 안전 데이터
+        └─01.데이터
+            ├─1.Training
+            │  ├─라벨링데이터
+            │  │  ├─TL2.zip | 320 MB | 56580
+            │  │  ├─TL3.zip | 196 MB | 56581
+            │  │  ├─TL4.zip | 271 MB | 56582
+            │  │  └─TL1.zip | 318 MB | 56579
+            │  └─원천데이터
+            │      ├─TS1.zip | 101 GB | 56583
+            │      ├─TS2.zip | 101 GB | 56584
+            │      ├─TS3.zip | 100 GB | 56585
+            │      └─TS4.zip | 92 GB | 56586
+            └─2.Validation
+                ├─라벨링데이터
+                │  └─VL1.zip | 101 MB | 56587
+                └─원천데이터
+                    └─VS1.zip | 39 GB | 56588
+
