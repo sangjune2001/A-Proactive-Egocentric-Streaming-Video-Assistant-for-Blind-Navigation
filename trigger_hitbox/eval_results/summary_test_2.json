@@ -1,0 +1,55 @@
+{
+  "video": "test_2.mp4",
+  "frames": 5703,
+  "fps": 30.0,
+  "yolo_ms_per_frame": 61.0,
+  "trigger_ms_per_frame": 7.62,
+  "walk_mps": {
+    "p10": 1.1,
+    "median": 1.28,
+    "p90": 1.72
+  },
+  "B0": {
+    "total": 25,
+    "approach": 25,
+    "light": 0
+  },
+  "A": {
+    "warn": 6,
+    "danger": 34
+  },
+  "B": {
+    "warn": 33,
+    "danger": 36
+  },
+  "light_changes": 0,
+  "road_near_vehicle_frac": 0.31,
+  "crosswalk_frac": 0.31,
+  "crosswalk_notices": [
+    [
+      17.0,
+      "횡단보도를 건너고 있어요. 차를 조심하세요."
+    ],
+    [
+      32.0,
+      "횡단보도를 건너고 있어요. 차를 조심하세요."
+    ],
+    [
+      96.5,
+      "횡단보도를 건너고 있어요. 차를 조심하세요."
+    ],
+    [
+      128.0,
+      "횡단보도를 건너고 있어요. 차를 조심하세요."
+    ]
+  ],
+  "offroad_ignored_dets": 4462,
+  "offpath_ignored_dets": 5890,
+  "cam_h_used": 1.77,
+  "cam_h_est": {
+    "n": 6049,
+    "median": 2.49,
+    "p25": 1.87,
+    "p75": 3.44
+  }
+}

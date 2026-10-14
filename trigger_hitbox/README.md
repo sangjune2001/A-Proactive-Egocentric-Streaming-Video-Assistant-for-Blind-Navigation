@@ -1,11 +1,13 @@
 # 히트박스 트리거 (B) — 7주차 (2026-10-13 ~ )
 
+> **최신: v5_11** (코드 기준). 아래 채점 표는 v5_9 원본 JSON 기준이고, v5_10 · v5_11 결과는 [§3-1](#3-1-v5_10--v5_11-채점) · `eval_results/eval_v5_10_v5_11.json`.
+
 몸에 단 폰 카메라 영상에서 **"언제, 무엇을, 어떻게" 말할지 정하는 트리거**를 새로 만들었다.
 YOLO가 찾은 물체를 **바닥(미터) 좌표**로 옮겨서, 내가 걸어갈 영역(히트박스)과 겹치는지로 판단한다.
 태규 규칙(B0, 화면 확대율 기반)을 기준선으로 같은 라벨에서 비교했다.
 
 > 버전별로 무엇을 왜 바꿨는지: [`CHANGELOG.md`](CHANGELOG.md) · 영상 옆에 붙인 수정사항 원문: [`notes/`](notes/)
-> 결과 원본(JSON): [`results/`](results/) · 코드: [`code/`](code/)
+> 결과 원본(JSON): [`eval_results/`](eval_results/) · 코드: [`code/`](code/)
 
 ![최종 비교 영상 한 장면 (왼쪽 = 사용자에게 보이고 들리는 것, 오른쪽 = 판단 과정)](img/final_view_test3.jpg)
 
@@ -47,7 +49,10 @@ YOLO가 찾은 물체를 **바닥(미터) 좌표**로 옮겨서, 내가 걸어�
 | 무시 | 길 방향·걷는 방향 둘 다에서 8° 넘게 벗어난 정지 물체, 인도 끝선 너머·차도 위 차, 멀어지는 물체, 빨간불 대기 중 지나가는 차 |
 | 움직임 | 최근 1 s 거리 기울기 + 내 걸음 = 물체 자체 속도. 화면 끝에서 잘린 채 들어오는 물체는 안쪽 끝 속도로 "지나감" |
 | 사람 | 평소엔 경고 안 함. 길 막음(앞 4 m에서 느려짐·멈춤) · 다가옴 · 가로질러 들어옴 · 충돌 코스만 |
+| 이름 (v5_10) | 멈춰 있는 건 전부 '장애물', 기둥 · 볼라드 · 벽만 구분. 클래스는 트랙 전체 투표. 움직이는 탈것·사람은 이름 그대로 |
+| 고개 돌림 (v5_11) | 배경이 초당 화면 폭 35 % 넘게 옆으로 움직이면 0.4 s 동안 위치 안내(주의)만 보류, 위험은 그대로 |
 | 반복 | 같은 트랙 ID는 한 번(정지→움직임, 바짝 접근은 예외). 박스 80 % 겹치면 같은 물체. 줄지은 기둥은 "이어져 있어요" 한 번 |
+| 볼라드 (v5_10) | 횡단보도 앞 볼라드 = "신호 대기 중이에요 / 횡단보도 앞이에요. 전방에 볼라드를 조심하세요." (10 s에 한 번) |
 | 신호 | 길 방향 ±15° 정면 보행 신호만, 후보 색이 엇갈리면 판단 안 함(사거리). 0.5 s 확정 + 1.5 s 안 변경만 알림 |
 | 횡단보도 | "횡단보도 앞 신호 대기 중이에요" · "횡단보도를 건너고 있어요" · 횡단보도 없는 곳 "차도를 건너고 있어요" · 대기 중 주변 사람이 걷기 시작하면 "주변 사람들이 건너기 시작했어요" |
 
@@ -76,6 +81,24 @@ Precision ↑ · Recall ↑ · F1 ↑ 는 높을수록, 분당 오경보 ↓ 는
 - 학습에서 놓친 것: 신호 변경 4개(작은·기울어진 신호등을 YOLO가 못 찾음, 반대쪽 신호등 뒷면이 잡힘), 킥보드·오토바이 접근 5개.
 - FP에는 라벨에 없지만 실제로 길을 막는 물체(볼라드·화단)도 섞여 있다.
 
+### 3-1. v5_10 · v5_11 채점
+
+여유 기준, 위험만 알림(Bd). loose = 멈춘 탈것 라벨(세워진 자전거 등)을 '장애물' 경고로도 맞힌 것으로 인정 — v5_10부터 멈춘 물체를 '장애물'로 부르기 때문.
+
+| 데이터 | 버전 | Precision ↑ | Recall ↑ | F1 ↑ | 분당 오경보 ↓ |
+|---|---|---|---|---|---|
+| 테스트 | 태규 B0 | 0.14 | 0.58 | 0.23 | 6.4 |
+| 테스트 | v5_9 | 0.16 | 0.83 | 0.26 | 8.2 |
+| 테스트 | v5_10 (1–2 s 앞당김) | 0.11 | 0.75 | 0.20 | 10.6 |
+| 테스트 | **v5_11** | 0.12 | 0.75 | 0.21 | 9.9 |
+| 학습 7편 | 태규 B0 (loose) | 0.03 | 0.06 | 0.04 | 3.8 |
+| 학습 7편 | v5_9 | 0.19 | 0.44 | 0.27 | 3.0 |
+| 학습 7편 | **v5_11** | 0.21 | 0.56 | 0.31 | 3.4 |
+| 학습 7편 | **v5_11 (loose)** | **0.24** | **0.63** | **0.35** | 3.2 |
+
+- 경고를 1–2 s 당기면(v5_10) 오경보가 늘고 사용자가 보기에도 안 맞아서 0.3–0.5 s만 당기는 v5_11로 정리했다.
+- 테스트에서 v5_9보다 Recall이 낮은 3개는 위험 경고가 안 나간 경우다 (test_2 93 s · 137 s 장애물, test_3 47 s 자전거).
+
 ## 4. 시간 측정 (A5000, 파트별 중간값)
 
 | 파트 | GPU | CPU | 비고 |
@@ -90,7 +113,7 @@ Precision ↑ · Recall ↑ · F1 ↑ 는 높을수록, 분당 오경보 ↓ 는
 | TTS Supertonic (서버 CPU) | – | 1.26 s → 경합 1.35 s | Heami(노트북) 0.01–0.03 s |
 
 실제 속도 end-to-end (test 1·2·3, 중간값): **GPU만** 경고 지연 0.02 s · 프레임 지연 0.02 s · 인식 18–22 ms / **나눠 쓰기(YOLO CPU 8스레드, VLM GPU)** 경고 0.05 s · 프레임 0.05 s · 인식 43–50 ms.
-→ 나눠 써도 지연은 거의 안 늘지만 CPU만이면 약 12 fps가 상한이다. 원본: `results/bench_parts.json`, `results/e2e_*.json`.
+→ 나눠 써도 지연은 거의 안 늘지만 CPU만이면 약 12 fps가 상한이다. 원본: `eval_results/bench_parts.json`, `eval_results/e2e_*.json`.
 
 ## 5. 해 본 것 · 버린 것
 
@@ -101,7 +124,7 @@ Precision ↑ · Recall ↑ · F1 ↑ 는 높을수록, 분당 오경보 ↓ 는
 | SegFormer Cityscapes 바닥 분할 | 한국 벽돌 인도를 차도로 칠함 → **Mapillary Mask2Former**로 교체 ([그림](img/seg_cityscapes_fail_test3.jpg) vs [교체 후](img/seg_mapillary_test3.jpg)) |
 | 깊이 추정 Depth Anything V2 | YOLO가 못 잡는 박스 더미를 6–7 m 앞 장애물로 찾음 ([그림](img/depth_boxpile_test3.jpg)), 80 ms. 아직 트리거에 미연결 |
 | 신호 분류기만 사용 | 기울어진 신호등을 '꺼짐'으로 봄 → 상자 안 HSV 색으로 직접 판단 |
-| AI Hub 159 (1인칭 보행영상) 인식 채점 | 2,563장, conf 0.2 기준 자동차 R 0.73 · 사람 0.53 · 오토바이 0.48 · **장애물 0.10** (나무·표지판·가로등을 장애물로 안 배움). `results/eval_159.json` |
+| AI Hub 159 (1인칭 보행영상) 인식 채점 | 2,563장, conf 0.2 기준 자동차 R 0.73 · 사람 0.53 · 오토바이 0.48 · **장애물 0.10** (나무·표지판·가로등을 장애물로 안 배움). `eval_results/eval_159.json` |
 | 30° 시계 방향 vs 45° 8방향 | 폰 화각이 좌우 ±21°라 8방향이면 전부 '앞' → 시계 방향 + 정면 막대 |
 
 ## 6. 실행 방법 (서버)
@@ -114,7 +137,7 @@ LIGHT_IMGSZ=1920 LIGHT_CONF=0.1 LIGHT_OUT=lights2.json \
   python pass1_lights.py final_10class_best.pt signal_state_cls_best.pt VIDEO OUT
 LIGHT_IN=lights2.json python pass1_lightcolor.py VIDEO OUT      # → lights2_hsv.json
 python pass1_surface.py VIDEO OUT                               # → surface2.npz
-LIGHT_FILE=lights2_hsv.json CAM_H=1.77 PANELS=B VERSION=v5_9 python pass2_trigger.py OUT   # 히트박스 영상 + events_runtime.json
+LIGHT_FILE=lights2_hsv.json CAM_H=1.77 PANELS=B VERSION=v5_11 python pass2_trigger.py OUT   # 히트박스 영상 + events_runtime.json
 # 음성: SJ code/runtime (sj_runtime_patch 적용) — replay 트리거, VLM 끔
 python run_demo.py --clip test_3 --perception yolo --tracks F10 --device 0 --trigger replay:<events 폴더> \
   --vlm none --tts server --tts-url http://localhost:7788/v1 --tts-model supertonic-3 --tts-voice M1 --run v59
@@ -124,7 +147,8 @@ python eval_trigger.py labels.json test <OUT 상위 폴더>
 ```
 
 결과 영상(파일당 50–110 MB, GitHub 용량 때문에 미포함)은 박주영 노트북 `Documents/trigger_proto/out/test_N/`에 있다:
-`test_N_최종_음성_비교_v5_9.mp4`(왼쪽 사용자 화면 + 음성 자막, 오른쪽 판단 과정), `test_N_히트박스_v5_9_수정본.mp4`.
+`test_N_최종_음성_비교_v5_10.mp4`(왼쪽 사용자 화면 + 음성 자막, 오른쪽 판단 과정), `test_N_히트박스_v5_10_수정본.mp4` (v5_11 영상은 서버 반납으로 미생성).
+채점: `python eval_trigger.py labels.json test <폴더>` · 멈춘 탈것 = 장애물 인정은 `LOOSE=1`.
 
 ## 7. 다음 할 일
 

@@ -20,13 +20,13 @@ DEBUG_TID = int(os.environ.get('DEBUG_TID', '-1'))
 DRAW_ONLY = {"person"}       # 경로·화살표는 그리지만 경고 대상은 아님 (팀 규칙과 동일)
 VEHICLES = {"bicycle", "scooter", "motorcycle", "car", "bus", "other_vehicle"}
 OBSTACLES = {"obstacle", "stairs"}
-MIN_AGE_S = 0.4            # 트랙이 생긴 지 0.4 s 미만이면 판정 안 함 (v5: 0.5 → 0.4, 경고를 더 일찍)
-ON_HOLD_S, OFF_HOLD_S = 0.2, 0.6   # 히스테리시스 (초 단위, v5: 켜짐 0.3 → 0.2)
+MIN_AGE_S = 0.25            # 트랙이 생긴 지 0.4 s 미만이면 판정 안 함 (v5: 0.5 → 0.4, 경고를 더 일찍)
+ON_HOLD_S, OFF_HOLD_S = 0.1, 0.6   # 히스테리시스 (초 단위, v5: 켜짐 0.3 → 0.2)
 DANGER_REACH_S = 2.5       # 정면 물체 위험 도달 시간 (v5: 2 → 2.5 s). 주의는 영역에 걸치면 바로
 ZONE_EDGE_M = 0.2          # 영역 경계에 걸친 물체도 영역 안으로 봄
 STAB = os.environ.get("STAB", "1") != "0"   # 흔들림 보정 켜기 (STAB=0 이면 v4와 같음)
 APPR_MAX_Z = 12.0          # 12 m 보다 먼 물체는 거리 오차가 커서 '다가옴' 판단 안 함 (멀리 서 있는 차)
-APPR_HOLD_S = 0.3          # 다가옴 확정까지 (v5_7: 0.5 → 0.3 s, 다가오는 물체 경고를 더 빨리)
+APPR_HOLD_S = 0.2          # 다가옴 확정까지 (v5_7: 0.5 → 0.3 s, 다가오는 물체 경고를 더 빨리)
 PERSON_BLOCK_Z = 4.0       # 내 앞 4 m 안 사람이 나보다 느리거나 멈추면 길을 막는 장애물
 OWN_V = 0.8              # 물체 자체 속도가 0.8 m/s 넘어야 움직이는 것으로 봄 (주차 차량 '다가옴' 오판 방지)
 UP_ANGLE_DEG = 80       # 고정 화살표가 화면 위쪽 ±50° 안 = 멀어지는 물체 → 경고 제외
@@ -58,16 +58,18 @@ DUP_IOU = 0.8             # 박스가 80 % 이상 겹치면 같은 물체 (v5_9)
 FRONT_HALF = 0.25          # '정면' 막대 = 길 중심선 ±0.25 m (사람 어깨 폭의 절반, v5_9)
 IMMINENT_S = 1.5           # '곧 충돌' 구역: 내 몸 폭 안 · 1.5 s 안에 닿는 거리
 DANGER_BODY_S = 3.0       # 내 몸 폭 안 정면 물체는 3 s 안 도달이면 위험 (v5_8)
+TURN_ON = os.environ.get("TURN", "1") != "0"
+TURN_RATE, TURN_HOLD_S = 0.35, 0.4   # 배경이 초당 화면 폭 35 % 넘게 옆으로 = 고개 돌림 (v5_10)
 CLOSE_Z = 2.5             # 이보다 가까운 위험 물체는 '멈추세요' (v5_8)
 FRONT_DEG = 4.0           # 길 방향 ±4° 안만 '정면' (v5_8)
 HEADON_X = 0.9           # 물체 중심이 내 정면 ±0.9 m 안 = 부딪힐 각 → 이때만 '피하세요/멈추세요'
-GROUP_S = 1.0             # 급하지 않은 경고는 1 s 동안 모아서 한 문장으로
+GROUP_S = 0.5             # 급하지 않은 경고는 1 s 동안 모아서 한 문장으로
 XWALK_SEG_FRAC = 0.12     # 앞쪽 바닥의 12 % 이상이 횡단보도면 횡단보도 앞
 XWALK_WALK = 0.5          # 이 걸음 속도(m/s) 미만이면 신호 대기 중으로 봄
 V_MAX = 12.0               # m/s 상한 (튀는 값 방지)
 ZONE_HOLD_S = 0.5          # 영역에서 나간 뒤에도 0.5 s 동안은 경로를 계속 그림 (깜빡임 방지)
 # 영역 길이 = 걸음 속도 × ZONE_LOOK_S + ZONE_BASE (빨리 걸을수록 앞을 더 멀리 봄)
-ZONE_BASE, ZONE_LOOK_S = 2.0, 4.0
+ZONE_BASE, ZONE_LOOK_S = 2.0, 4.0   # v5_11: 5.5 → 4 s 되돌림 (1–2 s 당기니 안 맞음)
 ZONE_MIN, ZONE_MAX = 4.0, 15.0
 WALK_DEFAULT = 1.2         # 걸음 속도를 못 구할 때 기본값 (m/s)
 
@@ -426,6 +428,7 @@ def run(out_dir, make_video=True):
     evA, evB, timing, walks = [], [], [], []
     cam_h_obs = []
     shake_cum, shake_base, y_hor_prev = np.zeros(2), np.zeros(2), H / 2
+    pan_rate, turn_t = 0.0, -1e9     # 고개 돌림 (배경 가로 이동 속도)
     # 신호등 (pass1_lights.py 결과, STRIDE 프레임마다) — 영역과 상관없이 항상 표시
     lj = out / os.environ.get("LIGHT_FILE", "lights_hsv.json") if (out / os.environ.get("LIGHT_FILE", "lights_hsv.json")).exists() and os.environ.get("LIGHT_HSV", "1") != "0"         else out / "lights.json"            # v5_9: 상자 안 픽셀 색으로 판단한 신호 (기울어진 신호등 대응)
     lights_by_f, stride = {}, 1
@@ -500,8 +503,13 @@ def run(out_dir, make_video=True):
         if cam_ok:
             c_ = np.array([W / 2, y_hor_prev])          # 지평선 위 화면 중앙점이 이번 프레임에 움직인 양
             shake_cum += m[:, :2] @ c_ + m[:, 2] - c_
+            pan_now = abs(float((m[:, :2] @ c_ + m[:, 2] - c_)[0])) / W / max(dt, 1e-3)
+            pan_rate = 0.85 * pan_rate + 0.15 * pan_now
         shake_base = 0.93 * shake_base + 0.07 * shake_cum
         sh_x, sh_y = (shake_cum - shake_base) if STAB else (0.0, 0.0)
+        if pan_rate > TURN_RATE:
+            turn_t = t
+        turning = TURN_ON and t - turn_t < TURN_HOLD_S   # 고개 돌리는 중 (+0.7 s): 방향 · 위치를 믿기 어려움
         head_x = float(np.clip(foe[0], W * 0.4, W * 0.6)) + float(sh_x)
         y_hor = float(np.clip(foe[1], H * 0.35, H * 0.65)) + float(sh_y)
         y_hor_prev = y_hor
@@ -594,7 +602,7 @@ def run(out_dir, make_video=True):
         elif road != "crosswalk":
             xw_state = None
         floor_now = None
-        if surf is not None and surf_f is not None and fi in surf_set and walk >= XWALK_WALK:
+        if surf is not None and surf_f is not None and fi in surf_set and walk >= XWALK_WALK and not turning:
             hr_ = math.radians(heading)
             for r_ in range(sh_ - 2, int(sh_ * 0.5), -1):           # 가까운 행부터
                 y_img = (r_ + 0.5) / sh_ * H
@@ -612,10 +620,10 @@ def run(out_dir, make_video=True):
                 if strip.sum() < 2:
                     continue
                 lab_s = surf[r_, strip]
-                frac4, frac5 = (lab_s == 4).mean(), (lab_s == 5).mean()
-                # 턱: 내 길을 가로로 막을 때만 (길 폭의 70 % 이상) · 고정 장애물: 길 폭의 30 % 이상
-                if frac4 >= 0.7 or frac5 >= 0.3:
-                    kind_ = 4 if frac4 >= 0.7 else 5
+                frac4, frac5, frac6 = (lab_s == 4).mean(), (lab_s == 5).mean(), (lab_s == 6).mean()
+                # 턱: 내 길을 가로로 막을 때만 (길 폭의 70 % 이상) · 고정 장애물 30 % 이상 · 벽 70 % 이상(v5_10)
+                if frac4 >= 0.7 or frac5 >= 0.3 or frac6 >= 0.7:
+                    kind_ = 6 if frac6 >= 0.7 else 4 if frac4 >= 0.7 else 5
                     Xh = float(np.median(Xa[strip][lab_s == kind_]))
                     floor_now = (Xh, float(Zr), kind_)
                     break
@@ -634,7 +642,7 @@ def run(out_dir, make_video=True):
             lv_ = "danger" if Zh < CLOSE_Z + 0.5 else "warn"
             side_ = "veer_left" if Xh > 0 else "veer_right"
             evF.append(dict(frame=fi, time_s=round(t, 3), X=round(Xh, 2), Z=round(Zh, 2), level=lv_,
-                            cls="curb" if kind_ == 4 else "obstacle", action=side_ if lv_ == "danger" else "none"))
+                            cls="wall" if kind_ == 6 else "obstacle", action=side_ if lv_ == "danger" else "none"))
             floor_seen.append((Xh, Zh, t))
         if user_surf == 1:
             last_walk_side = t
@@ -696,6 +704,9 @@ def run(out_dir, make_video=True):
             tr.votes = getattr(tr, "votes", defaultdict(float))
             tr.votes[cls] += d.get("conf", 1.0)
             tr.n_obs = getattr(tr, "n_obs", 0) + 1
+            # 트랙 전체 투표로 클래스를 정함 (v5_10): 테이블이 프레임마다 '장애물'↔'오토바이'로 바뀌어
+            # 오토바이로 잡힌 순간 탈것 규칙(다가옴·멈추세요)이 적용되던 문제
+            cls = max(tr.votes, key=tr.votes.get)
             if tr.max_conf < 0.5 and cls in VEHICLES:
                 cls = "obstacle"
 
@@ -790,12 +801,14 @@ def run(out_dir, make_video=True):
                     # 화면 확대율(g_rel)이 약해도 바닥 속도로 기준의 2배 넘게 다가오면 다가옴 (45.7 s 달려오는 사람, v5_9)
                     # 화면 아래 끝에 닿거나 폭이 화면 절반 넘는 큰 물체(가까운 차): 발 위치 거리가 튀어서 바닥 속도를 안 믿음
                     big_near = y2 >= H - 5 or (x2 - x1) > 0.5 * W
-                    appr_now = (state == "approaching" and g_rel > G_REL_MOVING) if big_near else                         vZw < -thr_ and (state == "approaching" or g_rel > 0.05 or vZw < -2 * thr_)
+                    appr_now = (cls == "person" and state == "approaching" and g_rel > G_REL_MOVING) if big_near else                         vZw < -thr_ and (state == "approaching" or g_rel > 0.05
+                                         or (cls == "person" and vZw < -2 * thr_))   # 완화는 사람만 (테이블 '다가옴' 오판, v5_10)
                     tr.appr_t0 = (getattr(tr, "appr_t0", None) or t) if appr_now else None
                     state = ("approaching" if appr_now and t - tr.appr_t0 >= APPR_HOLD_S else
                              "receding" if vZw > own_v else
                              "crossing" if abs(vX) > own_v and state == "crossing" else "static")
                 lk_ = tr.lock_v
+                big_near_ = y2 >= H - 5 or (x2 - x1) > 0.5 * W
                 # 화면 옆 끝에 잘린 채 들어오는 물체 (검정 차, v5_9): 안쪽 끝이 0.5 s 동안 화면 폭의 30 %/s 넘게
                 # 옆으로 움직이면 '옆에서 들어와 지나감' — 잘린 상자라 바닥 거리·확대율은 믿지 않음
                 bh_ = getattr(tr, "bh", None) or deque(maxlen=30)
@@ -803,14 +816,15 @@ def run(out_dir, make_video=True):
                 bh_.append((t, x1, x2))
                 old_ = [b for b in bh_ if t - b[0] >= 0.4]
                 edge_l, edge_r = x1 <= 0.1 * W, x2 >= 0.9 * W
-                if old_ and (edge_l != edge_r) and (cls in VEHICLES or cls == "person"):
+                if old_ and not turning and (edge_l != edge_r) and (cls in VEHICLES or cls == "person"):
                     b0_ = old_[-1]
                     inner_v = ((x2 - b0_[2]) if edge_l else (b0_[1] - x1)) / max(t - b0_[0], 1e-3)
-                    if inner_v > 0.3 * W:
+                    if inner_v > 0.3 * W and abs(vX) > own_v:     # 바닥 옆 속도도 확인 (카메라 회전 오판, v5_10)
                         state = "crossing"
                 # 화살표가 옆(수평)을 향하면 다가옴보다 '지나감'이 우선 — 검정 차가 서→동으로 움직이는 경우 (v5_9)
-                if ((cls in VEHICLES or cls == "person") and lk_ is not None and age >= 0.3
-                        and abs(lk_[0]) > 0.25 * (x2 - x1) and abs(lk_[1]) < 0.6 * abs(lk_[0]) and Z < 8.0):
+                if (not turning and (cls in VEHICLES or cls == "person") and lk_ is not None and age >= 0.3
+                        and abs(lk_[0]) > 0.25 * (x2 - x1) and abs(lk_[1]) < 0.6 * abs(lk_[0]) and Z < 8.0
+                        and (abs(vX) > own_v or big_near_)):      # 바닥 옆 속도로도 확인 (카메라 회전 오판, v5_10)
                     state = "crossing"                  # 내 길과 수직으로 움직임 → 멈추세요 (사용자 요청)
                 # 히트박스 길이용 속도: 스스로 다가오는 게 아니면(정지·장애물) 상대속도는 내 걸음 정도뿐
                 # → 먼 거리 노이즈로 히트박스가 길게 늘어나 오경보 나던 문제 방지 (v5)
@@ -915,6 +929,8 @@ def run(out_dir, make_video=True):
                     print(f"B {t:6.2f} raw={rawB} age={age:.2f} gate={gate} up={going_up} low={low_conf} touch={touch_zone} "
                           f"red={red_wait} offroad={off_road} offpath={off_path}({path_ang:.0f}) inz={in_zone} body={in_body} "
                           f"treach={t_reach:.1f} walk={walk:.2f} usurf={user_surf}")
+                if turning and state == "static" and rawB == "warn":
+                    rawB = "safe"          # 고개 돌리는 중엔 위치 안내(주의)만 보류, 위험은 그대로 (v5_11)
                 lvB = tr.hB.step(rawB, t)
                 polyB = polyB_raw = project(dang_poly, f_px, head_x, y_hor)
                 # 거리 추정(발 위치 + 클래스 키 평균)과 가정한 카메라 높이 오차 때문에 투영 중심이 발에서 뜰 수 있음
@@ -976,7 +992,7 @@ def run(out_dir, make_video=True):
                        stable=light_st[L["tid"]].stable if L["tid"] is not None else None) for L in cur_lights]
         per_frame_draw.append(dict(t=t, head_x=head_x, y_hor=y_hor, zone_z=zone_z, zone_w=zone_w, zone_base=zone_base,
                                    road=road, sig=ped_sig, walk=walk, draws=draws, lights=lights, surf=user_surf, heading=heading,
-                                   edge=tuple(walk_edge), floor=floor_now))
+                                   edge=tuple(walk_edge), floor=floor_now, turning=turning, xw=xw_state))
         walks.append(walk)
 
     for tag, evs in (("A", evA), ("B", evB), ("light", evL), ("floor", evF)):
@@ -1015,8 +1031,14 @@ def run(out_dir, make_video=True):
         # 횡단보도 앞 가늘고 긴 장애물 = 볼라드 (이름을 들으면 횡단보도 앞임을 알 수 있음, 사용자 요청)
         if say_ == "obstacle" and box is not None and pf_.get("road") == "crosswalk" and                 (box[3] - box[1]) > 2.2 * (box[2] - box[0]):
             say_ = "bollard"
+        # 이름 정리 (v5_10, 사용자): 멈춰 있는 건 전부 '장애물'. 큼직하게 구분되는 기둥 · 볼라드 · 벽만 따로.
+        # 움직이는 탈것·사람은 이름 그대로 (자동차가 지나가요 / 사람이 다가와요)
+        if e["state"] not in ("approaching", "crossing") and say_ in VEHICLES:
+            say_ = "obstacle"
+        if say_ == "obstacle" and box is not None and (box[3] - box[1]) > 3.0 * (box[2] - box[0])                 and pf_.get("road") != "crosswalk":
+            say_ = "pole"                                  # 가늘고 긴 정지 물체 = 기둥
         e["say"] = say_
-        if say_ in ("obstacle", "bollard", "curb", "stairs"):
+        if say_ in ("obstacle", "bollard", "curb", "stairs", "pole"):
             e["state"] = "static"
         rt.append(dict(t=e["time_s"], cls=e["say"], scenario=sc, track_id=e["track_id"], level=e["level"], box=box,
                        motion=e["state"], action=e.get("action", "none"), clock=clock, dist=e["dist_m"],
@@ -1033,6 +1055,23 @@ def run(out_dir, make_video=True):
     for e in evX:                      # 횡단보도 안내 (바로, 묶지 않음)
         rt.append(dict(t=e["time_s"], cls="crosswalk", scenario="S5", track_id=None, level="info", box=None,
                        text=e["text"], urgent=True))
+    # 횡단보도 앞 볼라드 (v5_10, 사용자): 볼라드 경고를 횡단보도 안내와 합쳐 한 문장으로.
+    # 신호 대기 중 → "신호 대기 중이에요. 전방에 볼라드를 조심하세요." / 걸어가는 중 → "횡단보도 앞이에요. …"
+    bol_t, drop_ = [], set()
+    for r in sorted(rt, key=lambda r: r["t"]):
+        if r.get("cls") == "bollard":
+            xw_ = per_frame_draw[max(0, min(len(per_frame_draw) - 1, int(round(r["t"] * fps))))].get("xw")
+            if xw_ == "cross" or (bol_t and r["t"] - bol_t[-1] < 10.0):   # 건너는 중 · 10 s 안 반복은 생략
+                drop_.add(id(r))
+                continue
+            r.update(scenario="S5", urgent=True, text=("신호 대기 중이에요. " if xw_ == "wait" else "횡단보도 앞이에요. ")
+                     + "전방에 볼라드를 조심하세요.")
+            for k_ in ("clock", "items", "motion", "action"):
+                r.pop(k_, None)
+            bol_t.append(r["t"])
+    rt = [r for r in rt if id(r) not in drop_]
+    rt = [r for r in rt if not (r.get("cls") == "crosswalk" and r.get("text", "").startswith("횡단보도 앞 신호 대기")
+                                and any(abs(r["t"] - b_) <= 3.0 for b_ in bol_t))]
     rt = group_speech(rt)
     (out / "events_runtime.json").write_text(json.dumps(dict(events=sorted(rt, key=lambda r: r["t"])),
                                                         ensure_ascii=False, indent=1), encoding="utf-8")
@@ -1156,9 +1195,12 @@ def put_kr(img, lines, x, y, size=34, alpha=0.6, bold=False):
     font = kr_font(size, bold)
     w = max(int(font.getlength(s_)) for s_, _ in lines) + 30
     h = len(lines) * (size + 12) + 16
-    x, y = max(0, int(x)), max(0, int(y))
+    x = int(min(max(0, x), max(0, img.shape[1] - w)))      # 화면 밖 위치면 안쪽으로 (test_2 렌더 중단 문제)
+    y = int(min(max(0, y), max(0, img.shape[0] - h)))
     x2, y2 = min(x + w, img.shape[1]), min(y + h, img.shape[0])
     roi = img[y:y2, x:x2]
+    if roi.size == 0:
+        return h
     roi[:] = (roi * (1 - alpha)).astype(np.uint8)
     pil = Image.fromarray(cv2.cvtColor(roi, cv2.COLOR_BGR2RGB))
     dr = ImageDraw.Draw(pil)

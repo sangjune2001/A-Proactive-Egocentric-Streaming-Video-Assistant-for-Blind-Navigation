@@ -1,0 +1,2088 @@
+{
+ "strict": {
+  "B0": {
+   "total": {
+    "TP": 3,
+    "FP": 47,
+    "FN": 9,
+    "precision": 0.06,
+    "recall": 0.25,
+    "f1": 0.097,
+    "fp_per_min": 7.12,
+    "lead_median_s": -0.67
+   },
+   "per_video": {
+    "test_1": {
+     "TP": 2,
+     "FN": 3,
+     "FP": 15,
+     "fp_list": [
+      [
+       3.9,
+       "obstacle"
+      ],
+      [
+       14.5,
+       "obstacle"
+      ],
+      [
+       24.3,
+       "obstacle"
+      ],
+      [
+       52.9,
+       "vehicle"
+      ],
+      [
+       56.2,
+       "vehicle"
+      ],
+      [
+       57.5,
+       "vehicle"
+      ],
+      [
+       57.7,
+       "vehicle"
+      ],
+      [
+       61.4,
+       "obstacle"
+      ],
+      [
+       62.3,
+       "obstacle"
+      ],
+      [
+       64.5,
+       "obstacle"
+      ],
+      [
+       71.6,
+       "obstacle"
+      ],
+      [
+       74.6,
+       "vehicle"
+      ],
+      [
+       76.6,
+       "obstacle"
+      ],
+      [
+       85.3,
+       "obstacle"
+      ],
+      [
+       93.6,
+       "obstacle"
+      ]
+     ],
+     "missed": [
+      [
+       4,
+       5,
+       "obstacle"
+      ],
+      [
+       84,
+       86,
+       "vehicle"
+      ],
+      [
+       90,
+       91,
+       "vehicle"
+      ]
+     ],
+     "lead_s": [
+      -0.6676452410383185,
+      -0.07192521631644411
+     ],
+     "dur_min": 1.7977777777777777
+    },
+    "test_2": {
+     "TP": 1,
+     "FN": 4,
+     "FP": 23,
+     "fp_list": [
+      [
+       7.4,
+       "obstacle"
+      ],
+      [
+       10.8,
+       "vehicle"
+      ],
+      [
+       26.3,
+       "obstacle"
+      ],
+      [
+       27.8,
+       "obstacle"
+      ],
+      [
+       29.0,
+       "obstacle"
+      ],
+      [
+       39.4,
+       "obstacle"
+      ],
+      [
+       41.3,
+       "obstacle"
+      ],
+      [
+       60.2,
+       "vehicle"
+      ],
+      [
+       67.8,
+       "obstacle"
+      ],
+      [
+       92.9,
+       "obstacle"
+      ],
+      [
+       95.5,
+       "obstacle"
+      ],
+      [
+       99.2,
+       "obstacle"
+      ],
+      [
+       100.8,
+       "vehicle"
+      ],
+      [
+       107.4,
+       "obstacle"
+      ],
+      [
+       109.9,
+       "vehicle"
+      ],
+      [
+       124.2,
+       "obstacle"
+      ],
+      [
+       148.9,
+       "vehicle"
+      ],
+      [
+       161.1,
+       "obstacle"
+      ],
+      [
+       163.8,
+       "vehicle"
+      ],
+      [
+       175.6,
+       "obstacle"
+      ],
+      [
+       176.5,
+       "obstacle"
+      ],
+      [
+       178.9,
+       "obstacle"
+      ],
+      [
+       181.5,
+       "obstacle"
+      ]
+     ],
+     "missed": [
+      [
+       6,
+       7,
+       "obstacle"
+      ],
+      [
+       21,
+       22,
+       "obstacle"
+      ],
+      [
+       93,
+       95,
+       "obstacle"
+      ],
+      [
+       137,
+       138,
+       "obstacle"
+      ]
+     ],
+     "lead_s": [
+      -0.9333333333333371
+     ],
+     "dur_min": 3.1683333333333334
+    },
+    "test_3": {
+     "TP": 0,
+     "FN": 2,
+     "FP": 9,
+     "fp_list": [
+      [
+       0.6,
+       "obstacle"
+      ],
+      [
+       13.3,
+       "vehicle"
+      ],
+      [
+       30.1,
+       "obstacle"
+      ],
+      [
+       42.2,
+       "obstacle"
+      ],
+      [
+       43.1,
+       "obstacle"
+      ],
+      [
+       45.9,
+       "obstacle"
+      ],
+      [
+       46.4,
+       "obstacle"
+      ],
+      [
+       48.2,
+       "vehicle"
+      ],
+      [
+       62.9,
+       "vehicle"
+      ]
+     ],
+     "missed": [
+      [
+       46,
+       48,
+       "vehicle"
+      ],
+      [
+       87,
+       89,
+       "light"
+      ]
+     ],
+     "lead_s": [],
+     "dur_min": 1.6311466311466312
+    }
+   }
+  },
+  "B": {
+   "total": {
+    "TP": 9,
+    "FP": 108,
+    "FN": 3,
+    "precision": 0.077,
+    "recall": 0.75,
+    "f1": 0.14,
+    "fp_per_min": 16.37,
+    "lead_median_s": -0.57
+   },
+   "per_video": {
+    "test_1": {
+     "TP": 3,
+     "FN": 2,
+     "FP": 25,
+     "fp_list": [
+      [
+       3.4,
+       "obstacle"
+      ],
+      [
+       6.7,
+       "obstacle"
+      ],
+      [
+       7.4,
+       "vehicle"
+      ],
+      [
+       13.2,
+       "obstacle"
+      ],
+      [
+       22.3,
+       "vehicle"
+      ],
+      [
+       25.0,
+       "other"
+      ],
+      [
+       28.8,
+       "other"
+      ],
+      [
+       32.1,
+       "other"
+      ],
+      [
+       32.2,
+       "other"
+      ],
+      [
+       38.5,
+       "vehicle"
+      ],
+      [
+       40.3,
+       "other"
+      ],
+      [
+       42.1,
+       "obstacle"
+      ],
+      [
+       45.0,
+       "obstacle"
+      ],
+      [
+       45.2,
+       "other"
+      ],
+      [
+       49.2,
+       "other"
+      ],
+      [
+       60.0,
+       "obstacle"
+      ],
+      [
+       69.4,
+       "obstacle"
+      ],
+      [
+       69.6,
+       "obstacle"
+      ],
+      [
+       69.8,
+       "obstacle"
+      ],
+      [
+       70.3,
+       "obstacle"
+      ],
+      [
+       70.3,
+       "obstacle"
+      ],
+      [
+       80.1,
+       "vehicle"
+      ],
+      [
+       91.3,
+       "obstacle"
+      ],
+      [
+       92.5,
+       "obstacle"
+      ],
+      [
+       93.8,
+       "obstacle"
+      ]
+     ],
+     "missed": [
+      [
+       68,
+       69,
+       "obstacle"
+      ],
+      [
+       84,
+       86,
+       "vehicle"
+      ]
+     ],
+     "lead_s": [
+      -0.26700000000000035,
+      -0.06799999999999962,
+      -0.5739999999999981
+     ],
+     "dur_min": 1.7977777777777777
+    },
+    "test_2": {
+     "TP": 4,
+     "FN": 1,
+     "FP": 60,
+     "fp_list": [
+      [
+       4.7,
+       "obstacle"
+      ],
+      [
+       8.3,
+       "obstacle"
+      ],
+      [
+       9.0,
+       "vehicle"
+      ],
+      [
+       10.7,
+       "vehicle"
+      ],
+      [
+       13.0,
+       "obstacle"
+      ],
+      [
+       13.3,
+       "obstacle"
+      ],
+      [
+       22.2,
+       "obstacle"
+      ],
+      [
+       22.8,
+       "obstacle"
+      ],
+      [
+       28.3,
+       "obstacle"
+      ],
+      [
+       29.0,
+       "obstacle"
+      ],
+      [
+       29.2,
+       "obstacle"
+      ],
+      [
+       37.7,
+       "obstacle"
+      ],
+      [
+       37.7,
+       "obstacle"
+      ],
+      [
+       38.9,
+       "obstacle"
+      ],
+      [
+       39.5,
+       "obstacle"
+      ],
+      [
+       41.4,
+       "obstacle"
+      ],
+      [
+       42.3,
+       "obstacle"
+      ],
+      [
+       74.9,
+       "obstacle"
+      ],
+      [
+       75.4,
+       "obstacle"
+      ],
+      [
+       81.4,
+       "obstacle"
+      ],
+      [
+       85.0,
+       "obstacle"
+      ],
+      [
+       85.3,
+       "obstacle"
+      ],
+      [
+       86.6,
+       "obstacle"
+      ],
+      [
+       88.0,
+       "obstacle"
+      ],
+      [
+       90.8,
+       "obstacle"
+      ],
+      [
+       91.8,
+       "obstacle"
+      ],
+      [
+       92.5,
+       "obstacle"
+      ],
+      [
+       92.5,
+       "obstacle"
+      ],
+      [
+       100.2,
+       "obstacle"
+      ],
+      [
+       100.9,
+       "obstacle"
+      ],
+      [
+       102.6,
+       "obstacle"
+      ],
+      [
+       103.0,
+       "obstacle"
+      ],
+      [
+       106.1,
+       "obstacle"
+      ],
+      [
+       106.4,
+       "obstacle"
+      ],
+      [
+       115.3,
+       "obstacle"
+      ],
+      [
+       116.8,
+       "obstacle"
+      ],
+      [
+       120.2,
+       "obstacle"
+      ],
+      [
+       124.9,
+       "obstacle"
+      ],
+      [
+       129.3,
+       "obstacle"
+      ],
+      [
+       130.6,
+       "obstacle"
+      ],
+      [
+       131.8,
+       "obstacle"
+      ],
+      [
+       134.6,
+       "obstacle"
+      ],
+      [
+       152.6,
+       "obstacle"
+      ],
+      [
+       152.9,
+       "other"
+      ],
+      [
+       158.5,
+       "obstacle"
+      ],
+      [
+       158.7,
+       "obstacle"
+      ],
+      [
+       159.7,
+       "obstacle"
+      ],
+      [
+       159.7,
+       "obstacle"
+      ],
+      [
+       165.5,
+       "obstacle"
+      ],
+      [
+       166.0,
+       "obstacle"
+      ],
+      [
+       166.1,
+       "obstacle"
+      ],
+      [
+       174.2,
+       "obstacle"
+      ],
+      [
+       174.2,
+       "obstacle"
+      ],
+      [
+       174.7,
+       "obstacle"
+      ],
+      [
+       175.7,
+       "obstacle"
+      ],
+      [
+       176.4,
+       "obstacle"
+      ],
+      [
+       176.5,
+       "obstacle"
+      ],
+      [
+       178.2,
+       "obstacle"
+      ],
+      [
+       179.2,
+       "obstacle"
+      ],
+      [
+       180.9,
+       "obstacle"
+      ]
+     ],
+     "missed": [
+      [
+       21,
+       22,
+       "obstacle"
+      ]
+     ],
+     "lead_s": [
+      -0.9329999999999998,
+      -0.3329999999999984,
+      -0.5670000000000073,
+      -0.3329999999999984
+     ],
+     "dur_min": 3.1683333333333334
+    },
+    "test_3": {
+     "TP": 2,
+     "FN": 0,
+     "FP": 23,
+     "fp_list": [
+      [
+       0.7,
+       "obstacle"
+      ],
+      [
+       3.0,
+       "vehicle"
+      ],
+      [
+       18.3,
+       "obstacle"
+      ],
+      [
+       20.6,
+       "vehicle"
+      ],
+      [
+       26.6,
+       "obstacle"
+      ],
+      [
+       27.4,
+       "obstacle"
+      ],
+      [
+       27.6,
+       "vehicle"
+      ],
+      [
+       27.6,
+       "obstacle"
+      ],
+      [
+       27.8,
+       "obstacle"
+      ],
+      [
+       29.0,
+       "obstacle"
+      ],
+      [
+       32.6,
+       "obstacle"
+      ],
+      [
+       34.1,
+       "obstacle"
+      ],
+      [
+       34.8,
+       "obstacle"
+      ],
+      [
+       39.1,
+       "obstacle"
+      ],
+      [
+       40.0,
+       "obstacle"
+      ],
+      [
+       41.9,
+       "obstacle"
+      ],
+      [
+       43.4,
+       "obstacle"
+      ],
+      [
+       44.0,
+       "obstacle"
+      ],
+      [
+       45.3,
+       "vehicle"
+      ],
+      [
+       48.5,
+       "vehicle"
+      ],
+      [
+       48.7,
+       "obstacle"
+      ],
+      [
+       52.5,
+       "obstacle"
+      ],
+      [
+       53.0,
+       "obstacle"
+      ]
+     ],
+     "missed": [],
+     "lead_s": [
+      -1.5889999999999986,
+      -1.3179999999999978
+     ],
+     "dur_min": 1.6311466311466312
+    }
+   }
+  },
+  "Bd": {
+   "total": {
+    "TP": 8,
+    "FP": 58,
+    "FN": 4,
+    "precision": 0.121,
+    "recall": 0.667,
+    "f1": 0.205,
+    "fp_per_min": 8.79,
+    "lead_median_s": -0.57
+   },
+   "per_video": {
+    "test_1": {
+     "TP": 3,
+     "FN": 2,
+     "FP": 17,
+     "fp_list": [
+      [
+       3.4,
+       "obstacle"
+      ],
+      [
+       6.7,
+       "obstacle"
+      ],
+      [
+       7.4,
+       "vehicle"
+      ],
+      [
+       25.0,
+       "other"
+      ],
+      [
+       32.1,
+       "other"
+      ],
+      [
+       32.2,
+       "other"
+      ],
+      [
+       40.3,
+       "other"
+      ],
+      [
+       45.2,
+       "other"
+      ],
+      [
+       49.2,
+       "other"
+      ],
+      [
+       69.4,
+       "obstacle"
+      ],
+      [
+       69.6,
+       "obstacle"
+      ],
+      [
+       70.1,
+       "obstacle"
+      ],
+      [
+       70.3,
+       "obstacle"
+      ],
+      [
+       80.1,
+       "vehicle"
+      ],
+      [
+       91.3,
+       "obstacle"
+      ],
+      [
+       93.0,
+       "obstacle"
+      ],
+      [
+       93.8,
+       "obstacle"
+      ]
+     ],
+     "missed": [
+      [
+       68,
+       69,
+       "obstacle"
+      ],
+      [
+       84,
+       86,
+       "vehicle"
+      ]
+     ],
+     "lead_s": [
+      -0.26700000000000035,
+      -0.06799999999999962,
+      -0.9069999999999965
+     ],
+     "dur_min": 1.7977777777777777
+    },
+    "test_2": {
+     "TP": 3,
+     "FN": 2,
+     "FP": 26,
+     "fp_list": [
+      [
+       8.3,
+       "obstacle"
+      ],
+      [
+       9.0,
+       "vehicle"
+      ],
+      [
+       11.1,
+       "vehicle"
+      ],
+      [
+       13.0,
+       "obstacle"
+      ],
+      [
+       22.2,
+       "obstacle"
+      ],
+      [
+       22.8,
+       "obstacle"
+      ],
+      [
+       29.0,
+       "obstacle"
+      ],
+      [
+       37.7,
+       "obstacle"
+      ],
+      [
+       37.7,
+       "obstacle"
+      ],
+      [
+       39.5,
+       "obstacle"
+      ],
+      [
+       42.3,
+       "obstacle"
+      ],
+      [
+       75.4,
+       "obstacle"
+      ],
+      [
+       85.0,
+       "obstacle"
+      ],
+      [
+       86.6,
+       "obstacle"
+      ],
+      [
+       100.2,
+       "obstacle"
+      ],
+      [
+       100.9,
+       "obstacle"
+      ],
+      [
+       103.0,
+       "obstacle"
+      ],
+      [
+       106.1,
+       "obstacle"
+      ],
+      [
+       106.4,
+       "obstacle"
+      ],
+      [
+       115.3,
+       "obstacle"
+      ],
+      [
+       134.6,
+       "obstacle"
+      ],
+      [
+       153.2,
+       "other"
+      ],
+      [
+       166.0,
+       "obstacle"
+      ],
+      [
+       166.1,
+       "obstacle"
+      ],
+      [
+       178.1,
+       "obstacle"
+      ],
+      [
+       178.2,
+       "obstacle"
+      ]
+     ],
+     "missed": [
+      [
+       21,
+       22,
+       "obstacle"
+      ],
+      [
+       93,
+       95,
+       "obstacle"
+      ]
+     ],
+     "lead_s": [
+      -0.5330000000000004,
+      -0.5670000000000073,
+      -0.8329999999999984
+     ],
+     "dur_min": 3.1683333333333334
+    },
+    "test_3": {
+     "TP": 2,
+     "FN": 0,
+     "FP": 15,
+     "fp_list": [
+      [
+       0.7,
+       "obstacle"
+      ],
+      [
+       20.6,
+       "vehicle"
+      ],
+      [
+       27.4,
+       "obstacle"
+      ],
+      [
+       27.6,
+       "vehicle"
+      ],
+      [
+       27.8,
+       "obstacle"
+      ],
+      [
+       29.0,
+       "obstacle"
+      ],
+      [
+       32.9,
+       "obstacle"
+      ],
+      [
+       39.1,
+       "obstacle"
+      ],
+      [
+       40.0,
+       "obstacle"
+      ],
+      [
+       43.4,
+       "obstacle"
+      ],
+      [
+       44.0,
+       "obstacle"
+      ],
+      [
+       48.5,
+       "vehicle"
+      ],
+      [
+       48.7,
+       "obstacle"
+      ],
+      [
+       52.5,
+       "obstacle"
+      ],
+      [
+       53.0,
+       "obstacle"
+      ]
+     ],
+     "missed": [],
+     "lead_s": [
+      -1.5889999999999986,
+      -1.3179999999999978
+     ],
+     "dur_min": 1.6311466311466312
+    }
+   }
+  }
+ },
+ "tol": {
+  "B0": {
+   "total": {
+    "TP": 7,
+    "FP": 42,
+    "FN": 5,
+    "precision": 0.143,
+    "recall": 0.583,
+    "f1": 0.23,
+    "fp_per_min": 6.37,
+    "lead_median_s": -0.67
+   },
+   "per_video": {
+    "test_1": {
+     "TP": 3,
+     "FN": 2,
+     "FP": 14,
+     "fp_list": [
+      [
+       14.5,
+       "obstacle"
+      ],
+      [
+       24.3,
+       "obstacle"
+      ],
+      [
+       52.9,
+       "vehicle"
+      ],
+      [
+       56.2,
+       "vehicle"
+      ],
+      [
+       57.5,
+       "vehicle"
+      ],
+      [
+       57.7,
+       "vehicle"
+      ],
+      [
+       61.4,
+       "obstacle"
+      ],
+      [
+       62.3,
+       "obstacle"
+      ],
+      [
+       64.5,
+       "obstacle"
+      ],
+      [
+       71.6,
+       "obstacle"
+      ],
+      [
+       74.6,
+       "vehicle"
+      ],
+      [
+       76.6,
+       "obstacle"
+      ],
+      [
+       85.3,
+       "obstacle"
+      ],
+      [
+       93.6,
+       "obstacle"
+      ]
+     ],
+     "missed": [
+      [
+       84,
+       86,
+       "vehicle"
+      ],
+      [
+       90,
+       91,
+       "vehicle"
+      ]
+     ],
+     "lead_s": [
+      0.06636279357231167,
+      -0.6676452410383185,
+      -0.07192521631644411
+     ],
+     "dur_min": 1.7977777777777777
+    },
+    "test_2": {
+     "TP": 3,
+     "FN": 2,
+     "FP": 20,
+     "fp_list": [
+      [
+       10.8,
+       "vehicle"
+      ],
+      [
+       26.3,
+       "obstacle"
+      ],
+      [
+       27.8,
+       "obstacle"
+      ],
+      [
+       29.0,
+       "obstacle"
+      ],
+      [
+       39.4,
+       "obstacle"
+      ],
+      [
+       41.3,
+       "obstacle"
+      ],
+      [
+       60.2,
+       "vehicle"
+      ],
+      [
+       67.8,
+       "obstacle"
+      ],
+      [
+       99.2,
+       "obstacle"
+      ],
+      [
+       100.8,
+       "vehicle"
+      ],
+      [
+       107.4,
+       "obstacle"
+      ],
+      [
+       109.9,
+       "vehicle"
+      ],
+      [
+       124.2,
+       "obstacle"
+      ],
+      [
+       148.9,
+       "vehicle"
+      ],
+      [
+       161.1,
+       "obstacle"
+      ],
+      [
+       163.8,
+       "vehicle"
+      ],
+      [
+       175.6,
+       "obstacle"
+      ],
+      [
+       176.5,
+       "obstacle"
+      ],
+      [
+       178.9,
+       "obstacle"
+      ],
+      [
+       181.5,
+       "obstacle"
+      ]
+     ],
+     "missed": [
+      [
+       21,
+       22,
+       "obstacle"
+      ],
+      [
+       137,
+       138,
+       "obstacle"
+      ]
+     ],
+     "lead_s": [
+      -1.4333333333333336,
+      0.06666666666666288,
+      -0.9333333333333371
+     ],
+     "dur_min": 3.1683333333333334
+    },
+    "test_3": {
+     "TP": 1,
+     "FN": 1,
+     "FP": 8,
+     "fp_list": [
+      [
+       0.6,
+       "obstacle"
+      ],
+      [
+       13.3,
+       "vehicle"
+      ],
+      [
+       30.1,
+       "obstacle"
+      ],
+      [
+       42.2,
+       "obstacle"
+      ],
+      [
+       43.1,
+       "obstacle"
+      ],
+      [
+       45.9,
+       "obstacle"
+      ],
+      [
+       46.4,
+       "obstacle"
+      ],
+      [
+       62.9,
+       "vehicle"
+      ]
+     ],
+     "missed": [
+      [
+       87,
+       89,
+       "light"
+      ]
+     ],
+     "lead_s": [
+      -2.2217773528411016
+     ],
+     "dur_min": 1.6311466311466312
+    }
+   }
+  },
+  "B": {
+   "total": {
+    "TP": 11,
+    "FP": 96,
+    "FN": 1,
+    "precision": 0.103,
+    "recall": 0.917,
+    "f1": 0.185,
+    "fp_per_min": 14.55,
+    "lead_median_s": -0.07
+   },
+   "per_video": {
+    "test_1": {
+     "TP": 4,
+     "FN": 1,
+     "FP": 22,
+     "fp_list": [
+      [
+       6.7,
+       "obstacle"
+      ],
+      [
+       7.4,
+       "vehicle"
+      ],
+      [
+       22.3,
+       "vehicle"
+      ],
+      [
+       25.0,
+       "other"
+      ],
+      [
+       28.8,
+       "other"
+      ],
+      [
+       32.1,
+       "other"
+      ],
+      [
+       32.2,
+       "other"
+      ],
+      [
+       38.5,
+       "vehicle"
+      ],
+      [
+       40.3,
+       "other"
+      ],
+      [
+       42.1,
+       "obstacle"
+      ],
+      [
+       45.0,
+       "obstacle"
+      ],
+      [
+       45.2,
+       "other"
+      ],
+      [
+       49.2,
+       "other"
+      ],
+      [
+       60.0,
+       "obstacle"
+      ],
+      [
+       69.6,
+       "obstacle"
+      ],
+      [
+       69.8,
+       "obstacle"
+      ],
+      [
+       70.3,
+       "obstacle"
+      ],
+      [
+       70.3,
+       "obstacle"
+      ],
+      [
+       80.1,
+       "vehicle"
+      ],
+      [
+       91.3,
+       "obstacle"
+      ],
+      [
+       92.5,
+       "obstacle"
+      ],
+      [
+       93.8,
+       "obstacle"
+      ]
+     ],
+     "missed": [
+      [
+       84,
+       86,
+       "vehicle"
+      ]
+     ],
+     "lead_s": [
+      0.6000000000000001,
+      -0.06799999999999962,
+      -1.4050000000000011,
+      -0.5739999999999981
+     ],
+     "dur_min": 1.7977777777777777
+    },
+    "test_2": {
+     "TP": 5,
+     "FN": 0,
+     "FP": 53,
+     "fp_list": [
+      [
+       8.3,
+       "obstacle"
+      ],
+      [
+       9.0,
+       "vehicle"
+      ],
+      [
+       10.7,
+       "vehicle"
+      ],
+      [
+       13.0,
+       "obstacle"
+      ],
+      [
+       13.3,
+       "obstacle"
+      ],
+      [
+       22.8,
+       "obstacle"
+      ],
+      [
+       28.3,
+       "obstacle"
+      ],
+      [
+       29.0,
+       "obstacle"
+      ],
+      [
+       29.2,
+       "obstacle"
+      ],
+      [
+       37.7,
+       "obstacle"
+      ],
+      [
+       37.7,
+       "obstacle"
+      ],
+      [
+       38.9,
+       "obstacle"
+      ],
+      [
+       39.5,
+       "obstacle"
+      ],
+      [
+       41.4,
+       "obstacle"
+      ],
+      [
+       42.3,
+       "obstacle"
+      ],
+      [
+       74.9,
+       "obstacle"
+      ],
+      [
+       75.4,
+       "obstacle"
+      ],
+      [
+       81.4,
+       "obstacle"
+      ],
+      [
+       85.0,
+       "obstacle"
+      ],
+      [
+       85.3,
+       "obstacle"
+      ],
+      [
+       86.6,
+       "obstacle"
+      ],
+      [
+       88.0,
+       "obstacle"
+      ],
+      [
+       90.8,
+       "obstacle"
+      ],
+      [
+       100.2,
+       "obstacle"
+      ],
+      [
+       100.9,
+       "obstacle"
+      ],
+      [
+       102.6,
+       "obstacle"
+      ],
+      [
+       103.0,
+       "obstacle"
+      ],
+      [
+       106.1,
+       "obstacle"
+      ],
+      [
+       106.4,
+       "obstacle"
+      ],
+      [
+       115.3,
+       "obstacle"
+      ],
+      [
+       116.8,
+       "obstacle"
+      ],
+      [
+       120.2,
+       "obstacle"
+      ],
+      [
+       124.9,
+       "obstacle"
+      ],
+      [
+       129.3,
+       "obstacle"
+      ],
+      [
+       134.6,
+       "obstacle"
+      ],
+      [
+       152.6,
+       "obstacle"
+      ],
+      [
+       152.9,
+       "other"
+      ],
+      [
+       158.5,
+       "obstacle"
+      ],
+      [
+       158.7,
+       "obstacle"
+      ],
+      [
+       159.7,
+       "obstacle"
+      ],
+      [
+       159.7,
+       "obstacle"
+      ],
+      [
+       165.5,
+       "obstacle"
+      ],
+      [
+       166.0,
+       "obstacle"
+      ],
+      [
+       166.1,
+       "obstacle"
+      ],
+      [
+       174.2,
+       "obstacle"
+      ],
+      [
+       174.2,
+       "obstacle"
+      ],
+      [
+       174.7,
+       "obstacle"
+      ],
+      [
+       175.7,
+       "obstacle"
+      ],
+      [
+       176.4,
+       "obstacle"
+      ],
+      [
+       176.5,
+       "obstacle"
+      ],
+      [
+       178.2,
+       "obstacle"
+      ],
+      [
+       179.2,
+       "obstacle"
+      ],
+      [
+       180.9,
+       "obstacle"
+      ]
+     ],
+     "missed": [],
+     "lead_s": [
+      1.2999999999999998,
+      -1.2330000000000005,
+      1.2000000000000028,
+      1.4000000000000057,
+      -0.3329999999999984
+     ],
+     "dur_min": 3.1683333333333334
+    },
+    "test_3": {
+     "TP": 2,
+     "FN": 0,
+     "FP": 21,
+     "fp_list": [
+      [
+       0.7,
+       "obstacle"
+      ],
+      [
+       3.0,
+       "vehicle"
+      ],
+      [
+       18.3,
+       "obstacle"
+      ],
+      [
+       20.6,
+       "vehicle"
+      ],
+      [
+       26.6,
+       "obstacle"
+      ],
+      [
+       27.4,
+       "obstacle"
+      ],
+      [
+       27.6,
+       "vehicle"
+      ],
+      [
+       27.6,
+       "obstacle"
+      ],
+      [
+       27.8,
+       "obstacle"
+      ],
+      [
+       29.0,
+       "obstacle"
+      ],
+      [
+       32.6,
+       "obstacle"
+      ],
+      [
+       34.1,
+       "obstacle"
+      ],
+      [
+       34.8,
+       "obstacle"
+      ],
+      [
+       39.1,
+       "obstacle"
+      ],
+      [
+       40.0,
+       "obstacle"
+      ],
+      [
+       41.9,
+       "obstacle"
+      ],
+      [
+       43.4,
+       "obstacle"
+      ],
+      [
+       44.0,
+       "obstacle"
+      ],
+      [
+       48.7,
+       "obstacle"
+      ],
+      [
+       52.5,
+       "obstacle"
+      ],
+      [
+       53.0,
+       "obstacle"
+      ]
+     ],
+     "missed": [],
+     "lead_s": [
+      0.7419999999999973,
+      -1.3179999999999978
+     ],
+     "dur_min": 1.6311466311466312
+    }
+   }
+  },
+  "Bd": {
+   "total": {
+    "TP": 10,
+    "FP": 54,
+    "FN": 2,
+    "precision": 0.156,
+    "recall": 0.833,
+    "f1": 0.263,
+    "fp_per_min": 8.19,
+    "lead_median_s": -0.83
+   },
+   "per_video": {
+    "test_1": {
+     "TP": 4,
+     "FN": 1,
+     "FP": 15,
+     "fp_list": [
+      [
+       6.7,
+       "obstacle"
+      ],
+      [
+       7.4,
+       "vehicle"
+      ],
+      [
+       25.0,
+       "other"
+      ],
+      [
+       32.1,
+       "other"
+      ],
+      [
+       32.2,
+       "other"
+      ],
+      [
+       40.3,
+       "other"
+      ],
+      [
+       45.2,
+       "other"
+      ],
+      [
+       49.2,
+       "other"
+      ],
+      [
+       69.6,
+       "obstacle"
+      ],
+      [
+       70.1,
+       "obstacle"
+      ],
+      [
+       70.3,
+       "obstacle"
+      ],
+      [
+       80.1,
+       "vehicle"
+      ],
+      [
+       91.3,
+       "obstacle"
+      ],
+      [
+       93.0,
+       "obstacle"
+      ],
+      [
+       93.8,
+       "obstacle"
+      ]
+     ],
+     "missed": [
+      [
+       84,
+       86,
+       "vehicle"
+      ]
+     ],
+     "lead_s": [
+      0.6000000000000001,
+      -0.06799999999999962,
+      -1.4050000000000011,
+      -0.9069999999999965
+     ],
+     "dur_min": 1.7977777777777777
+    },
+    "test_2": {
+     "TP": 4,
+     "FN": 1,
+     "FP": 25,
+     "fp_list": [
+      [
+       8.3,
+       "obstacle"
+      ],
+      [
+       9.0,
+       "vehicle"
+      ],
+      [
+       11.1,
+       "vehicle"
+      ],
+      [
+       13.0,
+       "obstacle"
+      ],
+      [
+       22.8,
+       "obstacle"
+      ],
+      [
+       29.0,
+       "obstacle"
+      ],
+      [
+       37.7,
+       "obstacle"
+      ],
+      [
+       37.7,
+       "obstacle"
+      ],
+      [
+       39.5,
+       "obstacle"
+      ],
+      [
+       42.3,
+       "obstacle"
+      ],
+      [
+       75.4,
+       "obstacle"
+      ],
+      [
+       85.0,
+       "obstacle"
+      ],
+      [
+       86.6,
+       "obstacle"
+      ],
+      [
+       100.2,
+       "obstacle"
+      ],
+      [
+       100.9,
+       "obstacle"
+      ],
+      [
+       103.0,
+       "obstacle"
+      ],
+      [
+       106.1,
+       "obstacle"
+      ],
+      [
+       106.4,
+       "obstacle"
+      ],
+      [
+       115.3,
+       "obstacle"
+      ],
+      [
+       134.6,
+       "obstacle"
+      ],
+      [
+       153.2,
+       "other"
+      ],
+      [
+       166.0,
+       "obstacle"
+      ],
+      [
+       166.1,
+       "obstacle"
+      ],
+      [
+       178.1,
+       "obstacle"
+      ],
+      [
+       178.2,
+       "obstacle"
+      ]
+     ],
+     "missed": [
+      [
+       93,
+       95,
+       "obstacle"
+      ]
+     ],
+     "lead_s": [
+      -0.5330000000000004,
+      -1.2330000000000005,
+      -0.5670000000000073,
+      -0.8329999999999984
+     ],
+     "dur_min": 3.1683333333333334
+    },
+    "test_3": {
+     "TP": 2,
+     "FN": 0,
+     "FP": 14,
+     "fp_list": [
+      [
+       0.7,
+       "obstacle"
+      ],
+      [
+       20.6,
+       "vehicle"
+      ],
+      [
+       27.4,
+       "obstacle"
+      ],
+      [
+       27.6,
+       "vehicle"
+      ],
+      [
+       27.8,
+       "obstacle"
+      ],
+      [
+       29.0,
+       "obstacle"
+      ],
+      [
+       32.9,
+       "obstacle"
+      ],
+      [
+       39.1,
+       "obstacle"
+      ],
+      [
+       40.0,
+       "obstacle"
+      ],
+      [
+       43.4,
+       "obstacle"
+      ],
+      [
+       44.0,
+       "obstacle"
+      ],
+      [
+       48.7,
+       "obstacle"
+      ],
+      [
+       52.5,
+       "obstacle"
+      ],
+      [
+       53.0,
+       "obstacle"
+      ]
+     ],
+     "missed": [],
+     "lead_s": [
+      -1.5889999999999986,
+      -1.3179999999999978
+     ],
+     "dur_min": 1.6311466311466312
+    }
+   }
+  }
+ }
+}

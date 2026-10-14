@@ -1,0 +1,38 @@
+{
+ "dispatch": {
+  "events": 40,
+  "suppressed": 16,
+  "vlm_jobs": 24,
+  "desc_skip": 0,
+  "mismatch": 12,
+  "bad_json": 0
+ },
+ "warn": {
+  "n": 24,
+  "median_s": 0.024,
+  "max_s": 1.282,
+  "played": 24,
+  "dropped": 0
+ },
+ "desc": {
+  "n": 17,
+  "median_s": 2.467,
+  "max_s": 3.178,
+  "played": 9,
+  "cut": 8,
+  "dropped": 6
+ },
+ "frame_lag_s": {
+  "median": 0.022,
+  "max": 0.39
+ },
+ "perception_ms": {
+  "median": 21.5,
+  "p90": 45.4
+ },
+ "vlm_call_s": {
+  "n": 23,
+  "median": 0.917,
+  "max": 0.999
+ }
+}

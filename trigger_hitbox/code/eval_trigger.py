@@ -17,6 +17,8 @@ from pathlib import Path
 VEH = {"bicycle", "scooter", "motorcycle", "car", "bus", "other_vehicle", "truck"}
 OBS = {"obstacle", "stairs", "bench", "potted_plant", "chair", "tree"}
 PRE_S, POST_S = 2.0, 0.5
+import os
+LOOSE = os.environ.get("LOOSE", "0") == "1"   # v5_11: 탈것 라벨을 '장애물' 경고로도 맞힌 것으로 인정
 
 
 def kind_of(cls):
@@ -61,7 +63,8 @@ def score(labels, events, dur, tol):
         m = None
         for i, lab in enumerate(labels):
             s, e, lk = lab[0], lab[1], lab[2]
-            if s - pre <= t <= e + post and lk == k and (lk != "light" or lab[3] == d):
+            same = lk == k or (LOOSE and {lk, k} <= {"vehicle", "obstacle"})   # 멈춘 탈것 = '장애물' 경고도 인정
+            if s - pre <= t <= e + post and same and (lk != "light" or lab[3] == d):
                 m = i
                 break
         if m is None:

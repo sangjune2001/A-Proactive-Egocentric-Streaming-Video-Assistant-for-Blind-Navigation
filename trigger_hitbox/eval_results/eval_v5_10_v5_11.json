@@ -1,0 +1,175 @@
+{
+ "_note": "v5_10·v5_11 채점 (여유 기준: 라벨 구간 2 s 전 ~ 0.5 s 후). 서버 반납으로 원본 eval JSON이 사라져 실행 출력에서 옮겨 적음. loose = 멈춘 탈것 라벨을 '장애물' 경고로도 맞힌 것으로 인정. B = 주의+위험, Bd = 위험만.",
+ "v5_10": {
+  "test": {
+   "B": {
+    "TP": 10,
+    "FP": 124,
+    "FN": 2,
+    "precision": 0.075,
+    "recall": 0.833,
+    "f1": 0.137,
+    "fp_per_min": 18.8
+   },
+   "Bd": {
+    "TP": 9,
+    "FP": 70,
+    "FN": 3,
+    "precision": 0.114,
+    "recall": 0.75,
+    "f1": 0.198,
+    "fp_per_min": 10.61
+   }
+  },
+  "train7": {
+   "B": {
+    "TP": 10,
+    "FP": 81,
+    "FN": 6,
+    "precision": 0.11,
+    "recall": 0.625,
+    "f1": 0.187,
+    "fp_per_min": 8.44
+   },
+   "Bd": {
+    "TP": 9,
+    "FP": 39,
+    "FN": 7,
+    "precision": 0.188,
+    "recall": 0.562,
+    "f1": 0.281,
+    "fp_per_min": 4.06
+   }
+  }
+ },
+ "v5_11": {
+  "test": {
+   "B0": {
+    "TP": 7,
+    "FP": 42,
+    "FN": 5,
+    "precision": 0.143,
+    "recall": 0.583,
+    "f1": 0.23,
+    "fp_per_min": 6.37
+   },
+   "B": {
+    "TP": 11,
+    "FP": 113,
+    "FN": 1,
+    "precision": 0.089,
+    "recall": 0.917,
+    "f1": 0.162,
+    "fp_per_min": 17.13
+   },
+   "Bd": {
+    "TP": 9,
+    "FP": 65,
+    "FN": 3,
+    "precision": 0.122,
+    "recall": 0.75,
+    "f1": 0.209,
+    "fp_per_min": 9.85
+   }
+  },
+  "test_loose": {
+   "B0": {
+    "TP": 8,
+    "FP": 39,
+    "FN": 4,
+    "precision": 0.17,
+    "recall": 0.667,
+    "f1": 0.271,
+    "fp_per_min": 5.91
+   },
+   "B": {
+    "TP": 11,
+    "FP": 112,
+    "FN": 1,
+    "precision": 0.089,
+    "recall": 0.917,
+    "f1": 0.163,
+    "fp_per_min": 16.98
+   },
+   "Bd": {
+    "TP": 9,
+    "FP": 64,
+    "FN": 3,
+    "precision": 0.123,
+    "recall": 0.75,
+    "f1": 0.212,
+    "fp_per_min": 9.7
+   }
+  },
+  "train7": {
+   "B0": {
+    "TP": 0,
+    "FP": 37,
+    "FN": 16,
+    "precision": 0.0,
+    "recall": 0.0,
+    "f1": 0.0,
+    "fp_per_min": 3.85
+   },
+   "B": {
+    "TP": 9,
+    "FP": 73,
+    "FN": 7,
+    "precision": 0.11,
+    "recall": 0.562,
+    "f1": 0.184,
+    "fp_per_min": 7.6
+   },
+   "Bd": {
+    "TP": 9,
+    "FP": 33,
+    "FN": 7,
+    "precision": 0.214,
+    "recall": 0.562,
+    "f1": 0.31,
+    "fp_per_min": 3.44
+   }
+  },
+  "train7_loose": {
+   "B0": {
+    "TP": 1,
+    "FP": 36,
+    "FN": 15,
+    "precision": 0.027,
+    "recall": 0.062,
+    "f1": 0.038,
+    "fp_per_min": 3.75
+   },
+   "B": {
+    "TP": 10,
+    "FP": 69,
+    "FN": 6,
+    "precision": 0.127,
+    "recall": 0.625,
+    "f1": 0.211,
+    "fp_per_min": 7.19
+   },
+   "Bd": {
+    "TP": 10,
+    "FP": 31,
+    "FN": 6,
+    "precision": 0.244,
+    "recall": 0.625,
+    "f1": 0.351,
+    "fp_per_min": 3.23
+   }
+  }
+ },
+ "v5_10_turn_off_check": {
+  "test_Bd": {
+   "TP": 9,
+   "FP": 65,
+   "FN": 3,
+   "precision": 0.122,
+   "recall": 0.75,
+   "f1": 0.209,
+   "fp_per_min": 9.85
+  },
+  "_note": "v5_10에서 고개 돌림 보류(위험 포함)를 끄면 테스트 Bd Recall 0.58 → 0.75 → v5_11은 주의만 보류"
+ }
+}

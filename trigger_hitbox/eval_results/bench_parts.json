@@ -1,0 +1,88 @@
+{
+ "gpu": "NVIDIA RTX A5000",
+ "cpu_threads_total": 32,
+ "decode": {
+  "n": 240,
+  "median_ms": 3.0,
+  "p95_ms": 3.8,
+  "mean_ms": 3.2
+ },
+ "gmc_cpu": {
+  "n": 239,
+  "median_ms": 43.0,
+  "p95_ms": 47.0,
+  "mean_ms": 42.7
+ },
+ "yolo_gpu": {
+  "n": 240,
+  "median_ms": 13.4,
+  "p95_ms": 14.6,
+  "mean_ms": 12.9
+ },
+ "yolo_cpu_4t": {
+  "n": 120,
+  "median_ms": 39.8,
+  "p95_ms": 48.7,
+  "mean_ms": 45.2
+ },
+ "yolo_cpu_8t": {
+  "n": 120,
+  "median_ms": 39.7,
+  "p95_ms": 50.0,
+  "mean_ms": 41.3
+ },
+ "yolo_cpu_16t": {
+  "n": 120,
+  "median_ms": 43.8,
+  "p95_ms": 51.2,
+  "mean_ms": 43.8
+ },
+ "cls_gpu": {
+  "n": 60,
+  "median_ms": 4.5,
+  "p95_ms": 6.8,
+  "mean_ms": 4.8
+ },
+ "cls_cpu": {
+  "n": 60,
+  "median_ms": 4.7,
+  "p95_ms": 5.1,
+  "mean_ms": 4.8
+ },
+ "vlm_alone": {
+  "n": 8,
+  "median_ms": 835.3,
+  "p95_ms": 880.7,
+  "mean_ms": 843.8
+ },
+ "tts_alone": {
+  "n": 12,
+  "median_ms": 1259.6,
+  "p95_ms": 1818.3,
+  "mean_ms": 1285.0
+ },
+ "vlm_with_yolo_gpu_only": {
+  "n": 8,
+  "median_ms": 925.7,
+  "p95_ms": 931.0,
+  "mean_ms": 926.1
+ },
+ "tts_with_yolo_gpu_only": {
+  "n": 12,
+  "median_ms": 1340.5,
+  "p95_ms": 1894.8,
+  "mean_ms": 1393.7
+ },
+ "vlm_with_yolo_split_cpu8": {
+  "n": 8,
+  "median_ms": 846.1,
+  "p95_ms": 865.0,
+  "mean_ms": 847.0
+ },
+ "tts_with_yolo_split_cpu8": {
+  "n": 12,
+  "median_ms": 1355.7,
+  "p95_ms": 1847.4,
+  "mean_ms": 1372.3
+ }
+}

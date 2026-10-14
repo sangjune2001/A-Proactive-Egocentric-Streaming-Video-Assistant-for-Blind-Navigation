@@ -1,0 +1,68 @@
+{
+ "images": 2563,
+ "iou": 0.4,
+ "conf0.5": {
+  "recall": {
+   "car": 0.6,
+   "obstacle": 0.051,
+   "motorcycle": 0.229,
+   "person": 0.384,
+   "bicycle": 0.267
+  },
+  "n_gt": {
+   "car": 3458,
+   "obstacle": 3229,
+   "motorcycle": 109,
+   "person": 541,
+   "bicycle": 45
+  },
+  "recall_front": {
+   "car": 0.601,
+   "obstacle": 0.073,
+   "motorcycle": 0.156,
+   "person": 0.405,
+   "bicycle": 0.261
+  },
+  "n_front": {
+   "car": 1859,
+   "obstacle": 1473,
+   "motorcycle": 64,
+   "person": 415,
+   "bicycle": 23
+  },
+  "precision": 0.446,
+  "n_pred": 5573
+ },
+ "conf0.2": {
+  "recall": {
+   "car": 0.728,
+   "obstacle": 0.096,
+   "motorcycle": 0.477,
+   "person": 0.534,
+   "bicycle": 0.422
+  },
+  "n_gt": {
+   "car": 3458,
+   "obstacle": 3229,
+   "motorcycle": 109,
+   "person": 541,
+   "bicycle": 45
+  },
+  "recall_front": {
+   "car": 0.744,
+   "obstacle": 0.144,
+   "motorcycle": 0.469,
+   "person": 0.545,
+   "bicycle": 0.435
+  },
+  "n_front": {
+   "car": 1859,
+   "obstacle": 1473,
+   "motorcycle": 64,
+   "person": 415,
+   "bicycle": 23
+  },
+  "precision": 0.258,
+  "n_pred": 12376
+ }
+}

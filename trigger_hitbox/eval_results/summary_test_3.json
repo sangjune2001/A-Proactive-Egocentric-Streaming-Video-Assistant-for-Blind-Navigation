@@ -1,0 +1,47 @@
+{
+  "video": "test_3.mp4",
+  "frames": 2939,
+  "fps": 30.03,
+  "yolo_ms_per_frame": 56.7,
+  "trigger_ms_per_frame": 6.12,
+  "walk_mps": {
+    "p10": 0.03,
+    "median": 1.31,
+    "p90": 1.94
+  },
+  "B0": {
+    "total": 9,
+    "approach": 9,
+    "light": 0
+  },
+  "A": {
+    "warn": 1,
+    "danger": 11
+  },
+  "B": {
+    "warn": 10,
+    "danger": 17
+  },
+  "light_changes": 1,
+  "road_near_vehicle_frac": 0.17,
+  "crosswalk_frac": 0.5,
+  "crosswalk_notices": [
+    [
+      54.05,
+      "횡단보도 앞 신호 대기 중이에요."
+    ],
+    [
+      91.581,
+      "횡단보도를 건너고 있어요. 차를 조심하세요."
+    ]
+  ],
+  "offroad_ignored_dets": 745,
+  "offpath_ignored_dets": 1799,
+  "cam_h_used": 1.77,
+  "cam_h_est": {
+    "n": 862,
+    "median": 1.19,
+    "p25": 0.74,
+    "p75": 1.8
+  }
+}

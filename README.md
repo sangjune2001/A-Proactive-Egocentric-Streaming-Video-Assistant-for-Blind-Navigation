@@ -21,17 +21,17 @@
 |---|---|---|---|
 | [5주차](#5주차-2026-09-29--10-05) | 2026-09-29 ~ 10-05 | GPU 서버 학습 파이프라인 구축, 1차 pilot 17개(인코더 8종 × fusion/distill), 데이터·라벨 품질 분석, 최종 학습(E0 vs C-RADIOv3 fusion), 오류 원인 분석, 추론 속도 비교 | [요약 PDF](docs/report/report.pdf), [상세 PDF](docs/report/report_detailed.pdf), [HANDOVER.md](HANDOVER.md) |
 | [6주차](#6주차-2026-10-06--10-12) | 2026-10-06 ~ 10-12 | 보행신호등·킥보드 데이터 구축(AI Hub 188/71579/614 + Roboflow 한국 보행신호), seg10 이어 학습(10클래스 유지), 신호 변화 장면 강조, 신호 상태 분류 모델 추가, 기존 클래스 하락 원인 분석·v2 학습 | [ped_signal_kickboard/README.md](ped_signal_kickboard/README.md), [RESULTS](ped_signal_kickboard/docs/RESULTS.md) |
-| [7주차](#7주차-2026-10-13--) | 2026-10-13 ~ (진행 중) | 바닥 좌표 히트박스 트리거(v1→v5_9), 바닥 분할(인도·차도·횡단보도·연석), 시계 방향 한 문장 음성, 신호등 고해상도 검출 + 상자 안 색 판단, 태규 B0와 같은 라벨로 채점, A5000 파트별 시간 측정 | [trigger_hitbox/README.md](trigger_hitbox/README.md), [CHANGELOG](trigger_hitbox/CHANGELOG.md) |
+| [7주차](#7주차-2026-10-13--) | 2026-10-13 ~ (진행 중) | 바닥 좌표 히트박스 트리거(v1→v5_11), 바닥 분할(인도·차도·횡단보도·연석), 시계 방향 한 문장 음성, 신호등 고해상도 검출 + 상자 안 색 판단, 태규 B0와 같은 라벨로 채점, A5000 파트별 시간 측정 | [trigger_hitbox/README.md](trigger_hitbox/README.md), [CHANGELOG](trigger_hitbox/CHANGELOG.md) |
 
 ---
 
 ## 7주차 (2026-10-13 ~ )
 
-> 상세: [`trigger_hitbox/README.md`](trigger_hitbox/README.md) · 버전별 변경: [`trigger_hitbox/CHANGELOG.md`](trigger_hitbox/CHANGELOG.md) · 결과 JSON: [`trigger_hitbox/results/`](trigger_hitbox/results/)
+> 상세: [`trigger_hitbox/README.md`](trigger_hitbox/README.md) · 버전별 변경: [`trigger_hitbox/CHANGELOG.md`](trigger_hitbox/CHANGELOG.md) · 결과 JSON: [`trigger_hitbox/eval_results/`](trigger_hitbox/eval_results/)
 
 ### 이번 주 진행 기록
 - 물체를 **바닥(미터) 좌표**로 옮겨, 내가 걸어갈 영역(히트박스)과 겹치는지로 위험을 판단하는 트리거(B)를 만들었다. 태규 규칙(B0)을 기준선으로 같은 라벨에서 비교했다.
-- 영상을 보고 받은 피드백으로 v1 → **v5_9**까지 고쳤다. 버전마다 새 영상 + 수정사항 패널을 남겼다.
+- 영상을 보고 받은 피드백으로 v1 → **v5_11**까지 고쳤다 (v5_10: 멈춘 건 '장애물'로 통일·고개 돌림 처리·볼라드 안내, v5_11: 경고 시점 0.3–0.5 s만 앞당김). 버전마다 새 영상 + 수정사항 패널을 남겼다.
   - 주차된 차 '다가옴' 오판 → 물체 자체 속도(바닥 속도 − 내 걸음)로 판정
   - 바닥 분할(Mask2Former, Mapillary)로 인도·차도·횡단보도·연석을 나눠 차도 위·가로수 너머 차는 무시, 연석 턱·화단 같은 바닥 장애물 경고
   - 음성: "**1시 방향 자동차가 지나가요. 멈추세요.**" 한 문장(조각 미리 합성, 트리거 후 0.02 s), 급하지 않은 건 묶고 급한 건 먼저
@@ -45,6 +45,9 @@
 | 테스트 3편 | **B (위험만)** | **0.16** | **0.83** | **0.26** | 8.2 |
 | 학습 7편 | 태규 B0 | 0 | 0 | 0 | 3.9 |
 | 학습 7편 | **B (위험만)** | **0.19** | **0.44** | **0.27** | **3.0** |
+| 학습 7편 | **B v5_11 (위험만)** | **0.21** | **0.56** | **0.31** | 3.4 |
+
+(위 B 행은 v5_9. v5_11 테스트는 Precision 0.12 · Recall 0.75 · 분당 9.9 — [상세](trigger_hitbox/README.md#3-1-v5_10--v5_11-채점))
 
 ![](trigger_hitbox/img/final_view_test1.jpg)
 
