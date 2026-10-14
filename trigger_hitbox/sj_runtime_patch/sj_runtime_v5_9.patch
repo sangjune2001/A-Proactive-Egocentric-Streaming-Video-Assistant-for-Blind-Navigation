@@ -1,0 +1,229 @@
+diff --git a/code/common.py b/code/common.py
+index b0c844a..95dd16f 100644
+--- a/code/common.py
++++ b/code/common.py
+@@ -10,7 +10,7 @@ import cv2
+ ROOT = Path(__file__).resolve().parent
+ PROJ = ROOT.parents[1]                      # 인공지능종합설계/
+ DATA = PROJ / "6주차" / "종설 데이터"
+-WEIGHTS = {"E0": PROJ / "6주차" / "best_E0.pt", "A5": PROJ / "6주차" / "best_A5.pt"}
++WEIGHTS = {"F10": Path("/home/ubuntu/work/trigger_proto/code/final_10class_best.pt"), "E0": PROJ / "6주차" / "best_E0.pt", "A5": PROJ / "6주차" / "best_A5.pt"}
+ OUT = ROOT.parent / "results"          # 종합설계/results
+ 
+ # best_*.pt 는 detection 브랜치의 fm_yolo 모듈을 pickle 안에 참조한다
+@@ -30,6 +30,9 @@ CLIPS = {
+     "c07_light_rg":        ("신호등 변화(빨-초).mp4",                     "3_douyin_2_c/0434", None),
+     "c08_light_rgr_night": ("신호등(빨-초-빨).mp4",                       "3_douyin_2_c/0470", None),
+     "c09_bike_on_tactile": ("점자위에자전거.mp4",                         "3_douyin_2_c/0503", None),
++    "test_1": ("test_1.mp4", None, None),
++    "test_2": ("test_2.mp4", None, None),
++    "test_3": ("test_3.mp4", None, None),
+     "c10_front_obst_night": ("정면 장애물.mp4",                           "3_douyin_2_c/0424", cv2.ROTATE_90_COUNTERCLOCKWISE),
+ }
+ 
+diff --git a/code/p0/ko_template.py b/code/p0/ko_template.py
+index d2b0665..117b48e 100644
+--- a/code/p0/ko_template.py
++++ b/code/p0/ko_template.py
+@@ -51,11 +51,13 @@ def sentence(out: dict) -> str:
+     tgt = KO_TARGET.get(out["target"], "장애물")
+     d, m = KO_DIR[out["direction"]], out["motion"]
+     if m in ("red", "green", "to_green", "to_red"):
+-        head = f"{d} 신호등이 {KO_MOTION[m]}."
++        head = f"신호등이 {KO_MOTION[m]}."          # 신호등은 방향이 중요하지 않음 (사용자 피드백)
+     elif m in ("up", "down"):
+         head = f"{d}에 {KO_MOTION[m]}."
+     else:
+         head = f"{d}에 {tgt}{_josa(tgt)} {KO_MOTION[m]}."
++    if out.get("action") in (None, "none"):          # 주의: 물체만 알리고 행동 안내 없음
++        return head
+     return f"{head} {KO_ACTION[out['action']]}"
+ 
+ 
+diff --git a/code/runtime/audio.py b/code/runtime/audio.py
+index 8a90d28..a1b3fa0 100644
+--- a/code/runtime/audio.py
++++ b/code/runtime/audio.py
+@@ -13,6 +13,13 @@ import time
+ from collections import deque
+ 
+ 
++def _prio(it) -> int:
++    t = it.get("text", "")
++    if it.get("kind") != "warn":
++        return 0
++    return 3 if "멈추세요" in t else 2 if "피하세요" in t else 1
++
++
+ class AudioQueue(threading.Thread):
+     def __init__(self, clock, log, play=False, drop_superseded=True):
+         super().__init__(daemon=True)
+@@ -64,10 +71,13 @@ class AudioQueue(threading.Thread):
+                 if self.cur is not None and now >= self.cur["t_end_plan"]:
+                     self._finish(now)
+                 if self.warn_q:
+-                    if self.cur is not None and self.cur["kind"] == "desc":
++                    # 우선순위 (v5_9): 멈추세요 > 피하세요 > 위치 안내. 더 급한 경고가 오면 덜 급한 재생을 끊고 먼저
++                    top = max(self.warn_q, key=lambda w: (_prio(w), -w["t_event"]))
++                    if self.cur is not None and (self.cur["kind"] == "desc" or _prio(top) > _prio(self.cur)):
+                         self._finish(now, cut=True)
+                     while self.cur is None and self.warn_q:
+-                        it = self.warn_q.popleft()
++                        it = max(self.warn_q, key=lambda w: (_prio(w), -w["t_event"]))
++                        self.warn_q.remove(it)
+                         if now > it["deadline"]:
+                             self._drop(it, now, "warn_late")
+                         else:
+diff --git a/code/runtime/dispatcher.py b/code/runtime/dispatcher.py
+index 9ba7e04..1b7d81b 100644
+--- a/code/runtime/dispatcher.py
++++ b/code/runtime/dispatcher.py
+@@ -36,15 +36,49 @@ class DispatchConfig:
+ 
+ 
+ def warn_text_of(ev) -> str:
++    if ev.extra.get("text"):                    # 트리거가 문장을 직접 준 경우 (횡단보도 안내 등)
++        return ev.extra["text"]
+     if ev.scenario == "S3" and ev.extra.get("state") in S3_WARN:
+         return S3_WARN[ev.extra["state"]]
+     d = direction_of(ev.box, ev.W) if ev.box is not None else "front"
+     return warn_text(ev.cls, d)
+ 
+ 
++CLOCK_MOTION = {"static": "있어요", "approaching": "다가와요", "crossing": "지나가요",      # 짧게 (v5_7)
++                "receding": "멀어져요"}
++XWALK_TEXTS = ["횡단보도 앞 신호 대기 중이에요.", "횡단보도 앞 신호 대기 중이에요. 빨간불이에요.",
++               "횡단보도 앞 신호 대기 중이에요. 초록불이에요.", "횡단보도를 건너고 있어요. 차를 조심하세요.",
++               "차도를 건너고 있어요. 차를 조심하세요.",
++               "오른쪽에 장애물이 이어져 있어요. 주의하세요.", "왼쪽에 장애물이 이어져 있어요. 주의하세요.",
++               "주변 사람들이 건너기 시작했어요. 신호를 확인하세요."]
++CLOCK_ACTION = {"stop": "멈추세요.", "veer_left": "왼쪽으로 피하세요.", "veer_right": "오른쪽으로 피하세요."}
++
++
++def clock_pieces(ev) -> list[str]:
++    """트리거가 준 시계 방향·움직임·행동으로 한 문장 (사용자 요청): '2시 방향 / 자동차가 다가오고 있어요. / 멈추세요.'
++    조각마다 미리 합성해 두고 이어 붙이므로 합성 시간 0."""
++    from ko_template import KO_TARGET, _josa
++    items = ev.extra.get("items") or [dict(clock=ev.extra["clock"], cls=ev.cls, motion=ev.extra.get("motion"))]
++    out = []
++    for i, it in enumerate(items):            # 묶음: '1시 방향 / 기둥, / 11시 방향 / 자전거가 있어요.'
++        tgt = KO_TARGET.get(it["cls"], "장애물")
++        out.append("정면" if it["clock"] == 12 else f"{it['clock']}시 방향")   # 12시는 '정면' (사용자 요청)
++        out.append(f"{tgt}{_josa(tgt)} {CLOCK_MOTION.get(it.get('motion'), '있어요')}." if i == len(items) - 1
++                   else f"{tgt},")
++    if ev.extra.get("action") in CLOCK_ACTION:
++        out.append(CLOCK_ACTION[ev.extra["action"]])
++    return out
++
++
+ def all_warn_texts() -> list[str]:
+-    """미리 합성할 경고 문장 전부 (클래스 × 방향 + 신호 2개)."""
+-    return [warn_text(c, d) for c in CLASSES for d in KO_DIR] + list(S3_WARN.values())
++    """미리 합성할 경고 문장 전부 (클래스 × 방향 + 신호 2개) + 시계 방향 조각."""
++    from ko_template import KO_TARGET, _josa
++    base = [warn_text(c, d) for c in CLASSES for d in KO_DIR] + list(S3_WARN.values())
++    clocks = [f"{h}시 방향" for h in (9, 10, 11, 1, 2, 3)] + ["정면"]
++    tm = sorted({f"{KO_TARGET.get(c, '장애물')}{_josa(KO_TARGET.get(c, '장애물'))} {m}." for c in CLASSES + ["bollard"]
++                 for m in CLOCK_MOTION.values()})
++    commas = sorted({f"{KO_TARGET.get(c, '장애물')}," for c in CLASSES + ["bollard"]})
++    return base + clocks + tm + commas + list(CLOCK_ACTION.values()) + XWALK_TEXTS
+ 
+ 
+ class Dispatcher:
+@@ -56,7 +90,9 @@ class Dispatcher:
+     def on_event(self, frame, ev):
+         c = self.cfg
+         self.stats["events"] += 1
+-        text = warn_text_of(ev)
++        pieces = (clock_pieces(ev) if ev.extra.get("clock") is not None and not ev.extra.get("text")
++                  and ev.scenario != "S3" else None)
++        text = " ".join(pieces) if pieces else warn_text_of(ev)
+         self.log("event", ev=ev.as_dict(), warn_text=text)
+         if ev.track_id is not None and ev.t - self.last_track.get((ev.scenario, ev.track_id), -1e9) < c.cooldown_s:
+             self.stats["suppressed"] += 1
+@@ -70,7 +106,7 @@ class Dispatcher:
+             self.last_track[(ev.scenario, ev.track_id)] = ev.t
+         self.last_text[text] = ev.t
+ 
+-        fut = self.tts.synth(text)                       # 미리 합성했으면 즉시 완료
++        fut = self.tts.synth_concat(pieces) if pieces else self.tts.synth(text)   # 미리 합성했으면 즉시 완료
+         fut.add_done_callback(lambda f: self._push(f, "warn", text, ev, ev.t + c.warn_ttl_s))
+ 
+         if c.use_vlm and self.vlm is not None:
+diff --git a/code/runtime/speech.py b/code/runtime/speech.py
+index ceabb9f..0681f91 100644
+--- a/code/runtime/speech.py
++++ b/code/runtime/speech.py
+@@ -83,6 +83,38 @@ class Engine:
+             self.q.put((text, p, fut))
+         return fut
+ 
++    def synth_concat(self, pieces, gap_s=0.06) -> Future:
++        """조각 wav를 이어 붙인 한 문장 (조각은 미리 합성돼 있으면 즉시)."""
++        import wave
++        out = Future()
++        futs = [self.synth(x) for x in pieces]
++
++        def done(_):
++            if not all(f.done() for f in futs) or out.done():
++                return
++            try:
++                paths = [f.result()[0] for f in futs]
++                key = hashlib.md5("|".join(pieces).encode()).hexdigest()[:16]
++                p = self.cache / f"cat_{key}.wav"
++                if not p.exists():
++                    frames, params = [], None
++                    for q in paths:
++                        with wave.open(str(q)) as w:
++                            params = params or w.getparams()
++                            frames.append(w.readframes(w.getnframes()))
++                    silence = b"\x00" * (int(params.framerate * gap_s) * params.sampwidth * params.nchannels)
++                    with wave.open(str(p), "wb") as w:
++                        w.setparams(params)
++                        w.writeframes(silence.join(frames))
++                out.set_result((p, wav_dur(p), {"cached": all(f.result()[2].get("cached") for f in futs),
++                                                "synth_s": 0.0}))
++            except Exception as e:
++                out.set_exception(e)
++
++        for f in futs:
++            f.add_done_callback(done)
++        return out
++
+     def close(self):
+         self.q.put((None, None, None))
+ 
+diff --git a/code/runtime/triggers.py b/code/runtime/triggers.py
+index abf4a32..9959d0c 100644
+--- a/code/runtime/triggers.py
++++ b/code/runtime/triggers.py
+@@ -110,9 +110,9 @@ class ReplayTrigger:
+             e = self.pending.pop(0)
+             det = next((d for d in fr.dets if d.track_id == e.get("track_id")), None)
+             cls = e.get("cls") or (det.cls if det else "obstacle")
+-            extra = {k: e[k] for k in ("state", "text") if k in e}
++            extra = {k: e[k] for k in ("state", "text", "motion", "action", "clock", "items") if k in e}
+             out.append(Event(t=fr.t, cls=cls, scenario=e.get("scenario", "S2"), track_id=e.get("track_id"),
+-                             box=det.box if det else None, W=fr.W, H=fr.H, extra=extra))
++                             box=det.box if det else (tuple(e["box"]) if e.get("box") else None), W=fr.W, H=fr.H, extra=extra))
+         return out
+ 
+ 
+diff --git a/code/runtime/vlm_worker.py b/code/runtime/vlm_worker.py
+index d494659..8296d55 100644
+--- a/code/runtime/vlm_worker.py
++++ b/code/runtime/vlm_worker.py
+@@ -56,7 +56,13 @@ def hybrid(out: dict, ev) -> dict:
+     o.setdefault("direction", "front")
+     o.setdefault("action", "caution")
+     sc = ev.scenario or scenario_of("other" if ev.cls == "obstacle" else ev.cls)
++    if sc == "S3" and ev.extra.get("state") in ("GO", "STOP"):     # 신호 색은 트리거가 확정한 값 (VLM이 반대로 말하던 문제)
++        o["target"], o["motion"] = "traffic_light", "to_green" if ev.extra["state"] == "GO" else "to_red"
++    if sc in ("S1", "S2") and ev.extra.get("motion") in ("static", "approaching", "receding", "crossing"):
++        o["motion"] = ev.extra["motion"]          # 움직임은 트리거(바닥 좌표 속도) 판정을 따름
+     o["action"] = (action_ok(sc, o["direction"], o["motion"]) or [o["action"]])[0]
++    if ev.extra.get("action"):                       # 행동은 트리거가 정함: 주의=none · 피할 쪽은 빈 쪽만 (v5_3)
++        o["action"] = ev.extra["action"]
+     return o
+ 
+ 

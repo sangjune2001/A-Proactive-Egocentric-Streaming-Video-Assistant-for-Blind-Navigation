@@ -1,0 +1,30 @@
+{
+ "_note": "종설 라벨링 (사람이 대강 단 구간, 2026-10-15). 구간 = [시작 s, 끝 s], 한 시각만 있으면 1 s 구간. kind: vehicle | obstacle | light. light는 dir = to_green | to_red",
+ "train": {
+  "1": [[16, 18, "light", "to_green"], [76, 79, "obstacle"]],
+  "2": [[17, 23, "vehicle"], [99, 101, "obstacle"]],
+  "3": [[6, 8, "vehicle"], [7, 10, "vehicle"], [11, 13, "vehicle"], [16, 18, "vehicle"], [19, 21, "vehicle"], [57, 60, "vehicle"], [80, 82, "vehicle"], [105, 107, "vehicle"], [128, 135, "vehicle"]],
+  "4": [[26, 28, "vehicle"]],
+  "5": [[10, 13, "vehicle"], [22, 23, "vehicle"], [34, 36, "vehicle"]],
+  "6": [[19, 23, "obstacle"], [37, 38, "obstacle"]],
+  "7": [],
+  "8": [[6, 7, "light", "to_green"], [46, 47, "light", "to_red"]],
+  "9": [[10, 11, "vehicle"]],
+  "10": [[11, 14, "obstacle"], [44, 48, "obstacle"]],
+  "11": [[48, 49, "vehicle"], [53, 54, "vehicle"]],
+  "12": [[30, 32, "light", "to_green"], [54, 55, "light", "to_red"]],
+  "13": [[58, 61, "light", "to_red"]],
+  "14": [[3, 5, "light", "to_green"], [28, 31, "vehicle"], [59, 60, "vehicle"]],
+  "15": [[61, 64, "light", "to_green"]],
+  "16": [[17, 19, "light", "to_green"], [56, 57, "vehicle"]],
+  "17": [[57, 59, "light", "to_green"], [96, 98, "light", "to_red"]],
+  "18": [[39, 40, "vehicle"], [41, 43, "vehicle"]],
+  "19": [[9, 10, "obstacle"]],
+  "20": [[18, 20, "vehicle"], [99, 100, "vehicle"]]
+ },
+ "test": {
+  "test_1": [[4, 5, "obstacle"], [12, 13, "obstacle"], [68, 69, "obstacle"], [84, 86, "vehicle"], [90, 91, "vehicle"]],
+  "test_2": [[6, 7, "obstacle"], [21, 22, "obstacle"], [93, 95, "obstacle"], [132, 134, "obstacle"], [137, 138, "obstacle"]],
+  "test_3": [[46, 48, "vehicle"], [87, 89, "light", "to_green"]]
+ }
+}
