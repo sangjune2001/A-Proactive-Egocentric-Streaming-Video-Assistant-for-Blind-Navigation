@@ -49,6 +49,8 @@
 
 (위 B 행은 v5_9. v5_11 테스트는 Precision 0.12 · Recall 0.75 · 분당 9.9 — [상세](trigger_hitbox/README.md#3-1-v5_10--v5_11-채점))
 
+![](trigger_hitbox/img/compare_v5_9_v5_10_v5_11.png)
+
 ![](trigger_hitbox/img/v5_11_score.png)
 
 ![](trigger_hitbox/img/v5_11_speed.png)
