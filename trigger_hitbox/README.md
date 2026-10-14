@@ -35,6 +35,12 @@ YOLO가 찾은 물체를 **바닥(미터) 좌표**로 옮겨서, 내가 걸어�
 채점: eval_trigger.py (라벨 구간 vs 트리거) · eval_159.py (AI Hub 159 인식) · 시간: bench_parts.py
 ```
 
+### 화면 읽는 법 · 판단 흐름 (v5_11)
+
+![히트박스 화면 요소: 무엇이 · 왜 · 어떤 규칙으로](img/explain_screen.png)
+
+![경고 판단 흐름](img/explain_flow.png)
+
 ### 판단 규칙 요약 (v5_9)
 
 | 항목 | 규칙 |
