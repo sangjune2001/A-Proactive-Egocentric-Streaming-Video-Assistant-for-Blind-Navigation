@@ -1,6 +1,8 @@
 # 히트박스 트리거 (B) — 7주차 (2026-10-13 ~ )
 
 > **최신: v5_29** (10/15) — v5_15 판정 + 지나가요=멈추세요 · 버스는 지나갈 때만 · 1 s 유지 · "기둥이 연속해 있어요" · 사람 움직임 말하기 · 움직임 0.2 s 다지기. 음성은 Heami. 버전별 추가 내용은 [CHANGELOG](CHANGELOG.md#v5_12--v5_29-1015-v5_7-기준으로-다시-시작), 서버 실행은 [`code/server/`](code/server/README.md). 아래 채점 표는 v5_9–v5_11 기준.
+>
+> **코드 두 개**: [`code/pass2_trigger_v5_15.py`](code/pass2_trigger_v5_15.py) = 검출(경고 생성)이 가장 정확한 기준판, [`code/pass2_trigger_v5_29.py`](code/pass2_trigger_v5_29.py) = v5_15 판정 + 음성 정리(최신, `pass2_trigger.py`와 같음). 실행은 둘 다 같음: `CAM_H=1.77 PANELS=B VERSION=v5_15 python pass2_trigger_v5_15.py OUT`.
 
 몸에 단 폰 카메라 영상에서 **"언제, 무엇을, 어떻게" 말할지 정하는 트리거**를 새로 만들었다.
 YOLO가 찾은 물체를 **바닥(미터) 좌표**로 옮겨서, 내가 걸어갈 영역(히트박스)과 겹치는지로 판단한다.
