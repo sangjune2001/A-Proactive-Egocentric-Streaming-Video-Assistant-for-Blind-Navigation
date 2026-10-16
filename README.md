@@ -37,6 +37,7 @@
   - 음성: "**1시 방향 자동차가 지나가요. 멈추세요.**" 한 문장(조각 미리 합성, 트리거 후 0.02 s), 급하지 않은 건 묶고 급한 건 먼저
   - 신호등: 고해상도 검출 + 상자 안 픽셀 색, 사거리에서는 내 길 방향 정면 신호만
 - 런유어AI A5000에서 팀 실행 시스템(SJ)에 연결해 실제 음성까지 냈다 (SJ 브랜치는 수정하지 않고 패치 파일만 [`trigger_hitbox/sj_runtime_patch/`](trigger_hitbox/sj_runtime_patch/)).
+- (10/15–16) 공유 드라이브 `Video Dataset/`에 학습 20 · 테스트 3 · AI Hub 159 평균 키 실외 BBOX(364.5 GB) 업로드. v5_29 판정으로 **움직임(다가옴·멀어짐·가만히)·말하기(말해야·말해도·말하면 안 됨) 초벌 라벨**을 만드는 Colab 노트북 작성 → [`trigger_hitbox/labeling/`](trigger_hitbox/labeling/README.md). 159 원천은 1 s 간격 PNG라 별도 방식 필요.
 
 ### 한눈에 보기 (여유 기준: 라벨 구간 2 s 전 ~ 0.5 s 후 인정)
 | 데이터 | 방식 | Precision ↑ | Recall ↑ | F1 ↑ | 분당 오경보 ↓ |

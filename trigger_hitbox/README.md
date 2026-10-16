@@ -179,7 +179,12 @@ python eval_trigger.py labels.json test <OUT 상위 폴더>
 `test_N_최종_음성_비교_v5_10.mp4`(왼쪽 사용자 화면 + 음성 자막, 오른쪽 판단 과정), `test_N_히트박스_v5_10_수정본.mp4` (v5_11 영상은 서버 반납으로 미생성).
 채점: `python eval_trigger.py labels.json test <폴더>` · 멈춘 탈것 = 장애물 인정은 `LOOSE=1`.
 
-## 7. 다음 할 일
+## 7. 움직임 · 말하기 라벨링 (10/16 ~)
+
+v5_29 판정으로 프레임·물체마다 **motion**(다가옴 · 멀어짐 · 가만히 · 지나감)과 **speak**(말해야 됨 · 말해도 됨 · 말하면 안 됨) 초벌 라벨을 만든다.
+Colab(T4) 노트북으로 공유 드라이브 `Video Dataset/` 영상을 돌려 `label/`에 같은 경로로 저장. 상세·규칙·데이터 구성: [`labeling/README.md`](labeling/README.md)
+
+## 8. 다음 할 일
 
 1. 작은·기울어진 신호등: 신호등 검출 보강(학습 데이터) 또는 색 블롭 후보 + 추적
 2. 깊이 기반 장애물(박스 더미 등)을 트리거에 연결
